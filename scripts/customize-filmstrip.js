@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('fs');
 
 let html = fs.readFileSync('src/shaders/character-carousel/sources/character-filmstrip.original.html', 'utf8');
