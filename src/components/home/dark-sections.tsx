@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
@@ -63,6 +64,21 @@ export function DarkSections() {
               <Link href={tile.href}>{tile.label} <span aria-hidden="true">↗</span></Link>
             </article>
           ))}
+          <article className="lm-dark-tile lm-dark-video-tile">
+            <div className="lm-dark-video-wrap">
+              <span className="review-placeholder">Video module · intro pending</span>
+              <div className="lm-video-mockup">
+                <button type="button" className="lm-video-play-btn" aria-label="Play introductory advisory video">
+                  <span aria-hidden="true">▶</span>
+                </button>
+              </div>
+            </div>
+            <div className="lm-dark-video-copy">
+              <h2>Your business deserves more than a once-a-year conversation.</h2>
+              <p>Lee Monarc Accounting &amp; Advisory connects your accounts and tax with the decisions you make as an owner: where to invest, what you can afford and how to build a business that gives you options.</p>
+              <Link href="/about">About us <span aria-hidden="true">↗</span></Link>
+            </div>
+          </article>
           <article className="lm-dark-decisions">
             <div>
               <h2>Ask the questions before you sign.</h2>
@@ -75,6 +91,52 @@ export function DarkSections() {
             </div>
           </article>
         </div>
+
+        <section className="section-shell lm-dark-team" aria-labelledby="lm-dark-team-heading">
+          <div className="lm-dark-team-header">
+            <p className="home-kicker">Leadership &amp; Advisory</p>
+            <h2 className="home-heading" id="lm-dark-team-heading">Meet the Founder.</h2>
+          </div>
+          <div className="lm-dark-team-showcase">
+            <article className="lm-team-card lm-team-card-center" data-active="true">
+              <div className="lm-team-photo-wrap">
+                <Image
+                  src="/images/vivienne-profile.jpg"
+                  alt="Vivienne Lee, Chartered Accountant and Founder"
+                  width={480}
+                  height={560}
+                  className="lm-team-photo"
+                />
+                <div className="lm-team-photo-overlay" aria-hidden="true">
+                  <div className="lm-team-badge">13 years in accounting and advisory</div>
+                  <div className="lm-team-badge">Chartered Accountant</div>
+                  <div className="lm-team-badge">Became a partner in early 30s · Founded Lee Monarc</div>
+                </div>
+              </div>
+              <div className="lm-team-bio">
+                <span className="lm-team-tag">Founder · Chartered Accountant</span>
+                <h3>Vivienne Lee</h3>
+                <p className="lm-team-quote">“I want to know what you’re building, not just what you earned last year. The numbers become useful when we connect them to the decisions you’re facing.”</p>
+                <Link href="/about" className="lm-team-link">About our advisory approach <span aria-hidden="true">↗</span></Link>
+              </div>
+            </article>
+            <div className="lm-team-side-cards">
+              <article className="lm-team-card lm-team-card-service">
+                <span className="review-placeholder">Specialist focus</span>
+                <h4>Business structuring</h4>
+                <p>Before you commit to a new corporate or trust structure, examine the tax, asset protection and growth implications.</p>
+                <Link href="/services/business-structuring">Explore structuring <span aria-hidden="true">↗</span></Link>
+              </article>
+              <article className="lm-team-card lm-team-card-service">
+                <span className="review-placeholder">Transition advisory</span>
+                <h4>Succession and exit planning</h4>
+                <p>Build a business that gives you options: growing, reducing day-to-day involvement, or preparing for an orderly transition.</p>
+                <Link href="/services/succession-exit">Explore succession <span aria-hidden="true">↗</span></Link>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section className="section-shell lm-dark-invite" aria-labelledby="lm-dark-invite-heading">
           <h2 id="lm-dark-invite-heading">Bring the question.</h2>
           <p>Share where your business stands, what you want to achieve and the questions on your mind.</p>

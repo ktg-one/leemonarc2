@@ -45,6 +45,25 @@ const questions = [
 
 const stories = ["A cashflow decision", "Accounting support", "A purchase or transition"];
 
+const beliefs = [
+  {
+    title: "Your accounts should help you make a decision.",
+    description: "A report needs to do more than arrive in your inbox. It should help answer a question about the business: what’s working, where cash is going or what needs to change.",
+  },
+  {
+    title: "Profit and cash need separate conversations.",
+    description: "A profitable business can still struggle to meet its commitments. Looking at both gives you a more useful picture of what the business can afford.",
+  },
+  {
+    title: "Advice is most useful while you still have options.",
+    description: "Before you hire, buy, restructure or sell, there’s an opportunity to test the assumptions. After you’ve committed, some of those choices have already gone.",
+  },
+  {
+    title: "A business should give its owner options.",
+    description: "That might mean growing, reducing day-to-day involvement or preparing for a future sale. Those goals deserve attention long before you’re ready to step away.",
+  },
+];
+
 export function LightSections() {
   const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const featureRef = useRef<HTMLElement>(null);
@@ -57,6 +76,7 @@ export function LightSections() {
   const [capable, setCapable] = useState(false);
   const [visible, setVisible] = useState(true);
   const [story, setStory] = useState(0);
+  const [activeBelief, setActiveBelief] = useState(0);
   const playing = enhanced && capable && inView && visible && !paused && !hovered && !focused;
 
   useEffect(() => {
@@ -81,6 +101,18 @@ export function LightSections() {
     const timer = window.setInterval(() => setActive((index) => (index + 1) % features.length), CADENCE);
     return () => window.clearInterval(timer);
   }, [playing, revision]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setInterval(() => setStory((index) => (index + 1) % stories.length), 5500);
+    return () => window.clearInterval(timer);
+  }, [playing]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setInterval(() => setActiveBelief((index) => (index + 1) % beliefs.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [playing]);
 
   const selectFeature = (index: number) => {
     setActive(index);
@@ -140,11 +172,40 @@ export function LightSections() {
         <Link href="/services/fractional-cfo-advisory">See how financial advisory can help <span aria-hidden="true">↗</span></Link>
       </section>
 
+      <section className="lm-light-beliefs section-shell home-section" aria-labelledby="lm-light-beliefs-heading"
+        onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+        onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
+        <div className="lm-beliefs-header">
+          <p className="home-kicker">Core Principles</p>
+          <h2 className="home-heading" id="lm-light-beliefs-heading">Four perspectives on building a business that gives you options.</h2>
+        </div>
+        <div className="lm-beliefs-carousel">
+          <div className="lm-beliefs-track">
+            {beliefs.map((b, i) => (
+              <article key={b.title} className="lm-belief-card" data-active={activeBelief === i} onClick={() => setActiveBelief(i)}>
+                <span className="lm-belief-num">0{i + 1}</span>
+                <h3>{b.title}</h3>
+                <p>{b.description}</p>
+              </article>
+            ))}
+          </div>
+          <div className="lm-beliefs-controls" aria-label="Belief statements controls">
+            {beliefs.map((_, i) => (
+              <button key={i} type="button" aria-label={`View principle ${i + 1}`} aria-current={activeBelief === i ? "true" : undefined} onClick={() => setActiveBelief(i)}>
+                <span />
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="lm-light-cta section-shell home-section" aria-labelledby="lm-light-cta-heading"><h2 id="lm-light-cta-heading" className="home-heading">Start with the question<br />you can’t answer yet.</h2><Link className="pill-link" href="/contact">Let’s start a conversation <span aria-hidden="true">↗</span></Link></section>
 
-      <section className="lm-light-stories section-shell" aria-labelledby="lm-light-stories-heading">
+      <section className="lm-light-stories section-shell" aria-labelledby="lm-light-stories-heading"
+        onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+        onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
         <div className="lm-light-stories-heading"><div><p className="home-kicker">The work, in perspective</p><h2 className="home-heading" id="lm-light-stories-heading">Every business has a story.</h2></div><span className="review-placeholder">Client stories awaiting approval</span></div>
-        <div className="lm-light-story-grid">{stories.map((title, index) => <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index}><div className="lm-light-story-art" aria-hidden="true"><span>0{index + 1}</span><div /><i /></div><div className="lm-light-story-content"><span className="review-placeholder">Story & media placeholder</span><h3>{title}</h3><p>{story === index || !enhanced ? "Approved client words, imagery and outcomes will appear here." : "Awaiting an approved client story."}</p></div></article>)}</div>
+        <div className="lm-light-story-grid">{stories.map((title, index) => <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index} onClick={() => setStory(index)}><div className="lm-light-story-art" aria-hidden="true"><span>0{index + 1}</span><div /><i /></div><div className="lm-light-story-content"><span className="review-placeholder">Story & media placeholder</span><h3>{title}</h3><p>{story === index || !enhanced ? "Approved client words, imagery and outcomes will appear here." : "Awaiting an approved client story."}</p></div></article>)}</div>
         <div className="lm-light-story-controls" aria-label="Client story selectors">{stories.map((title, index) => <button type="button" key={title} aria-label={`Select story placeholder ${index + 1}: ${title}`} aria-current={story === index ? "true" : undefined} aria-controls={`lm-light-story-${index}`} onClick={() => setStory(index)}><span aria-hidden="true">0{index + 1}</span><span className="sr-only">{title}</span></button>)}</div>
       </section>
     </div>

@@ -138,7 +138,84 @@
   .lm-light[data-enhanced='true'] .lm-light-story { display: none; }
   .lm-light[data-enhanced='true'] .lm-light-story[data-selected='true'] { display: block; }
   .lm-light-story-art { height: 235px; }
-  .lm-light-feature .lm-light-mini-card { animation: none !important; }
+/* Belief statements banner carousel */
+.lm-light-beliefs { padding-block: 72px 48px; }
+.lm-beliefs-header { text-align: center; margin-bottom: 40px; }
+.lm-beliefs-header .home-heading { max-width: 680px; margin-inline: auto; font-size: clamp(28px, 3vw, 40px); }
+.lm-beliefs-carousel { position: relative; }
+.lm-beliefs-track { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1); }
+.lm-belief-card {
+  padding: 32px 28px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #dce2dd;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .3s ease, border-color .3s ease, opacity .3s ease;
+  position: relative;
+  min-height: 250px;
+}
+.lm-belief-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.06), 0 0 15px rgba(212, 175, 55, 0.15);
+  border-color: #cca85b80;
+}
+.lm-belief-card[data-active='true'] {
+  border-color: var(--gold-dark);
+  box-shadow: 0 10px 25px rgba(26, 26, 26, 0.08);
+  opacity: 1;
+}
+.lm-belief-card:not([data-active='true']) {
+  opacity: 0.72;
+}
+.lm-belief-num {
+  font: 500 12px var(--font-body);
+  color: var(--gold-dark);
+  margin-bottom: 16px;
+  letter-spacing: .05em;
+}
+.lm-belief-card h3 {
+  font: 600 19px/1.3 var(--font-body);
+  letter-spacing: -.02em;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.lm-belief-card p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.lm-beliefs-controls { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
+.lm-beliefs-controls button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 4px;
+}
+.lm-beliefs-controls button span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: #a3aaa5;
+  border-radius: 10px;
+  transition: width .25s ease, background .25s ease;
+}
+.lm-beliefs-controls button[aria-current='true'] span {
+  width: 24px;
+  background: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .lm-beliefs-track { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .lm-beliefs-track { grid-template-columns: 1fr; }
+  .lm-belief-card:not([data-active='true']) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lm-light-feature .lm-light-mini-card { animation: none !important; }
