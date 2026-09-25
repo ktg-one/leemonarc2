@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
-import { Scene } from "@/components/home/scene";
 import "./dark-sections.css";
 
 const subscribeHydration = () => () => {};
@@ -97,9 +96,6 @@ export function DarkSections() {
           <div className="lm-dark-team-header">
             <p className="home-kicker">Leadership &amp; Advisory</p>
             <h2 className="home-heading" id="lm-dark-team-heading">Meet the Founder.</h2>
-          </div>
-          <div className="lm-dark-filmstrip-frame">
-            <Scene />
           </div>
           <div className="lm-dark-team-showcase">
             <article className="lm-team-card lm-team-card-center" data-active="true">

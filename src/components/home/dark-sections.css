@@ -143,14 +143,6 @@
   border: 1px solid rgba(212, 175, 55, 0.3);
   width: fit-content;
 }
-.lm-dark-filmstrip-frame {
-  margin-bottom: 36px;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  background: #0d1110;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-}
 .lm-team-bio {
   display: flex;
   flex-direction: column;
