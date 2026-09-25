@@ -33,33 +33,31 @@
   text-transform: uppercase;
   margin-bottom: 16px;
 }
-.lm-hero-brands-row {
+.lm-hero-pills {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: clamp(20px, 3.5vw, 44px);
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  gap: 10px;
+  max-width: 920px;
 }
-.lm-hero-brand-slot {
-  display: flex;
+.lm-hero-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  opacity: 0.85;
-}
-.lm-hero-brand-glyph {
-  color: #cca85b;
-  font-size: 15px;
-}
-.lm-hero-brand-name {
-  font: 600 13px var(--font-body);
+  min-height: 34px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #eef2f0;
+  font-size: 12px;
   letter-spacing: .02em;
-  color: #f4f7f5;
+  transition: border-color .25s ease, background .25s ease;
 }
-.lm-hero-brands .review-placeholder {
-  color: #f4f7f5;
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.08);
+.lm-hero-pill:hover {
+  border-color: rgba(212, 175, 55, 0.7);
+  background: rgba(212, 175, 55, 0.08);
 }
 .lm-hero-media-footer { position: relative; margin-top: 12px; padding-bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
 .lm-hero-media-footer .review-placeholder { opacity: 1; color: #fff; background: #101b25b3; border-color: #ffffff45; font-size: 9px; }

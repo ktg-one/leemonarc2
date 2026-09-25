@@ -5,6 +5,23 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { heroMedia } from "@/content/hero-media";
 import "./hero.css";
 
+const heroPills = [
+  { label: "Professional services", href: "/who-we-help" },
+  { label: "Accounting & tax", href: "/services/accounting-compliance" },
+  { label: "Property & construction", href: "/who-we-help" },
+  { label: "Tax planning", href: "/services/tax-planning" },
+  { label: "Healthcare", href: "/who-we-help" },
+  { label: "Business structuring", href: "/services/business-structuring" },
+  { label: "Technology", href: "/who-we-help" },
+  { label: "CFO & business advisory", href: "/services/fractional-cfo-advisory" },
+  { label: "Engineering & manufacturing", href: "/who-we-help" },
+  { label: "Business acquisition", href: "/services/business-acquisition" },
+  { label: "Care services", href: "/who-we-help" },
+  { label: "Succession & exit", href: "/services/succession-exit" },
+  { label: "Beauty & wellness", href: "/who-we-help" },
+  { label: "Hospitality", href: "/who-we-help" },
+];
+
 export function Hero() {
   const section = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -98,17 +115,15 @@ export function Hero() {
           </div>
         </aside>
       </div>
-      <div className="section-shell lm-hero-brands" aria-label="Selected past client brands">
-        <p className="lm-hero-brands-label">Selected past clients &amp; advisory partners</p>
-        <div className="lm-hero-brands-row" aria-hidden="true">
-          {["Apex Group", "Vanguard Civil", "Meridian Advisory", "Sovereign Health", "St Georges Capital", "Crestwood Holdings"].map((name) => (
-            <div key={name} className="lm-hero-brand-slot">
-              <span className="lm-hero-brand-glyph">◇</span>
-              <span className="lm-hero-brand-name">{name}</span>
-            </div>
+      <div className="section-shell lm-hero-brands" aria-label="Industry experience and services">
+        <p className="lm-hero-brands-label">Industry experience &amp; services</p>
+        <ul className="lm-hero-pills" role="list">
+          {heroPills.map((pill) => (
+            <li key={pill.label}>
+              <Link href={pill.href} className="lm-hero-pill">{pill.label}</Link>
+            </li>
           ))}
-        </div>
-        <span className="review-placeholder">Client brand logos · approval pending</span>
+        </ul>
       </div>
       <div className="lm-hero-media-footer">
         {heroMedia.source && !failed && !reducedMotion && <button type="button"
