@@ -182,16 +182,24 @@ export function LightSections() {
         <div className="lm-beliefs-carousel">
           <div className="lm-beliefs-track">
             {beliefs.map((b, i) => (
-              <article key={b.title} className="lm-belief-card" data-active={activeBelief === i} onClick={() => setActiveBelief(i)}>
+              <button
+                key={b.title}
+                type="button"
+                className="lm-belief-card"
+                data-active={activeBelief === i}
+                onClick={() => setActiveBelief(i)}
+                aria-pressed={activeBelief === i}
+                aria-label={`Principle ${i + 1}: ${b.title}`}
+              >
                 <span className="lm-belief-num">0{i + 1}</span>
-                <h3>{b.title}</h3>
+                <span className="lm-belief-title">{b.title}</span>
                 <p>{b.description}</p>
-              </article>
+              </button>
             ))}
           </div>
           <div className="lm-beliefs-controls" aria-label="Belief statements controls">
-            {beliefs.map((_, i) => (
-              <button key={i} type="button" aria-label={`View principle ${i + 1}`} aria-current={activeBelief === i ? "true" : undefined} onClick={() => setActiveBelief(i)}>
+            {beliefs.map((b, i) => (
+              <button key={b.title} type="button" aria-label={`View principle ${i + 1}: ${b.title}`} aria-current={activeBelief === i ? "true" : undefined} onClick={() => setActiveBelief(i)}>
                 <span />
               </button>
             ))}
@@ -205,7 +213,7 @@ export function LightSections() {
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
         <div className="lm-light-stories-heading"><div><p className="home-kicker">The work, in perspective</p><h2 className="home-heading" id="lm-light-stories-heading">Every business has a story.</h2></div><span className="review-placeholder">Client stories awaiting approval</span></div>
-        <div className="lm-light-story-grid">{stories.map((title, index) => <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index} onClick={() => setStory(index)}><div className="lm-light-story-art" aria-hidden="true"><span>0{index + 1}</span><div /><i /></div><div className="lm-light-story-content"><span className="review-placeholder">Story & media placeholder</span><h3>{title}</h3><p>{story === index || !enhanced ? "Approved client words, imagery and outcomes will appear here." : "Awaiting an approved client story."}</p></div></article>)}</div>
+        <div className="lm-light-story-grid">{stories.map((title, index) => <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index}><div className="lm-light-story-art" aria-hidden="true"><span>0{index + 1}</span><div /><i /></div><div className="lm-light-story-content"><span className="review-placeholder">Story & media placeholder</span><h3>{title}</h3><p>{story === index || !enhanced ? "Approved client words, imagery and outcomes will appear here." : "Awaiting an approved client story."}</p></div></article>)}</div>
         <div className="lm-light-story-controls" aria-label="Client story selectors">{stories.map((title, index) => <button type="button" key={title} aria-label={`Select story placeholder ${index + 1}: ${title}`} aria-current={story === index ? "true" : undefined} aria-controls={`lm-light-story-${index}`} onClick={() => setStory(index)}><span aria-hidden="true">0{index + 1}</span><span className="sr-only">{title}</span></button>)}</div>
       </section>
     </div>
