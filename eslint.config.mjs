@@ -13,5 +13,6 @@ export default defineConfig([
     "artifacts/**",
     "test-results/**",
     "playwright-report/**",
+    "src/shaders/**",
   ]),
 ]);
