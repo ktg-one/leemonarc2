@@ -65,6 +65,13 @@ Following the Paraform design rhythm and verbatim copy rules from `docs/CANON-BR
   - **Side Profile/Service Cards:** Formatted as structured advisory profile cards without fabricating non-existent staff (ready to accept new team members when provided).
   - Clean interactive modal or expandable bio cards.
 
+### H. Hero Bottom Strip: Past Client Brands Row
+- **Requirement:** Past client brand logos/marks across corporate advisory clients (replacing industry categories).
+- **Implementation:**
+  - Dedicated brand logo showcase strip with clean monochrome/gold mark styling.
+  - Stable reserved geometry (`min-height`) ensuring 0 layout shift (CLS < 0.01).
+  - Staged with clean placeholders labeled `Client brand logos · approval pending` ready for Vivienne's brand files.
+
 ---
 
 ## 2. Execution Sequence

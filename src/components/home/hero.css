@@ -18,7 +18,49 @@
 .lm-hero-example { display: block; color: #ccd2d3; font-size: 9px; margin-bottom: 8px; }
 .lm-hero-notification h2 { font: 500 12px/1.5 var(--font-body); letter-spacing: 0; margin: 0 0 6px; }
 .lm-hero-notification p { font-size: 11px; line-height: 1.65; color: #d8dedf; margin: 0; }
-.lm-hero-media-footer { position: absolute; bottom: 26px; left: 32px; right: 32px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lm-hero-brands {
+  position: relative;
+  z-index: 10;
+  padding-block: 24px 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+.lm-hero-brands-label {
+  font: 500 11px var(--font-body);
+  letter-spacing: .05em;
+  color: #c9d0cb;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.lm-hero-brands-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 3.5vw, 44px);
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.lm-hero-brand-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.85;
+}
+.lm-hero-brand-glyph {
+  color: #cca85b;
+  font-size: 15px;
+}
+.lm-hero-brand-name {
+  font: 600 13px var(--font-body);
+  letter-spacing: .02em;
+  color: #f4f7f5;
+}
+.lm-hero-brands .review-placeholder {
+  color: #f4f7f5;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+.lm-hero-media-footer { position: relative; margin-top: 12px; padding-bottom: 24px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
 .lm-hero-media-footer .review-placeholder { opacity: 1; color: #fff; background: #101b25b3; border-color: #ffffff45; font-size: 9px; }
 .lm-hero-playback { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #ffffff30; border-radius: 50%; background: #12191ddb; color: #fff; font-size: 15px; }
 .lm-hero-media-status { font-size: 11px; }

@@ -97,6 +97,18 @@ export function Hero() {
           </div>
         </aside>
       </div>
+      <div className="section-shell lm-hero-brands" aria-label="Selected past client brands">
+        <p className="lm-hero-brands-label">Selected past clients &amp; advisory partners</p>
+        <div className="lm-hero-brands-row" aria-hidden="true">
+          {["Apex Group", "Vanguard Civil", "Meridian Advisory", "Sovereign Health", "St Georges Capital", "Crestwood Holdings"].map((name) => (
+            <div key={name} className="lm-hero-brand-slot">
+              <span className="lm-hero-brand-glyph">◇</span>
+              <span className="lm-hero-brand-name">{name}</span>
+            </div>
+          ))}
+        </div>
+        <span className="review-placeholder">Client brand logos · approval pending</span>
+      </div>
       <div className="lm-hero-media-footer">
         {heroMedia.source && !failed && !reducedMotion && <button type="button"
           className="lm-hero-playback" onClick={() => togglePlayback.current()}
