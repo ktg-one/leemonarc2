@@ -18,9 +18,9 @@ h2 { font-size: clamp(34px, 3.5vw, 48px); }
 .lm-site-top { position: relative; z-index: 60; min-height: 112px; }
 .lm-site-top[data-home='true'] { min-height: 38px; }
 .lm-announcement { min-height: 38px; display: flex; justify-content: center; align-items: center; text-align: center; padding: 8px 20px; background: #e6eef1; font-size: 11px; color: #182237; gap: 12px; }
-.lm-nav { position: fixed; z-index: 65; top: 38px; left: 0; right: 0; color: var(--ink); background: var(--paper); transition: background .2s, color .2s; }
-.lm-nav[data-scrolled='true'] { top: 0; background: rgba(245,248,246,.96); color: var(--ink); backdrop-filter: blur(16px); border-bottom: 1px solid #1a1a1a12; }
-.lm-nav[data-home='true'][data-scrolled='false'] { background: transparent; color: white; }
+.lm-nav { position: relative; z-index: 65; color: var(--ink); background: var(--paper); transition: background .2s, color .2s; }
+.lm-nav[data-scrolled='true'] { position: fixed; top: 0; left: 0; right: 0; background: rgba(245,248,246,.96); color: var(--ink); backdrop-filter: blur(16px); border-bottom: 1px solid #1a1a1a12; }
+.lm-nav[data-home='true'][data-scrolled='false'] { position: relative; margin-bottom: -76px; background: transparent; color: white; }
 .lm-nav-inner { min-height: 76px; display: flex; align-items: center; gap: 40px; }
 .lm-brand { display: flex; width: 184px; flex: 0 0 auto; }
 .lm-brand img { display: block; width: 100%; height: auto; }
