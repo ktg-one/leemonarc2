@@ -138,6 +138,7 @@
   .lm-light[data-enhanced='true'] .lm-light-story { display: none; }
   .lm-light[data-enhanced='true'] .lm-light-story[data-selected='true'] { display: block; }
   .lm-light-story-art { height: 235px; }
+}
 /* Belief statements banner carousel */
 .lm-light-beliefs { padding-block: 72px 48px; }
 .lm-beliefs-header { text-align: center; margin-bottom: 40px; }
@@ -169,10 +170,6 @@
 .lm-belief-card[data-active='true'] {
   border-color: var(--gold-dark);
   box-shadow: 0 10px 25px rgba(26, 26, 26, 0.08);
-  opacity: 1;
-}
-.lm-belief-card:not([data-active='true']) {
-  opacity: 0.72;
 }
 .lm-belief-num {
   font: 500 12px var(--font-body);
