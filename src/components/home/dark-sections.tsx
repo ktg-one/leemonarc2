@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import "./dark-sections.css";
 
@@ -25,15 +24,281 @@ const tiles = [
   },
 ];
 
+type TeamCard = {
+  id: string;
+  tag: string;
+  title: string;
+  href: string;
+  linkLabel: string;
+  quote?: string;
+  text?: string;
+  badges?: string[];
+};
+
+const teamCards: TeamCard[] = [
+  {
+    id: "vivienne",
+    tag: "Founder · Chartered Accountant",
+    title: "Vivienne Lee",
+    quote: "“I want to know what you’re building, not just what you earned last year. The numbers become useful when we connect them to the decisions you’re facing.”",
+    href: "/about",
+    linkLabel: "About our advisory approach",
+    badges: [
+      "13 years in accounting and advisory",
+      "Chartered Accountant",
+      "Became a partner in early 30s · Founded Lee Monarc",
+    ],
+  },
+  {
+    id: "structuring",
+    tag: "Specialist focus",
+    title: "Business structuring",
+    text: "Before you commit to a new corporate or trust structure, examine the tax, asset protection and growth implications.",
+    href: "/services/business-structuring",
+    linkLabel: "Explore structuring",
+  },
+  {
+    id: "succession",
+    tag: "Transition advisory",
+    title: "Succession and exit planning",
+    text: "Build a business that gives you options: growing, reducing day-to-day involvement, or preparing for an orderly transition.",
+    href: "/services/succession-exit",
+    linkLabel: "Explore succession",
+  },
+  {
+    id: "cfo",
+    tag: "Ongoing guidance",
+    title: "Fractional CFO advisory",
+    text: "Senior financial guidance for the decisions in front of you: affordability, timing and what the numbers mean for your next move.",
+    href: "/services/fractional-cfo-advisory",
+    linkLabel: "Explore advisory",
+  },
+  {
+    id: "accounting",
+    tag: "Foundations",
+    title: "Accounting & tax",
+    text: "Bookkeeping, financial statements, tax returns and company compliance — records you can actually use to run the business.",
+    href: "/services/accounting-compliance",
+    linkLabel: "Explore accounting",
+  },
+];
+
 export function DarkSections() {
   const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
   const selected = services[proof];
 
+  const teamRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [shift, setShift] = useState(0);
+  const [teamPos, setTeamPos] = useState(teamCards.length);
+  const [teamAnimate, setTeamAnimate] = useState(true);
+  const [teamPaused, setTeamPaused] = useState(false);
+  const [teamHovered, setTeamHovered] = useState(false);
+  const [teamFocused, setTeamFocused] = useState(false);
+  const [teamInView, setTeamInView] = useState(false);
+  const [teamCapable, setTeamCapable] = useState(false);
+  const [teamVisible, setTeamVisible] = useState(true);
+  const teamPlaying = enhanced && teamCapable && teamInView && teamVisible && !teamPaused && !teamHovered && !teamFocused;
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)");
+    const updateCapability = () => setTeamCapable(query.matches);
+    const updateVisibility = () => setTeamVisible(!document.hidden);
+    updateCapability();
+    updateVisibility();
+    query.addEventListener("change", updateCapability);
+    document.addEventListener("visibilitychange", updateVisibility);
+    const observer = new IntersectionObserver(([entry]) => setTeamInView(entry.isIntersecting), { threshold: 0.2 });
+    if (teamRef.current) observer.observe(teamRef.current);
+    return () => {
+      query.removeEventListener("change", updateCapability);
+      document.removeEventListener("visibilitychange", updateVisibility);
+      observer.disconnect();
+    };
+  }, []);
+
+  const teamCount = teamCards.length;
+  const teamIndex = ((teamPos % teamCount) + teamCount) % teamCount;
+
+  const goToTeam = (index: number) => {
+    let delta = (((index - teamIndex) % teamCount) + teamCount) % teamCount;
+    if (delta > teamCount / 2) delta -= teamCount;
+    if (delta !== 0) setTeamPos((position) => position + delta);
+  };
+
+  useEffect(() => {
+    if (!teamPlaying) return;
+    const timer = window.setInterval(() => setTeamPos((position) => position + 1), 6000);
+    return () => window.clearInterval(timer);
+  }, [teamPlaying]);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return undefined;
+    const update = () => {
+      const card = stage.querySelector<HTMLElement>(".lm-team-card");
+      if (!card) return;
+      setShift(stage.clientWidth / 2 - (teamPos + 0.5) * card.offsetWidth);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [teamPos]);
+
+  useEffect(() => {
+    const jump = window.setTimeout(() => {
+      if (teamPos >= teamCount * 2) {
+        setTeamAnimate(false);
+        setTeamPos((position) => position - teamCount);
+      } else if (teamPos < teamCount) {
+        setTeamAnimate(false);
+        setTeamPos((position) => position + teamCount);
+      }
+    }, 580);
+    return () => window.clearTimeout(jump);
+  }, [teamPos, teamCount]);
+
+  useEffect(() => {
+    if (!teamAnimate) {
+      const frame = requestAnimationFrame(() => requestAnimationFrame(() => setTeamAnimate(true)));
+      return () => cancelAnimationFrame(frame);
+    }
+    return undefined;
+  }, [teamAnimate]);
+
   return (
     <>
       <div className="lm-dark">
+        <section
+          ref={teamRef}
+          className="section-shell lm-dark-team"
+          aria-labelledby="lm-dark-team-heading"
+          aria-roledescription="carousel"
+          aria-label="Founder and advisory focus"
+          onMouseEnter={() => setTeamHovered(true)}
+          onMouseLeave={() => setTeamHovered(false)}
+          onFocusCapture={() => setTeamFocused(true)}
+          onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setTeamFocused(false); }}
+        >
+          <div className="lm-dark-team-header">
+            <p className="home-kicker">Leadership &amp; Advisory</p>
+            <h2 className="home-heading" id="lm-dark-team-heading">Meet the Founder.</h2>
+          </div>
+          <div className="lm-team-stage" ref={stageRef}>
+            <div
+              className="lm-team-track"
+              style={{ transform: `translateX(${shift}px)`, transition: teamAnimate ? undefined : "none" }}
+            >
+              {Array.from({ length: teamCount * 3 }, (_, position) => {
+                const index = ((position % teamCount) + teamCount) % teamCount;
+                const card = teamCards[index];
+                const offset = position - teamPos;
+                if (offset !== 0) {
+                  return (
+                    <button
+                      key={position}
+                      type="button"
+                      tabIndex={-1}
+                      className="lm-team-card lm-team-card-side"
+                      data-offset={offset}
+                      aria-hidden={Math.abs(offset) > 1 ? "true" : undefined}
+                      aria-label={`Show ${index + 1} of ${teamCount}: ${card.title}`}
+                      onClick={() => goToTeam(index)}
+                    >
+                      <span className="lm-team-tag">{card.tag}</span>
+                      <span className="lm-team-side-title">{card.title}</span>
+                      <span className="lm-team-side-cta">View <span aria-hidden="true">↗</span></span>
+                    </button>
+                  );
+                }
+                return (
+                  <article
+                    key={position}
+                    className="lm-team-card lm-team-card-center"
+                    data-offset="0"
+                    aria-roledescription="slide"
+                    aria-label={`${index + 1} of ${teamCount}: ${card.title}`}
+                  >
+                    {card.id === "vivienne" ? (
+                      <>
+                        <div className="lm-team-photo-wrap">
+                          <div className="lm-team-photo-placeholder" aria-hidden="true">
+                            <span className="lm-team-photo-initials">VL</span>
+                            <span className="review-placeholder">Founder portrait · client to supply</span>
+                          </div>
+                          <div className="lm-team-impact">
+                            <span>Client capital protected &amp; unlocked</span>
+                            <b>Impact figure pending client confirmation</b>
+                          </div>
+                          <div className="lm-team-photo-overlay" aria-hidden="true">
+                            {card.badges?.map((badge) => <div key={badge} className="lm-team-badge">{badge}</div>)}
+                          </div>
+                        </div>
+                        <div className="lm-team-bio">
+                          <span className="lm-team-tag">{card.tag}</span>
+                          <h3>{card.title}</h3>
+                          <p className="lm-team-quote">{card.quote}</p>
+                          <Link href={card.href} className="lm-team-link">{card.linkLabel} <span aria-hidden="true">↗</span></Link>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="lm-team-focus">
+                        <span className="lm-team-tag">{card.tag}</span>
+                        <h3>{card.title}</h3>
+                        <p>{card.text}</p>
+                        <Link href={card.href} className="lm-team-link">{card.linkLabel} <span aria-hidden="true">↗</span></Link>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+          <div className="lm-team-controls" aria-label="Team carousel controls">
+            <button
+              type="button"
+              className="lm-team-arrow"
+              aria-label="Previous slide"
+              onClick={() => setTeamPos((position) => position - 1)}
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+            <div className="lm-team-dots">
+              {teamCards.map((card, index) => (
+                <button
+                  key={card.id}
+                  type="button"
+                  aria-label={`Go to slide ${index + 1}: ${card.title}`}
+                  aria-current={teamIndex === index ? "true" : undefined}
+                  onClick={() => goToTeam(index)}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="lm-team-arrow"
+              aria-label="Next slide"
+              onClick={() => setTeamPos((position) => position + 1)}
+            >
+              <span aria-hidden="true">→</span>
+            </button>
+            <button
+              type="button"
+              className="lm-team-pause"
+              onClick={() => setTeamPaused(!teamPaused)}
+              aria-label={teamPaused ? "Resume team rotation" : "Pause team rotation"}
+              aria-pressed={teamPaused}
+            >
+              <span aria-hidden="true">{teamPaused ? "▶" : "Ⅱ"}</span>
+            </button>
+          </div>
+        </section>
+
         <div className="section-shell lm-dark-grid">
           <article className="lm-dark-wide">
             <div className="lm-dark-copy">
@@ -91,51 +356,6 @@ export function DarkSections() {
             </div>
           </article>
         </div>
-
-        <section className="section-shell lm-dark-team" aria-labelledby="lm-dark-team-heading">
-          <div className="lm-dark-team-header">
-            <p className="home-kicker">Leadership &amp; Advisory</p>
-            <h2 className="home-heading" id="lm-dark-team-heading">Meet the Founder.</h2>
-          </div>
-          <div className="lm-dark-team-showcase">
-            <article className="lm-team-card lm-team-card-center" data-active="true">
-              <div className="lm-team-photo-wrap">
-                <Image
-                  src="/images/vivienne-profile.jpg"
-                  alt="Vivienne Lee, Chartered Accountant and Founder"
-                  width={480}
-                  height={560}
-                  className="lm-team-photo"
-                />
-                <div className="lm-team-photo-overlay" aria-hidden="true">
-                  <div className="lm-team-badge">13 years in accounting and advisory</div>
-                  <div className="lm-team-badge">Chartered Accountant</div>
-                  <div className="lm-team-badge">Became a partner in early 30s · Founded Lee Monarc</div>
-                </div>
-              </div>
-              <div className="lm-team-bio">
-                <span className="lm-team-tag">Founder · Chartered Accountant</span>
-                <h3>Vivienne Lee</h3>
-                <p className="lm-team-quote">“I want to know what you’re building, not just what you earned last year. The numbers become useful when we connect them to the decisions you’re facing.”</p>
-                <Link href="/about" className="lm-team-link">About our advisory approach <span aria-hidden="true">↗</span></Link>
-              </div>
-            </article>
-            <div className="lm-team-side-cards">
-              <article className="lm-team-card lm-team-card-service">
-                <span className="review-placeholder">Specialist focus</span>
-                <h4>Business structuring</h4>
-                <p>Before you commit to a new corporate or trust structure, examine the tax, asset protection and growth implications.</p>
-                <Link href="/services/business-structuring">Explore structuring <span aria-hidden="true">↗</span></Link>
-              </article>
-              <article className="lm-team-card lm-team-card-service">
-                <span className="review-placeholder">Transition advisory</span>
-                <h4>Succession and exit planning</h4>
-                <p>Build a business that gives you options: growing, reducing day-to-day involvement, or preparing for an orderly transition.</p>
-                <Link href="/services/succession-exit">Explore succession <span aria-hidden="true">↗</span></Link>
-              </article>
-            </div>
-          </div>
-        </section>
 
         <section className="section-shell lm-dark-invite" aria-labelledby="lm-dark-invite-heading">
           <h2 id="lm-dark-invite-heading">Bring the question.</h2>
