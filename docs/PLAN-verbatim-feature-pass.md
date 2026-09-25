@@ -9,6 +9,25 @@
 
 ---
 
+## Visual reference — Paraform source screenshots
+
+The client supplied full-page captures of the reference site at `public/1.png` … `public/8.png` (also in `artifacts/reference/`). Match the **layout grammar**, never the content:
+
+| File | Shows | Deck item |
+|---|---|---|
+| `public/1.png` | Dark video hero, headline, email pill, brand row start | 1 — Hero |
+| `public/2.png` | 2-row brand card grid; "Companies" badge + display title + body | 2 — Brand Grid & Editorial |
+| `public/3.png` | Giant stat ("3x") + email CTA; "Testimonials" badge + title | 3/4 — giant display word; 4 — banner carousel start |
+| `public/4.png` | Testimonial banner carousel (photo cards, quotes, "Read customer story" pills) → melt to dark | 4 — Banner Carousel & Melt |
+| `public/5.png` | Team carousel: center card with monetary overlay, dimmed side cards | 5 — Team 3D (DONE, commit `21d91f0`) |
+| `public/6.png` | Dark 4-cell bento: editorial TL, video-call mockup TR, fee breakdown BL, search bar BR | 6 — Bento Matrix |
+| `public/7.png` | Dark banner break (email pill) + mountain backdrop, underline timeline tabs, quote | 6.5/7 — Banner Break & Timeline Quotes |
+| `public/8.png` | Closing: centered headline over wide landscape art card + email pill; 4 link columns + brand column | 8 — Close & Footer |
+
+**Important:** `public/` is served by the site — these screenshots are publicly reachable at `/1.png` etc. on any deployment. Before anything goes to production, move them out of `public/` (e.g. into `artifacts/reference/` only).
+
+---
+
 ## 2. Page 1 — Brand Grid & Editorial Quote 〔TODO〕
 
 **Deck spec:** top **2×8 card grid** (16 rounded brand cards, 2 rows, fading downward), then an editorial block: badge (REPLACE), high-contrast display title (REPLACE), body copy, trust metrics row.
