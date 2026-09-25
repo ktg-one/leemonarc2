@@ -1,0 +1,24 @@
+:root {
+  --ink: #1a1a1a;
+  --ink-soft: #46515f;
+  --paper: #f5f8f6;
+  --paper-deep: #e9edeb;
+  --sand: #e8ddc5;
+  --gold: #cca85b;
+  --gold-dark: #8c6a2f;
+  --muted: #62666b;
+  --on-dark-muted: #b9bec7;
+  --rule: #dcdcd5;
+  --focus: #9c692a;
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-body: var(--font-manrope), Arial, sans-serif;
+  --content-width: 1248px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --duration-fast: 200ms;
+  --duration-scene: 600ms;
+  --rotation-duration: 6000ms;
+  --surface-dark: #1a1a1a;
+  --card-dark: #272727;
+  --radius-card: 10px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}

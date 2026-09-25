@@ -1,0 +1,251 @@
+/* The monogram study is an enhancement scene: the pre-paint gate in
+   layout.tsx (mirrored by the JS gate in lib/motion.ts) sets
+   data-scroll-scene on <html> only when the shared scrollSceneQuery matches.
+   Without the attribute this file changes nothing and the overlay stays
+   hidden. */
+
+html[data-scroll-scene="true"] .adviser-section {
+  align-items: start;
+  min-height: calc(100svh + 640px);
+}
+html[data-scroll-scene="true"] .adviser-section .adviser-art {
+  position: sticky;
+  top: clamp(24px, 10svh, 90px);
+}
+
+.study-overlay {
+  display: none;
+}
+html[data-scroll-scene="true"] .adviser-section .study-overlay {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.study-bracket,
+.study-square,
+.study-diagonal,
+.study-cross,
+.study-ticks,
+.study-dot {
+  position: absolute;
+  transition:
+    transform var(--duration-scene) var(--ease-out),
+    opacity var(--duration-scene) var(--ease-out);
+  will-change: transform;
+}
+
+/* Corner brackets — snug rectangle around the monogram frame */
+.study-bracket {
+  width: 22px;
+  height: 22px;
+  border: 0 solid var(--gold-dark);
+}
+.bracket-tl {
+  top: 11%;
+  left: 9%;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.bracket-tr {
+  top: 11%;
+  right: 9%;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+.bracket-bl {
+  bottom: 13%;
+  left: 9%;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+.bracket-br {
+  bottom: 13%;
+  right: 9%;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+/* Square outline — rectilinear counterpart to the perspective orbits */
+.study-square {
+  left: 50%;
+  top: 49%;
+  width: 76%;
+  aspect-ratio: 1;
+  border: 1px solid var(--gold);
+}
+
+/* Diagonal hairline drawn beneath the mark — a rising baseline */
+.study-diagonal {
+  left: 16%;
+  width: 26%;
+  top: 65%;
+  height: 1px;
+  background: var(--gold);
+  transform-origin: left center;
+}
+
+/* Cross registration marks */
+.study-cross {
+  width: 11px;
+  height: 11px;
+}
+.study-cross::before,
+.study-cross::after {
+  content: "";
+  position: absolute;
+  background: var(--gold-dark);
+}
+.study-cross::before {
+  left: 5px;
+  top: 0;
+  width: 1px;
+  height: 11px;
+}
+.study-cross::after {
+  top: 5px;
+  left: 0;
+  width: 11px;
+  height: 1px;
+}
+.cross-one {
+  right: 15%;
+  top: 22%;
+}
+.cross-two {
+  left: 15%;
+  bottom: 20%;
+}
+
+/* Measurement ticks along the base of the square */
+.study-ticks {
+  left: 20%;
+  right: 20%;
+  bottom: 14%;
+  height: 7px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold-dark) 0 1px,
+    transparent 1px 14px
+  );
+}
+
+/* Registration dot — the finished mark */
+.study-dot {
+  right: 18.5%;
+  bottom: 12.5%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--gold-dark);
+  border-radius: 50%;
+  background: var(--paper-deep);
+}
+
+/* Step 0 — Composition: marks scattered wide */
+.adviser-art[data-step="0"] .bracket-tl {
+  transform: translate(-18px, -14px);
+}
+.adviser-art[data-step="0"] .bracket-tr {
+  transform: translate(18px, -14px);
+}
+.adviser-art[data-step="0"] .bracket-bl {
+  transform: translate(-18px, 14px);
+}
+.adviser-art[data-step="0"] .bracket-br {
+  transform: translate(18px, 14px);
+}
+.adviser-art[data-step="0"] .study-bracket {
+  opacity: 0.35;
+}
+.adviser-art[data-step="0"] .study-square {
+  transform: translate(calc(-50% + 24px), calc(-50% - 16px)) rotate(-4deg);
+  opacity: 0.35;
+}
+.adviser-art[data-step="0"] .study-diagonal {
+  transform: rotate(-12deg) scaleX(0);
+  opacity: 0;
+}
+.adviser-art[data-step="0"] .study-cross {
+  transform: scale(0.75);
+  opacity: 0.18;
+}
+.adviser-art[data-step="0"] .study-ticks {
+  opacity: 0;
+}
+.adviser-art[data-step="0"] .study-dot {
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+/* Step 1 — Construction: marks converge and the diagonal draws in */
+.adviser-art[data-step="1"] .bracket-tl {
+  transform: translate(-8px, -6px);
+}
+.adviser-art[data-step="1"] .bracket-tr {
+  transform: translate(8px, -6px);
+}
+.adviser-art[data-step="1"] .bracket-bl {
+  transform: translate(-8px, 6px);
+}
+.adviser-art[data-step="1"] .bracket-br {
+  transform: translate(8px, 6px);
+}
+.adviser-art[data-step="1"] .study-bracket {
+  opacity: 0.7;
+}
+.adviser-art[data-step="1"] .study-square {
+  transform: translate(-50%, -50%) rotate(0deg);
+  opacity: 0.7;
+}
+.adviser-art[data-step="1"] .study-diagonal {
+  transform: rotate(-12deg) scaleX(1);
+  opacity: 0.55;
+}
+.adviser-art[data-step="1"] .study-cross {
+  transform: scale(0.9);
+  opacity: 0.5;
+}
+.adviser-art[data-step="1"] .study-ticks {
+  opacity: 0.35;
+}
+.adviser-art[data-step="1"] .study-dot {
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+/* Step 2 — Character: a snug, finished frame */
+.adviser-art[data-step="2"] .study-bracket {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+.adviser-art[data-step="2"] .study-square {
+  transform: translate(-50%, -50%) scale(0.94);
+  opacity: 0.9;
+}
+.adviser-art[data-step="2"] .study-diagonal {
+  transform: rotate(-12deg) scaleX(1);
+  opacity: 0.8;
+}
+.adviser-art[data-step="2"] .study-cross {
+  transform: scale(1);
+  opacity: 0.85;
+}
+.adviser-art[data-step="2"] .study-ticks {
+  opacity: 0.6;
+}
+.adviser-art[data-step="2"] .study-dot {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Step caption lives in the existing art caption row */
+.study-caption {
+  display: none;
+}
+.adviser-section[data-scroll-scene="true"] .study-caption {
+  display: inline;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--gold-dark);
+}

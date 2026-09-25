@@ -1,0 +1,40 @@
+.lm-hero { position: relative; isolation: isolate; min-height: 655px; color: #fff; background: #182237; overflow: hidden; }
+.lm-hero-media { position: absolute; z-index: -2; inset: 0; background-image: var(--lm-hero-poster); background-position: var(--lm-hero-position); background-size: cover; }
+.lm-hero-media video { width: 100%; height: 100%; object-fit: cover; object-position: var(--lm-hero-position); opacity: 0; }
+.lm-hero-media video[data-visible='true'] { opacity: 1; }
+.lm-hero::before { content: ''; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgba(9,19,29,.86) 0%, rgba(9,19,29,.71) 43%, rgba(9,19,29,.17) 100%); }
+.lm-hero-inner { min-height: 655px; display: grid; grid-template-columns: 1.25fr 1fr; align-items: center; gap: 80px; padding-block: 135px 110px; }
+.lm-hero-copy { max-width: 600px; }
+.lm-hero-eyebrow { font: 500 11px/1.5 var(--font-body); letter-spacing: .025em; margin-bottom: 20px; color: #e6e9e8; }
+.lm-hero h1 { font: 400 clamp(43px, 3.5vw, 56px)/1.05 var(--font-display); letter-spacing: -.025em; text-wrap: balance; max-width: 570px; margin: 0 0 22px; }
+.lm-hero-description { max-width: 510px; font-size: 15px; line-height: 1.7; color: #e1e5e5; margin-bottom: 24px; }
+.lm-hero-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; padding: 8px 8px 8px 24px; min-height: 56px; border-radius: 999px; background: #fff; color: #1a1a1a; font-size: 13px; }
+.lm-hero-cta > span { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #1a1a1a; color: white; font-size: 20px; }
+.lm-hero-cta:hover { background: #e7ede8; }
+.lm-hero-secondary { display: flex; width: fit-content; gap: 18px; align-items: center; margin-top: 19px; font-size: 11px; color: #e6e9e8; }
+.lm-hero-secondary:hover { text-decoration: underline; text-underline-offset: 4px; }
+.lm-hero-notification { align-self: end; margin-bottom: 28px; padding: 20px; width: min(100%, 340px); justify-self: end; display: flex; gap: 14px; border: 1px solid #ffffff35; border-radius: 10px; background: rgba(19,31,40,.79); backdrop-filter: blur(16px); box-shadow: 0 20px 60px #0002; }
+.lm-hero-notification-icon { flex: 0 0 30px; height: 30px; display: grid; place-items: center; border: 1px solid #cca85b80; border-radius: 50%; color: #e8cd96; }
+.lm-hero-example { display: block; color: #ccd2d3; font-size: 9px; margin-bottom: 8px; }
+.lm-hero-notification h2 { font: 500 12px/1.5 var(--font-body); letter-spacing: 0; margin: 0 0 6px; }
+.lm-hero-notification p { font-size: 11px; line-height: 1.65; color: #d8dedf; margin: 0; }
+.lm-hero-media-footer { position: absolute; bottom: 26px; left: 32px; right: 32px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.lm-hero-media-footer .review-placeholder { opacity: 1; color: #fff; background: #101b25b3; border-color: #ffffff45; font-size: 9px; }
+.lm-hero-playback { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #ffffff30; border-radius: 50%; background: #12191ddb; color: #fff; font-size: 15px; }
+.lm-hero-media-status { font-size: 11px; }
+.lm-hero :is(a,button):focus-visible { outline: 2px solid #f3d292; outline-offset: 5px; }
+@media (max-width: 1000px) { .lm-hero-inner { gap: 32px; } .lm-hero-notification { padding: 16px; } }
+@media (max-width: 767px) {
+  .lm-hero, .lm-hero-inner { min-height: 690px; }
+  .lm-hero-inner { grid-template-columns: 1fr; padding-block: 150px 108px; gap: 30px; text-align: center; }
+  .lm-hero-copy { margin-inline: auto; }
+  .lm-hero h1 { font-size: clamp(39px, 9.8vw, 54px); max-width: 560px; margin-inline: auto; }
+  .lm-hero-eyebrow { font-size: 10px; }
+  .lm-hero-description { margin-inline: auto; font-size: 14px; line-height: 1.65; }
+  .lm-hero-cta { width: 100%; max-width: 370px; text-align: left; padding-left: 20px; gap: 12px; font-size: 12px; }
+  .lm-hero-secondary { margin-inline: auto; }
+  .lm-hero-notification { display: none; }
+  .lm-hero::before { background: linear-gradient(180deg, #09131dd9 0%, #09131dba 60%, #09131d60 100%); }
+  .lm-hero-media-footer { left: 20px; right: 20px; bottom: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { .lm-hero-media video { visibility: hidden; } }

@@ -1,0 +1,106 @@
+.cursor-ring,
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  mix-blend-mode: difference;
+  color: #f8f7f3;
+}
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid currentColor;
+  transition:
+    width var(--duration-fast),
+    height var(--duration-fast),
+    opacity var(--duration-fast);
+}
+.cursor-ring[data-interactive="true"] {
+  width: 49px;
+  height: 49px;
+}
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+}
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-ring,
+  .cursor-dot {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy {
+    animation: arrive 850ms var(--ease-out) both;
+  }
+  .hero-art {
+    animation: arrive 1050ms var(--ease-out) both;
+  }
+  .viewfinder {
+    animation: frame-focus 1400ms var(--ease-out) both;
+  }
+  @supports (animation-timeline: view()) {
+    .architecture-image {
+      animation: photo-depth 1ms linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    .section-heading,
+    .adviser-copy {
+      animation: arrive 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .contact-watermark {
+      animation: watermark-rise 1ms linear both;
+      animation-timeline: scroll(root block);
+      /* Banner (367px) + footer (~254px) ≈ 640px: starts as the card's edge
+         appears, completes exactly at page bottom. A view() range can't
+         work here — the banner never exits, so cover/exit ranges clamp. */
+      animation-range: calc(100% - 640px) 100%;
+    }
+  }
+}
+@keyframes arrive {
+  from {
+    opacity: 0.75;
+    transform: translateY(17px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes frame-focus {
+  from {
+    opacity: 0.25;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+}
+@keyframes photo-depth {
+  from {
+    transform: scale(1.01) translateY(0);
+  }
+  to {
+    transform: scale(1.09) translateY(16px);
+  }
+}
+@keyframes watermark-rise {
+  from {
+    transform: translate(-30px, 110px);
+    opacity: 0.06;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 0.25;
+  }
+}

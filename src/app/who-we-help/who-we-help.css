@@ -1,0 +1,184 @@
+.who-we-help-page {
+  padding-block: 36px 20px;
+}
+
+.who-hero {
+  padding-block: 80px 70px;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.who-hero h1 {
+  font-size: clamp(52px, 6.4vw, 92px);
+  margin-block-end: 28px;
+  line-height: 1.04;
+}
+
+.who-lead {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 48ch;
+  margin-inline: auto;
+  margin-block-end: 40px;
+}
+
+.who-section {
+  padding-block: 64px;
+}
+
+.section-heading {
+  max-width: 36ch;
+  margin-block-end: 44px;
+}
+
+.section-subhead {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-block-start: 8px;
+}
+
+.who-body {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 42ch;
+  margin-block: 18px 0;
+}
+
+.who-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-block-start: 28px;
+}
+
+.who-links a {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.who-links a .arrow {
+  color: var(--ink-soft);
+}
+
+.who-industry {
+  max-width: 56ch;
+}
+
+.who-fit {
+  background: var(--paper-deep);
+  border-top: 2px solid var(--gold);
+  padding-block: 64px;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.who-fit h2 {
+  font-size: clamp(38px, 4.6vw, 64px);
+  margin-block: 16px 24px;
+}
+
+.who-fit .who-body {
+  max-width: 48ch;
+  margin-inline: auto;
+}
+
+.who-fit .button {
+  margin-top: 30px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 900px) {
+  .who-hero {
+    padding-block: 56px 32px;
+  }
+
+  .who-lead {
+    font-size: 15px;
+  }
+
+  .section-space,
+  .who-section {
+    padding-block: 48px;
+  }
+
+  .section-heading {
+    margin-block-end: 32px;
+  }
+
+  .who-body {
+    max-width: 48ch;
+  }
+
+  .who-links {
+    gap: 24px;
+  }
+
+  .who-fit {
+    padding-block: 48px 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .who-we-help-page {
+    padding-top: 22px;
+  }
+
+  .who-hero {
+    padding-block: 40px 22px;
+  }
+
+  .who-hero h1 {
+    font-size: 78px;
+  }
+
+  .who-section {
+    padding-block: 0;
+  }
+
+  .section-space,
+  .who-section {
+    padding-block: 40px 22px;
+  }
+
+  .section-heading h2 {
+    font-size: 40px;
+  }
+
+  .who-body {
+    font-size: 14px;
+    margin-block: 14px;
+  }
+
+  .section-subhead {
+    font-size: 14px;
+  }
+
+  .who-links {
+    gap: 16px;
+  }
+
+  .who-industry {
+    max-width: 42ch;
+  }
+
+  .who-fit {
+    padding-block: 36px 22px;
+  }
+
+  .who-fit h2 {
+    font-size: 44px;
+  }
+
+  .who-fit .who-body {
+    max-width: 42ch;
+  }
+}

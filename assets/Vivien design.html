@@ -1,0 +1,806 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Vivien design</title><meta name="data-notion-page-icon" content="👑"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%91%91%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style></head><body><article id="1eb89454-fbfd-80ef-8c69-eb528800df44" class="page sans" data-notion-page-icon="👑"><header><img class="page-cover-image" src="https://images.unsplash.com/photo-1517479149777-5f3b1511d5ad?ixlib=rb-4.1.0&amp;q=85&amp;fm=jpg&amp;crop=entropy&amp;cs=srgb" style="object-position:center 33.47%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="👑"></span></div><h1 class="page-title" dir="auto">Vivien design</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><p id="29289454-fbfd-80ae-b446-f3442943c00b" class="" dir="auto">Name: Lee Monarc Accounting &amp; Advisory </p><p id="29289454-fbfd-80c1-937a-fbea77ae6bbd" class="" dir="auto">Logo: Golden horse, golden and navy </p><p id="29289454-fbfd-801e-bbb2-ce49af818502" class="" dir="auto">Requirement: Letterhead, email signature</p><p id="29289454-fbfd-80ac-b93c-d0a8f73b3c0f" class="" dir="auto">
+</p><p id="29289454-fbfd-809a-80e4-fc2f8ddffc7b" class="" dir="auto">
+</p><p id="29289454-fbfd-804b-9111-deacb147b47f" class="" dir="auto">Create the logo for the email, letterhead william will do it</p><p id="29289454-fbfd-8015-a79d-dd74ec287697" class="" dir="auto">
+</p><p id="29289454-fbfd-80b0-ba4b-ecfc3907fb58" class="" dir="auto">
+</p><p id="29289454-fbfd-8036-8075-eda5ec725235" class="" dir="auto">
+</p><details open="" class="" dir="auto"><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><h3 id="29289454-fbfd-80ca-9014-db1a4e20f501" style="display:inline-block">Reference</h3></summary><div class="indented"><p id="29289454-fbfd-80d8-8da6-d0a216f72ef8" class="" dir="auto"><strong>💎 Name Analysis: Lee Monarc Accounting &amp; Advisory</strong></p><p id="29289454-fbfd-80a6-ae29-ce5e84c3a695" class="" dir="auto"><strong>✨ 1. Sound &amp; Feel</strong></p><ul id="29289454-fbfd-8091-a15a-c5f6acc9fdfa" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>“Lee”</strong> → clean, modern, personal, approachable.</li></ul><ul id="29289454-fbfd-8049-9873-c93725c77a21" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>“Monarc”</strong> (a stylized take on <em>Monarch</em>) → evokes royalty, leadership, legacy, excellence.</li></ul><ul id="29289454-fbfd-80d2-b505-e05b480ee5eb" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Together: it flows beautifully — <strong>“LEE MO-nark”</strong> — short, strong, sophisticated.It feels like a <strong>luxury family-office brand</strong>, not a suburban accounting firm.</li></ul><p id="29289454-fbfd-80ce-92f0-f59cc6be30e5" class="" dir="auto">Think <strong>Aston Martin × Louis Vuitton energy</strong> — timeless elegance meets power and precision.</p><p id="29289454-fbfd-8067-a2b6-c9f4853242c1" class="" dir="auto"><strong>👑 2. Meaning &amp; Symbolism</strong></p><ul id="29289454-fbfd-8077-9a62-d052e4297d46" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Monarch</strong> = King, leader, one-of-a-kind.</li></ul><ul id="29289454-fbfd-8069-9d10-f674174cb825" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Symbol of <strong>stability, authority, and trust</strong> — perfect for an accounting and advisory brand.</li></ul><ul id="29289454-fbfd-801a-b028-c582344fcc3b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Spelling it <strong>“Monarc”</strong> (without the <em>h</em>) gives it a modern, minimalist, high-fashion edge.</li></ul><p id="29289454-fbfd-805e-9f1e-edb27868f1a5" class="" dir="auto">Similar to how brands like <em>Moncler</em>, <em>Balenciaga</em>, <em>Cartier</em> remove unnecessary letters for luxury impact.</p><p id="29289454-fbfd-803f-8633-e2932bd9fc36" class="" dir="auto"><strong>🎯 3. Brand Positioning Possibilities</strong></p><table id="29289454-fbfd-806a-808c-f3e0f7d0481d" class="simple-table" dir="ltr"><tbody><tr id="29289454-fbfd-8072-b4b8-ea2b71c853a5" dir="ltr"><td id="I~Ev" class=""><strong>Aspect</strong></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""><strong>Description</strong></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-804f-8f4a-e89d54d6bc29" dir="ltr"><td id="I~Ev" class=""><strong>Tone</strong></td><td id="W:UZ" class=""></td><td id="@Lg{" class="">Confident, visionary, refined — for clients who want “the best.”</td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-802a-bacc-eadf118bbb81" dir="ltr"><td id="I~Ev" class=""><strong>Target audience</strong></td><td id="W:UZ" class=""></td><td id="@Lg{" class="">High-net-worth individuals, established businesses, sophisticated entrepreneurs.</td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-800c-8d46-c913785c1b9f" dir="ltr"><td id="I~Ev" class=""><strong>Tagline ideas</strong></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-80e6-bf41-f8f84082d140" dir="ltr"><td id="I~Ev" class="">• <em>“Advisory for Leaders.” ************</em></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-8043-8d23-e53b43a41d8f" dir="ltr"><td id="I~Ev" class="">• <em>“Rule Your Numbers.”</em></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-80fd-8481-c1c32972e87d" dir="ltr"><td id="I~Ev" class="">• <em>“Precision. Power. Prestige.”</em></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-80ca-8391-e8b739fd1c45" dir="ltr"><td id="I~Ev" class="">• <em>“Where Legacy Meets Luxury.”</em><br/></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr><tr id="29289454-fbfd-8083-82b5-fab68fbaae95" dir="ltr"><td id="I~Ev" class=""></td><td id="W:UZ" class=""></td><td id="@Lg{" class=""></td><td id="uSt:" class=""></td></tr></tbody></table><p id="29289454-fbfd-803d-aec2-f976cd3789ba" class="" dir="auto"><strong>🎨 4. Visual Brand Direction</strong></p><ul id="29289454-fbfd-80b4-a178-f6352af42b71" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Colour palette:</strong> Deep navy (#1a2238) + metallic gold (#caa75b) = trust + luxury.</li></ul><ul id="29289454-fbfd-807f-99a5-c84b6785b1f8" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Typography:</strong> Tall serif or modern sans with geometric curves (think <em>Didot</em>, <em>Playfair Display</em>, or <em>Cormorant Garamond</em>).<ul id="29f89454-fbfd-807d-a6b6-de65e16abbba" class="bulleted-list" dir="auto"><li style="list-style-type:circle">Up: Playfair Display SEMI BOLD; LETTER SPACING = 195; LINE SPACING = 1.4</li></ul><ul id="29f89454-fbfd-8088-9519-f3ab0e283225" class="bulleted-list" dir="auto"><li style="list-style-type:circle">Down: Montserrat REGULAR; LETTER SPACING = 150; LINE SPACING = 1.4</li></ul></li></ul><ul id="29289454-fbfd-808b-b771-d31c5eb52775" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Logo style:</strong> Crown silhouette above “Monarc”, or a stylized <strong>“M”</strong> that subtly forms a crown.</li></ul><p id="29289454-fbfd-80fd-a00e-dcf618c72764" class="" dir="auto">Example layout:</p><p id="29289454-fbfd-8075-afd2-f3e445e00ad6" class="" dir="auto"><strong>LEE MONARC</strong></p><p id="29289454-fbfd-80c9-b154-ec143da1e8d2" class="" dir="auto"><em>ACCOUNTING &amp; ADVISORY</em></p><p id="29289454-fbfd-8037-ae71-f9e7da38d3c0" class="" dir="auto">(<em>in elegant uppercase, wide spacing, gold on navy background</em>)</p><p id="29289454-fbfd-80cd-883a-ef1145005ee3" class="" dir="auto"><strong>🏆 5. Why It Works</strong></p><p id="29289454-fbfd-80ad-8779-d75a8fd5a9cb" class="" dir="auto">✅ Sounds expensive, but not pretentious.</p><p id="29289454-fbfd-801f-a857-e575109363d8" class="" dir="auto">✅ Feels established, even if it’s new.</p><p id="29289454-fbfd-808f-a124-f2067ae6ba11" class="" dir="auto">✅ Carries clear symbolism (leadership + excellence).</p><p id="29289454-fbfd-801d-b170-e98f91575e01" class="" dir="auto">✅ Easy to pronounce, remember, and register.</p><p id="29289454-fbfd-80b8-a29b-ea11207faa47" class="" dir="auto">✅ Instantly brandable — <em>Lee Monarc Group</em>, <em>Lee Monarc Advisory</em>, <em>Monarc Wealth</em>, etc.</p><p id="29289454-fbfd-801a-ae96-e0ab4203f275" class="" dir="auto"><strong>Engaged party:</strong> Lee Monarc Accounting Pty Ltd (ABN xx xxx xxx xxx)</p><p id="29289454-fbfd-80e6-8a23-fd6d223d727c" class="" dir="auto"><strong>Trading as:</strong> Lee Monarc Accounting &amp; Advisory</p><p id="29289454-fbfd-8016-8c5e-cecd6d7389b9" class="" dir="auto"><strong>Registered tax agent:</strong> Vivienne Lee (TAX AGENT No. xxxxxxxx)</p><figure id="29289454-fbfd-8088-a1fe-e9abaf27b749" class="image" data-notion-image="image.png" dir="ltr"><a href="image.png"><img style="width:683px" src="image.png"/></a></figure><figure id="29289454-fbfd-801e-a9e3-f37a629ddda7" class="image" data-notion-image="image%201.png" dir="ltr"><a href="image%201.png"><img style="width:683px" src="image%201.png"/></a></figure><figure id="29289454-fbfd-8062-aa2c-fe6149e39f32" class="image" data-notion-image="image%202.png" dir="ltr"><a href="image%202.png"><img style="width:672px" src="image%202.png"/></a></figure><figure id="29289454-fbfd-809d-8a94-f29e1c8cea34" class="image" data-notion-image="Screenshot_2025-10-20_at_9.52.04_pm.png" dir="ltr"><a href="Screenshot_2025-10-20_at_9.52.04_pm.png"><img style="width:155.86805725097656px" src="Screenshot_2025-10-20_at_9.52.04_pm.png"/></a></figure><figure id="29289454-fbfd-80ca-bbda-f64fb80b09a6" class="image" data-notion-image="Screenshot_2025-10-20_at_9.52.29_pm.png" dir="ltr"><a href="Screenshot_2025-10-20_at_9.52.29_pm.png"><img style="width:682.9921875px" src="Screenshot_2025-10-20_at_9.52.29_pm.png"/></a></figure><figure id="29789454-fbfd-80f2-a25e-d9c12538753f" dir="ltr"><div class="source"><a href="horse_logo_vector.eps" data-notion-file="horse_logo_vector.eps" data-notion-file-alias="horse_logo_vector.eps">horse_logo_vector.eps</a></div></figure></div></details><details open="" class="" dir="auto"><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><h3 id="2a189454-fbfd-802d-9645-f2bd57884bc6" style="display:inline-block">Logo</h3></summary><div class="indented"><figure id="2a189454-fbfd-80ad-8b8e-d85ff2474b2b" class="image" data-notion-image="Asset_3.png" dir="ltr"><a href="Asset_3.png"><img style="width:291.9791564941406px" src="Asset_3.png"/></a></figure><figure id="2a189454-fbfd-8095-aeaf-cd038c528ba7" class="image" data-notion-image="Asset_2.png" dir="ltr"><a href="Asset_2.png"><img style="width:291.9791564941406px" src="Asset_2.png"/></a></figure><p id="2a189454-fbfd-809f-95a4-e0934a059368" class="" dir="auto">
+</p></div></details><details open="" class="" dir="auto"><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><h3 id="2a089454-fbfd-8000-ad45-deae37e8b87d" style="display:inline-block">Business card</h3></summary><div class="indented"><p id="2a089454-fbfd-8041-a883-f433d875c0dd" class="" dir="auto">Canva </p><p id="2a089454-fbfd-8028-a9b7-cf589b0cf75c" class="" dir="auto">Vcard:<a href="https://www.qr-code-generator.com/">QR Code Generator | Create Your Free QR Codes</a></p><figure id="2a089454-fbfd-80bd-86a0-f975f0992d76" class="image" data-notion-image="frame.png" dir="ltr"><a href="frame.png"><img style="width:155.875px" src="frame.png"/></a></figure><p id="2a189454-fbfd-8073-860d-ec68807349d8" class="" dir="auto">Hey, I need to print a pack of 50 business cards, probably in the standard 90 x 55 mm size. Right now, the file is set to W=100 mm and H=65 mm with bleed. I’ve printed one before at Officeworks, but the cutting was off, so I’d really like to get it right this time. I need same-day printing on Wednesday as I’ll be attending a conference on Thursday morning. Please print it on gloss paper.</p><p id="2a189454-fbfd-8057-b4d6-df55184e585d" class="" dir="auto">I’ve included the document with the bleed reference, the PDF for adjustment if needed, and the JPG of the final design.</p><p id="29289454-fbfd-8087-b4d7-c39b6182ca9f" class="" dir="auto">
+</p><figure id="2a189454-fbfd-804e-aa34-fa5efcfc9a49" dir="ltr"><div class="source"><a href="Vivien_business_card.rar" data-notion-file="Vivien_business_card.rar" data-notion-file-alias="Vivien business card.rar">Vivien business card.rar</a></div></figure><figure id="2a189454-fbfd-80a1-afd9-c18144e8430a" class="image" data-notion-image="Vivien_business_card_front.jpg" dir="ltr"><a href="Vivien_business_card_front.jpg"><img style="width:681.9921875px" src="Vivien_business_card_front.jpg"/></a></figure><figure id="2a189454-fbfd-8072-8725-f3cec6a6f80a" class="image" data-notion-image="Bleed_referece_back.png" dir="ltr"><a href="Bleed_referece_back.png"><img style="width:643.984375px" src="Bleed_referece_back.png"/></a></figure><figure id="2a189454-fbfd-802d-89fd-dd08708f2b61" class="image" data-notion-image="Bleed_referece_front.png" dir="ltr"><a href="Bleed_referece_front.png"><img style="width:641.9791259765625px" src="Bleed_referece_front.png"/></a></figure><figure id="2a189454-fbfd-8057-b470-f976caaa31ba" dir="ltr"><div class="source"><a href="Vivien_business_card_PDF.pdf" data-notion-file="Vivien_business_card_PDF.pdf" data-notion-file-alias="Vivien business card PDF.pdf">Vivien business card PDF.pdf</a></div></figure><figure id="2a189454-fbfd-8030-b07f-c59c9f73508b" class="image" data-notion-image="Vivien_business_card_back.jpg" dir="ltr"><a href="Vivien_business_card_back.jpg"><img style="width:681.9921875px" src="Vivien_business_card_back.jpg"/></a></figure></div></details><details open="" class="" dir="auto"><summary style="font-weight:600;font-size:1.25em;line-height:1.3;margin:0"><h3 id="2a989454-fbfd-8031-aef8-cc515a11823a" style="display:inline-block">Poster wording</h3></summary><div class="indented"><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="2b789454-fbfd-80c4-8961-f4337f47e836" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ol type="1" id="2b789454-fbfd-80cb-a656-d8165b866ef5" class="numbered-list" start="1" dir="auto"><li>Real estate agent/buyers agent</li></ol><ol type="1" id="2b789454-fbfd-80fb-b367-f251e9b89f39" class="numbered-list" start="2" dir="auto"><li>For their clients</li></ol><p id="2b789454-fbfd-80ca-8b4f-d76c13a13bda" class="" dir="auto">Dream House Real Estate (Poster)</p><p id="2b789454-fbfd-8068-89a4-d06cc669ddee" class="" dir="auto">👋 Who I Am I’m the accountant your agent trusts and actually uses for serious clients — the ones making big financial decisions, not just lodging tax returns once a year. I specialise in property investors, business owners, and buyers who want to grow</p></div></aside><p id="2b789454-fbfd-80f5-81d0-d1ec39e2fe32" class="" dir="auto">
+</p><p id="2b089454-fbfd-80ac-a83b-c80161377401" class="" dir="auto">Kris recommend getting icon from <a href="https://fonts.google.com/icons">Material Symbols &amp; Icons - Google Fonts</a> for consistency.</p><hr id="2b089454-fbfd-80b4-a162-ce098e4dc864" dir="auto"/><p id="2b089454-fbfd-802b-b486-d2ac136c9fef" class="" dir="auto">✅ <strong>Option A — For “We Help You” Section (Short Titles + Details)</strong></p><p id="2b089454-fbfd-8036-8f06-e6d74bc34cd6" class="" dir="auto"><strong>Entity</strong></p><p id="2b089454-fbfd-805f-a25a-c42d9121cec8" class="" dir="auto">Choose the right ownership structure to protect your assets and reduce tax.</p><h3 id="2b089454-fbfd-809b-9d14-f25b384bca3a" class="" dir="auto"><strong>CGT</strong></h3><p id="2b089454-fbfd-8023-9716-e8a1603b3d16" class="" dir="auto">Avoid costly capital gains tax mistakes before you buy or sell.</p><h3 id="2b089454-fbfd-8076-859a-ca54cb4de72d" class="" dir="auto"><strong>Protection</strong></h3><p id="2b089454-fbfd-800d-b3fd-ec168a199e58" class="" dir="auto">Build a structure that shields your wealth and minimises risk.</p><h3 id="2b089454-fbfd-8037-9340-c040fac2e273" class="" dir="auto"><strong>Structures</strong></h3><p id="2b089454-fbfd-8092-bf49-fe5521f040bf" class="" dir="auto">Navigate trusts, companies, partnerships, and personal ownership the smart way.</p><h3 id="2b089454-fbfd-8089-85d1-eac85b793dac" class="" dir="auto"><strong>Deductible</strong></h3><p id="2b089454-fbfd-8059-a362-f65b0380ec2f" class="" dir="auto">Ensure your loan and expenses are fully tax-deductible.</p><h3 id="2b089454-fbfd-8055-b94a-c6933e799875" class="" dir="auto"><strong>Tax</strong></h3><p id="2b089454-fbfd-80a1-aceb-fe34ce7f4f81" class="" dir="auto">Legally minimise tax and optimise your long-term wealth plan.</p><hr id="2b089454-fbfd-80e7-acc9-ebd560ffd9a0" dir="auto"/><h1 id="2b089454-fbfd-8064-ac53-c3aababf85d7" class="" dir="auto">🧠 <strong>Option B — “What We Help With” Section (Short Titles + Details)</strong></h1><h3 id="2b089454-fbfd-806b-bb44-f679481a1733" class="" dir="auto"><strong>Structuring</strong></h3><p id="2b089454-fbfd-80f9-85a3-c6026198dbb7" class="" dir="auto">Set up the right structure <em>before</em> you sign — no costly fixes later.</p><h3 id="2b089454-fbfd-80a6-8f77-c2fa5df7ba51" class="" dir="auto"><strong>Ownership</strong></h3><p id="2b089454-fbfd-80c8-aefb-eabe2201a2ee" class="" dir="auto">Trust vs company vs personal ownership — choose strategically.</p><h3 id="2b089454-fbfd-8029-8ae7-c4f701068134" class="" dir="auto"><strong>Forecasting</strong></h3><p id="2b089454-fbfd-80f7-befe-fd3a07d91bb8" class="" dir="auto">Model CGT outcomes before you sell to avoid bill shock.</p><h3 id="2b089454-fbfd-8029-a4ac-ef151ef36daa" class="" dir="auto"><strong>Cashflow</strong></h3><p id="2b089454-fbfd-80b9-b59d-decea20b67fd" class="" dir="auto">Plan your finances to stay liquid and never become house-poor.</p><h3 id="2b089454-fbfd-8099-9f52-e6a44eb01f19" class="" dir="auto"><strong>Deductions</strong></h3><p id="2b089454-fbfd-80f4-b405-c391661b4861" class="" dir="auto">Maximise depreciation and tax deductions without missing opportunities.</p><h3 id="2b089454-fbfd-80a0-9bd2-db5a27ce1428" class="" dir="auto"><strong>Strategy</strong></h3><p id="2b089454-fbfd-804a-917e-d0cf38c21cb3" class="" dir="auto">Build and optimise multi-property strategies for long-term wealth.</p><h3 id="2b089454-fbfd-80e6-9ed6-d752a76b2a28" class="" dir="auto"><strong>Business</strong></h3><p id="2b089454-fbfd-8013-b7d0-d8e44e556900" class="" dir="auto">Integrate business ownership with property planning for maximum advantage.</p><h3 id="2b089454-fbfd-8073-8d17-e0356af67dcd" class="" dir="auto"><strong>Advisory</strong></h3><p id="2b089454-fbfd-801d-9b8c-c670036e90f7" class="" dir="auto">Get ongoing guidance to grow, protect, and scale your wealth.</p><p id="2be89454-fbfd-806f-84cc-ea13cb5e0ae1" class="" dir="auto">
+</p><p id="2be89454-fbfd-804a-aba7-f39ad3e7f2e2" class="" dir="auto">WHY THIS PARTNERSHIP WORKS✔ I support your clients &amp; make them wealthier✔ Your deals are smoother &amp; your brand is stronger ✔ You get repeat sales &amp; long-term trust ✔ You get a strategic partner, not a transactional referrerLet’s start with one client and we will see the difference.📩 vivienne@leemonarc.com.au 📞 0413 149 137</p></div></details><p id="2bf89454-fbfd-80da-8bce-ce421dcb6f15" class="" dir="auto">
+</p><p id="2bf89454-fbfd-80e5-8ef2-c2f05a517ac0" class="" dir="auto">
+</p><figure id="2bf89454-fbfd-801e-b718-ca697476053b" dir="ltr"><div class="source"><a href="Dream_House_Real_Estate_(Poster)_for_agent_(1).pdf" data-notion-file="Dream_House_Real_Estate_(Poster)_for_agent_(1).pdf" data-notion-file-alias="Dream House Real Estate (Poster) for agent (1).pdf">Dream House Real Estate (Poster) for agent (1).pdf</a></div></figure><p id="2bf89454-fbfd-803a-bf3e-c66b2d70166c" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

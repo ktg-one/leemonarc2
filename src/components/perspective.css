@@ -1,0 +1,364 @@
+html[data-scroll-scene="true"] .perspective-section {
+  min-height: calc(100svh + 520px);
+}
+html[data-scroll-scene="true"] .perspective-section .perspective-inner {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.perspective-experience {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 8%;
+  margin-top: 50px;
+}
+.perspective-visual {
+  height: 470px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.diagram-coordinate {
+  position: absolute;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  color: var(--on-dark-muted);
+  z-index: 2;
+}
+.coordinate-top {
+  left: 5px;
+  top: 14px;
+}
+.coordinate-side {
+  right: 0;
+  top: 50%;
+  writing-mode: vertical-rl;
+}
+.perspective-grid {
+  position: absolute;
+  inset: 18px 0 36px;
+  background-image: radial-gradient(#737d8b 0.6px, transparent 0.6px);
+  background-size: 22px 22px;
+  opacity: 0.3;
+  mask-image: radial-gradient(ellipse, black, transparent 75%);
+}
+.diagram-axis {
+  position: absolute;
+  background: #3b4454;
+  opacity: 0.65;
+}
+.axis-horizontal {
+  left: 20px;
+  right: 20px;
+  top: 48%;
+  height: 1px;
+}
+.axis-vertical {
+  top: 34px;
+  bottom: 48px;
+  left: 50%;
+  width: 1px;
+}
+.orbit {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  top: calc(48% - 140px);
+  left: calc(50% - 140px);
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  transition:
+    transform var(--duration-scene) var(--ease-out),
+    opacity var(--duration-scene);
+  will-change: transform;
+}
+.orbit-one {
+  transform: translate(-96px, -15px);
+  opacity: 0.75;
+}
+.orbit-two {
+  transform: translate(80px, -45px);
+  opacity: 0.38;
+}
+.orbit-three {
+  transform: translate(0, 65px);
+  opacity: 0.48;
+}
+.orbit-dot {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--gold);
+  background: var(--ink);
+  position: absolute;
+  top: 50%;
+  left: -3px;
+  border-radius: 50%;
+}
+.orbit-two .orbit-dot {
+  left: auto;
+  right: -3px;
+}
+.orbit-three .orbit-dot {
+  top: auto;
+  bottom: -3px;
+  left: 50%;
+}
+[data-step="1"] .orbit-one {
+  transform: translate(-42px, -27px) rotate(40deg);
+}
+[data-step="1"] .orbit-two {
+  transform: translate(42px, -27px) rotate(-40deg);
+  opacity: 0.8;
+}
+[data-step="1"] .orbit-three {
+  transform: translate(0, 46px);
+  opacity: 0.65;
+}
+[data-step="2"] .orbit-one {
+  transform: scale(1.45) rotate(45deg);
+}
+[data-step="2"] .orbit-two {
+  transform: scale(1.12) rotate(-30deg);
+  opacity: 0.65;
+}
+[data-step="2"] .orbit-three {
+  transform: scale(0.8) rotate(55deg);
+  opacity: 0.8;
+}
+.diagram-centre {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 190px;
+  padding-block: 24px;
+  background: radial-gradient(ellipse, var(--ink) 40%, transparent 75%);
+}
+.diagram-centre > span {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.diagram-centre strong,
+.diagram-centre em {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 33px;
+  line-height: 1.15;
+}
+.diagram-centre em {
+  color: #d4c4a0;
+}
+.diagram-label {
+  position: absolute;
+  background: var(--ink);
+  padding: 5px 10px;
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  color: var(--on-dark-muted);
+  transition: color var(--duration-fast);
+}
+.label-numbers {
+  left: 6%;
+  top: 24%;
+}
+.label-business {
+  right: 6%;
+  top: 28%;
+}
+.label-direction {
+  left: 40%;
+  bottom: 13%;
+}
+[data-step="0"] .label-numbers,
+[data-step="1"] .label-business,
+[data-step="2"] .label-direction {
+  color: var(--gold);
+}
+.diagram-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #3b4454;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16px;
+  font-size: 8px;
+  letter-spacing: 0.03em;
+  color: var(--on-dark-muted);
+}
+.perspective-controls {
+  display: flex;
+  gap: 22px;
+  border-bottom: 1px solid #424a59;
+}
+.perspective-controls > button {
+  position: relative;
+  border: 0;
+  background: none;
+  color: var(--on-dark-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 15px 0 19px;
+  font-size: 10px;
+  cursor: pointer;
+  min-height: 68px;
+  flex: 1;
+}
+.perspective-controls > button > span {
+  font-size: 8px;
+}
+.perspective-controls > button::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-scene) var(--ease-out);
+}
+.perspective-controls > button[aria-pressed="true"] {
+  color: var(--gold);
+}
+.perspective-controls > button[aria-pressed="true"]::after {
+  transform: scaleX(1);
+}
+.perspective-controls > button:focus-visible,
+.perspective-story a:focus-visible {
+  outline-color: var(--gold);
+}
+.perspective-panel {
+  min-height: 256px;
+  padding-top: 30px;
+}
+.perspective-step {
+  font-family: var(--font-display);
+  font-size: 29px;
+  color: var(--gold);
+}
+.perspective-panel h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(36px, 3.5vw, 48px);
+  line-height: 1.1;
+  margin-block: 12px 20px;
+}
+.perspective-panel > p {
+  color: var(--on-dark-muted);
+  font-size: 14px;
+  max-width: 360px;
+}
+.perspective-story .text-link {
+  margin-top: 24px;
+  border-color: #7d8490;
+}
+.perspective-hint {
+  font-size: 8px;
+  letter-spacing: 0.015em;
+  color: var(--on-dark-muted);
+  margin-top: 29px;
+}
+.perspective-noscript > div {
+  margin-top: 25px;
+}
+.perspective-noscript h3 {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+}
+.perspective-noscript p {
+  font-size: 14px;
+  color: var(--on-dark-muted);
+}
+@media (max-width: 1100px) {
+  .perspective-experience {
+    gap: 6%;
+  }
+  .orbit {
+    width: 235px;
+    height: 235px;
+    top: calc(48% - 117.5px);
+    left: calc(50% - 117.5px);
+  }
+  .orbit-one {
+    transform: translate(-50px, -15px);
+  }
+  .orbit-two {
+    transform: translate(50px, -35px);
+  }
+}
+@media (max-width: 767px) {
+  .perspective-experience {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    margin-top: 20px;
+  }
+  .perspective-visual {
+    height: 350px;
+  }
+  .orbit {
+    width: 202px;
+    height: 202px;
+    top: calc(48% - 101px);
+    left: calc(50% - 101px);
+  }
+  .orbit-one {
+    transform: translate(-40px, -18px);
+  }
+  .orbit-two {
+    transform: translate(40px, -18px);
+  }
+  .orbit-three {
+    transform: translate(0, 40px);
+  }
+  .diagram-centre strong,
+  .diagram-centre em {
+    font-size: 28px;
+  }
+  .diagram-centre {
+    width: 160px;
+  }
+  .diagram-label {
+    font-size: 7px;
+    padding-inline: 5px;
+  }
+  .label-numbers {
+    left: 0;
+  }
+  .label-business {
+    right: 0;
+  }
+  .label-direction {
+    left: 36%;
+    bottom: 13%;
+  }
+  .perspective-controls {
+    gap: 20px;
+  }
+  .perspective-controls > button {
+    font-size: 10px;
+  }
+  .perspective-panel {
+    min-height: 235px;
+  }
+  .perspective-panel h3 {
+    font-size: 39px;
+  }
+  .perspective-hint {
+    font-size: 8px;
+  }
+}
