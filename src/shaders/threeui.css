@@ -761,7 +761,7 @@ img.sunset-valley-fallback {
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("./fonts/fragment-mono.woff2") format("woff2");
+  src: local("Courier New"), monospace;
 }
 
 .article-headings-component,
@@ -1772,4 +1772,21 @@ img.sunset-valley-fallback {
   .atd-glass__item {
     transform: none !important;
   }
+}
+
+.shader-frame {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  height: clamp(500px, 58vh, 660px);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0d1110;
+}
+
+.character-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
