@@ -58,12 +58,14 @@ Following the Paraform design rhythm and verbatim copy rules from `docs/CANON-BR
   - Ensure compatibility with `assets.spec.ts` (cold load `header` has `position: relative`, switches to `position: fixed` when scrolled).
   - Mount `<GoldGlowButton />` for main call-to-action.
 
-### G. Team Area with Profiles
-- **Requirement:** Meet the Team section with centerpiece profile and profile cards.
+### G. Team Area with Profiles (Page 5)
+- **Requirement:** 3D depth showcase matching Paraform rhythm (public/5.png) with sole-practitioner focus on Vivienne Lee (zero fabricated staff).
 - **Implementation:**
-  - **Centerpiece Profile:** Vivienne Lee, Founder & Chartered Accountant, 13 years advisory experience, scaled 3D card presentation.
-  - **Side Profile/Service Cards:** Formatted as structured advisory profile cards without fabricating non-existent staff (ready to accept new team members when provided).
-  - Clean interactive modal or expandable bio cards.
+  - Integrated `<CharacterCarousel />` (`variant="filmstrip"`) from ThreeUI exact source bundle (`src/shaders/character-carousel/`).
+  - Adapted card styling to Lee Monarc obsidian & gold palette (`#0d1110`, `#cca85b`, `#141b18`).
+  - Scaled cards (`clamp(280px, 28vw, 380px)`) and widened horizontal spacing (`clamp(320px, 32vw, 460px)`) with sharp distance falloff so **only 3 cards are visible simultaneously**, exactly matching `public/4.png` / `public/5.png`.
+  - Vivienne Lee real portrait embedded as centerpiece profile.
+  - Exported through `@designcodeio/threeui` and mounted in `<Scene />` within `lm-dark-team`.
 
 ### H. Hero Bottom Strip: Past Client Brands Row
 - **Requirement:** Past client brand logos/marks across corporate advisory clients (replacing industry categories).
