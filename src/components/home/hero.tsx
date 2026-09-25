@@ -93,7 +93,8 @@ export function Hero() {
           <div>
             <span className="lm-hero-example">Illustrative conversation</span>
             <h2>Your advisor, in your corner</h2>
-            <p>What would your next hire mean for cashflow? Let’s walk through the numbers.</p>
+            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · New</p>
+            <p>Good news! Your cashflow forecast shows room for your next hire. Let’s walk through the numbers.</p>
           </div>
         </aside>
       </div>
