@@ -18,11 +18,15 @@ export function Cursor() {
       targetX = 0,
       targetY = 0,
       frame = 0,
-      seen = false;
+      seen = false,
+      lastTarget: EventTarget | null = null,
+      lastInteractive = false;
+
     const hide = () => {
       ringElement.style.opacity = "0";
       dotElement.style.opacity = "0";
       seen = false;
+      lastTarget = null;
       cancelAnimationFrame(frame);
       frame = 0;
     };
@@ -49,11 +53,21 @@ export function Cursor() {
       dotElement.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
       dotElement.style.opacity = "1";
       ringElement.style.opacity = "1";
-      ringElement.dataset.interactive = String(
-        !!(event.target as Element)?.closest(
+
+      // Performance optimization: Avoid expensive DOM tree traversal (`.closest()`)
+      // and dataset mutations on every pointermove event (which fires up to 1000Hz).
+      // Cache the result per event target and only update DOM attributes when state changes.
+      if (event.target !== lastTarget) {
+        lastTarget = event.target;
+        lastInteractive = !!(event.target as Element)?.closest?.(
           "a, button, summary, input, textarea, select",
-        ),
-      );
+        );
+        const interactiveStr = String(lastInteractive);
+        if (ringElement.dataset.interactive !== interactiveStr) {
+          ringElement.dataset.interactive = interactiveStr;
+        }
+      }
+
       if (!frame) frame = requestAnimationFrame(follow);
     };
     const leave = (event: PointerEvent) => {
