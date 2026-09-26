@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { createTopDockController, type TopDockOptions } from "./topDockController";
 
 export const ANIMATED_TOP_DOCK_VARIANTS = ["sable", "modern", "retro", "glass"] as const;
 export type AnimatedTopDockVariant = (typeof ANIMATED_TOP_DOCK_VARIANTS)[number];
+
+export type DockItem = { id: string; label: string; icon: ReactNode; href?: string };
 
 export type AnimatedTopDockProps = {
   variant?: AnimatedTopDockVariant;
@@ -26,6 +29,10 @@ export type AnimatedTopDockProps = {
   rim?: number;
   drift?: number;
   className?: string;
+  brand?: ReactNode;
+  actions?: ReactNode;
+  items?: readonly DockItem[];
+  hideStage?: boolean;
 };
 
 export const ANIMATED_TOP_DOCK_DEFAULTS = {
@@ -48,8 +55,6 @@ export const ANIMATED_TOP_DOCK_DEFAULTS = {
   rim: 0.5,
   drift: 1,
 } as const;
-
-type DockItem = { id: string; label: string; icon: ReactNode };
 
 const ITEMS: readonly DockItem[] = [
   { id: "system", label: "SYSTEM", icon: <><rect x="2.25" y="2.25" width="4.5" height="4.5" rx=".8" /><rect x="9.25" y="2.25" width="4.5" height="4.5" rx=".8" /><rect x="2.25" y="9.25" width="4.5" height="4.5" rx=".8" /><rect x="9.25" y="9.25" width="4.5" height="4.5" rx=".8" /></> },
@@ -182,12 +187,19 @@ function useShaderField(active: boolean, load: () => Promise<(canvas: HTMLCanvas
   return { hostRef, canvasRef };
 }
 
-export function AnimatedTopDock({ className = "", ...props }: AnimatedTopDockProps) {
+export function AnimatedTopDock({
+  className = "",
+  brand,
+  actions,
+  items: customItems,
+  hideStage,
+  ...props
+}: AnimatedTopDockProps) {
   const optionsRef = useRef({ ...ANIMATED_TOP_DOCK_DEFAULTS, ...props });
   optionsRef.current = { ...ANIMATED_TOP_DOCK_DEFAULTS, ...props };
   const variant = optionsRef.current.variant;
-  const items = VARIANT_ITEMS[variant] ?? ITEMS;
-  const [active, setActive] = useState(items[0].id);
+  const items = customItems ?? VARIANT_ITEMS[variant] ?? ITEMS;
+  const [active, setActive] = useState(items[0]?.id ?? "system");
   /* one spring, three fits: the command bar pins its track so a bar sized to its
      own content never moves, the terminal renormalises its cells across the
      strip, and the glass rail runs the proximity field down the y axis */
@@ -219,45 +231,71 @@ export function AnimatedTopDock({ className = "", ...props }: AnimatedTopDockPro
     }));
   });
 
-  const dockItems = (itemClass: string, iconClass: string, viewBox: string) => items.map((item) => (
-    <button
-      key={item.id}
-      className={itemClass}
-      data-dock-item
-      type="button"
-      aria-pressed={active === item.id}
-      onClick={() => setActive(item.id)}
-    >
-      <span className={iconClass} aria-hidden="true"><svg viewBox={viewBox}>{item.icon}</svg></span>
-      <span>{item.label}</span>
-    </button>
-  ));
+  const dockItems = (itemClass: string, iconClass: string, viewBox: string) => items.map((item) => {
+    if (item.href) {
+      return (
+        <Link
+          key={item.id}
+          href={item.href}
+          className={itemClass}
+          data-dock-item
+          aria-current={active === item.id ? "page" : undefined}
+          onClick={() => setActive(item.id)}
+        >
+          <span className={iconClass} aria-hidden="true"><svg viewBox={viewBox}>{item.icon}</svg></span>
+          <span>{item.label}</span>
+        </Link>
+      );
+    }
+    return (
+      <button
+        key={item.id}
+        className={itemClass}
+        data-dock-item
+        type="button"
+        aria-pressed={active === item.id}
+        onClick={() => setActive(item.id)}
+      >
+        <span className={iconClass} aria-hidden="true"><svg viewBox={viewBox}>{item.icon}</svg></span>
+        <span>{item.label}</span>
+      </button>
+    );
+  });
 
   if (variant === "modern") {
+    const BarTag = hideStage ? "div" : "header";
     return (
       <div className={`animated-top-dock-component atd-modern${className ? ` ${className}` : ""}`}>
-        <div className="atd-modern__aurora" aria-hidden="true" />
-        <header className="atd-modern__bar">
-          <a className="atd-modern__brand" href="#top-dock" onClick={(event) => event.preventDefault()}>
-            <span className="atd-modern__mark" aria-hidden="true">{BRAND_MARK}</span>
-            <span className="atd-modern__word">Lumina</span>
-          </a>
-          <nav ref={rootRef} className="atd-modern__dock" aria-label="Primary" data-dock-state="idle" data-dock-max="0.00">
+        {!hideStage && <div className="atd-modern__aurora" aria-hidden="true" />}
+        <BarTag className="atd-modern__bar">
+          {brand ?? (
+            <a className="atd-modern__brand" href="#top-dock" onClick={(event) => event.preventDefault()}>
+              <span className="atd-modern__mark" aria-hidden="true">{BRAND_MARK}</span>
+              <span className="atd-modern__word">Lumina</span>
+            </a>
+          )}
+          <nav ref={rootRef} className="atd-modern__dock lm-desktop-links" aria-label="Main navigation" data-dock-state="idle" data-dock-max="0.00">
             {dockItems("atd-modern__item", "atd-modern__icon", "0 0 16 16")}
           </nav>
-          <div className="atd-modern__actions">
-            <button className="atd-modern__ghost" type="button">Sign in</button>
-            <button className="atd-modern__cta" type="button">
-              <span>Start building</span>
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8h9.1M8.6 4.3 12.4 8l-3.8 3.7" /></svg>
-            </button>
-          </div>
-        </header>
-        <div className="atd-modern__stage" aria-hidden="true">
-          <p className="atd-modern__eyebrow">Interface systems</p>
-          <p className="atd-modern__headline">Everything above the fold</p>
-        </div>
-        <p className="animated-top-dock-component__caption">LOGO LEFT · DOCK CENTRE · ACTION RIGHT</p>
+          {actions ?? (
+            <div className="atd-modern__actions">
+              <button className="atd-modern__ghost" type="button">Sign in</button>
+              <button className="atd-modern__cta" type="button">
+                <span>Start building</span>
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8h9.1M8.6 4.3 12.4 8l-3.8 3.7" /></svg>
+              </button>
+            </div>
+          )}
+        </BarTag>
+        {!hideStage && (
+          <>
+            <div className="atd-modern__stage" aria-hidden="true">
+              <p className="atd-modern__eyebrow">Interface systems</p>
+              <p className="atd-modern__headline">Everything above the fold</p>
+            </div>
+            <p className="animated-top-dock-component__caption">LOGO LEFT · DOCK CENTRE · ACTION RIGHT</p>
+          </>
+        )}
       </div>
     );
   }

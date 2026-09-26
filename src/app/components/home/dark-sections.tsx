@@ -363,8 +363,7 @@ export function DarkSections() {
                 aria-controls="lm-proof-panel"
                 onClick={() => setProof(index)}
               >
-                <span>{service.number}</span>
-                {service.title}
+                <span>{service.number}</span> {service.title}
               </button>
             ))}
           </div>

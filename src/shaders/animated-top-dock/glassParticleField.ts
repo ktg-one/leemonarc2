@@ -1,4 +1,4 @@
-import * as THREE from "three128";
+import * as THREE from "./three128";
 
 export type GlassParticleOptions = {
   count: number;
