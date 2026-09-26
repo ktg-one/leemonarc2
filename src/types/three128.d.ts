@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Type declaration for ThreeUI three128 runtime dependency
 declare module "three128" {
   export const WebGLRenderer: any;

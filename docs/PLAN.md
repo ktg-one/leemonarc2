@@ -2,97 +2,46 @@
 
 **Date:** 26 September 2026  
 **Repository:** [https://github.com/ktg-one/leemonarc2.git](https://github.com/ktg-one/leemonarc2.git) (`main`)  
-**Status:** All 21 Playwright tests green (100%), Turbopack production build passing, ThreeUI button integrated.
+**Status:** Active execution phase — All 21 Playwright tests passing (100%), Turbopack production build clean.
 
 ---
 
 ## 1. Objectives & Active Backlog
 
-Following the Paraform design rhythm and verbatim copy rules from `docs/CANON-BRIEF.md`, this plan details the remaining visual and interactive enhancements.
+Following the Paraform design rhythm, Frontend Taste Engineer directives, and verbatim copy rules from `docs/CANON-BRIEF.md`, this plan outlines active enhancements and technical execution steps.
 
-### A. Hero Video
-- **Requirement:** Wide 16:9 / responsive cinematic hero background video loop with dark luxury overlay.
-- **Implementation:**
-  - Configurable `<video>` element with `playsInline`, `autoPlay`, `muted`, `loop`.
-  - Accessible pause/play toggle button.
-  - Poster fallback for slow network or `prefers-reduced-motion`.
-  - Staging slot ready for final client video asset.
-
-### B. Card Video (x2) & Card Motion Graphics
-- **Requirement:** 2 dedicated card video / motion modules in the dark bento grid sections.
-- **Implementation:**
-  - Staged video slots in dark bento cards (e.g., About Us pull-forward / advisory relationship preview).
-  - Rich CSS/WebGL layered card animations with smooth interactive perspective shift.
-  - Video play controls or subtle ambient loop without audio.
-
-### C. Site-Wide Motion & Micro-Interactions ("Animations Everywhere")
-- **Requirement:** Fluid, high-end feel matching luxury advisory standards.
-- **Implementation:**
-  - Scroll-driven / intersection-observer reveals (`fade-up`, `stagger-fade`).
-  - Subtle floating / breathing effects on graphical badges and icons.
-  - Smooth tab switching on desktop feature rotation (6-second cadence).
-  - Clean fallbacks respecting `prefers-reduced-motion: reduce`.
-
-### D. Auto-Advancing 3-Column Carousels
-- **Requirement:** All 3-column content sections converted to smooth, auto-advancing carousels.
+### A. Auto-Advancing 3-Column Carousels
 - **Targets:**
-  1. **Belief Statements Carousel (Page 4):** 4 editorial belief cards with center card focused, side cards dimmed, auto-panning smoothly on a timer.
-  2. **Advisory Pillar Carousel (Page 4/5):** 3 decision pillar cards with auto-rotation, pagination indicators, and manual pause/resume.
-  3. **Clarity / Service Bento Carousel:** Auto-sliding cards with pause-on-hover.
-- **Controls:**
-  - Pause automatically on user hover and keyboard focus.
-  - Manual touch/drag and arrow navigation supported.
+  1. **Belief Statements Carousel (`src/app/components/home/light-sections.tsx`):** 4 editorial belief cards auto-rotating on a timer with focus effect and manual control.
+  2. **Advisory Decision Pillars (`src/app/components/home/light-sections.tsx`):** 3 decision pillar cards with auto-advance and pause-on-hover.
+  3. **Clarity / Service Bento Cards (`src/app/components/home/dark-sections.tsx`):** Auto-panning card carousel with keyboard/touch accessibility.
+- **Controls & Accessibility:**
+  - Pause automatically on mouse hover and keyboard focus.
+  - Full support for `prefers-reduced-motion: reduce`.
 
-### E. Comprehensive Hover Effects ("Hovie Effect")
-- **Requirement:** Every interactive and container element possesses tactile, luxury feedback.
+### B. Tactile Hover Effects ("Hovie Effect") & Micro-Interactions
+- **Targets:**
+  - `src/app/components/home/hero.css`
+  - `src/app/components/home/light-sections.css`
+  - `src/app/components/home/dark-sections.css`
+  - `src/app/refresh.css`
 - **Treatments:**
-  - **Cards:** Inset gold border glow, subtle elevation (`translateY(-4px)`), ambient shadow expansion.
-  - **Buttons:** Gold shimmer, illuminated star icon pulse (ThreeUI style).
-  - **Links & Nav Items:** Sliding underline or warm brass text-fill animation.
-  - **Badges & Tags:** Border brightness transition and background micro-tint.
+  - Inset champagne gold border glows (`border-amber-400/30`, `box-shadow: inset 0 1px 0 rgba(212,175,55,0.2)`).
+  - Tactile physical push and lift (`transform: translateY(-4px)` on hover, `scale(0.98)` on active).
+  - Ambient shadow diffusion and text glow transitions.
 
-### F. Navigation Bar Input & Integration
-- **Requirement:** Integrate Kevin's incoming navbar component replacement.
-- **Implementation:**
-  - Prepare slot in `src/components/site-header.tsx` / `refresh.css`.
-  - Ensure compatibility with `assets.spec.ts` (cold load `header` has `position: relative`, switches to `position: fixed` when scrolled).
-  - Mount `<GoldGlowButton />` for main call-to-action.
-
-### G. Team Area with Profiles (Page 5)
-- **Requirement:** 3D depth showcase matching Paraform rhythm (public/5.png) with sole-practitioner focus on Vivienne Lee (zero fabricated staff).
-- **Implementation:**
-  - Integrated `<CharacterCarousel />` (`variant="filmstrip"`) from ThreeUI exact source bundle (`src/shaders/character-carousel/`).
-  - Adapted card styling to Lee Monarc obsidian & gold palette (`#0d1110`, `#cca85b`, `#141b18`).
-  - Scaled cards (`clamp(280px, 28vw, 380px)`) and widened horizontal spacing (`clamp(320px, 32vw, 460px)`) with sharp distance falloff so **only 3 cards are visible simultaneously**, exactly matching `public/4.png` / `public/5.png`.
-  - Vivienne Lee real portrait embedded as centerpiece profile.
-  - Exported through `@designcodeio/threeui` and mounted in `<Scene />` within `lm-dark-team`.
-
-### H. Hero Bottom Strip: Past Client Brands Row
-- **Requirement:** Past client brand logos/marks across corporate advisory clients (replacing industry categories).
-- **Implementation:**
-  - Dedicated brand logo showcase strip with clean monochrome/gold mark styling.
-  - Stable reserved geometry (`min-height`) ensuring 0 layout shift (CLS < 0.01).
-  - Staged with clean placeholders labeled `Client brand logos · approval pending` ready for Vivienne's brand files.
+### C. Team Section & Staged Video Containers
+- **Targets:**
+  - `src/app/components/home/hero.tsx`
+  - `src/app/components/home/dark-sections.tsx`
+- **Treatments:**
+  - Staged video slots with fallback poster artwork, play/pause controls, and error states.
+  - Sole practitioner team presentation for founder Vivienne Lee with 3D depth coverflow/carousel interaction.
 
 ---
 
-## 2. Execution Sequence
-
-```mermaid
-flowchart TD
-    A[Restart & Resume Context] --> B[Navbar Component Integration]
-    B --> C[Auto-Advancing 3-Column Carousels]
-    C --> D[Team & Profile 3D Showcase]
-    D --> E[Card Videos & Card Motion]
-    E --> F[Site-Wide Hover & Micro-Animations]
-    F --> G[Hero Video Slot Integration]
-    G --> H[Full Verification: 21 Tests + Build + Lighthouse]
-```
-
----
-
-## 3. Verification Gates
+## 2. Verification Gates
 1. `npm run typecheck` — 0 TypeScript errors.
-2. `npm run lint` & `npm run oxlint` — 0 linting errors.
-3. `npm test` — 21 of 21 Playwright tests passing (cold load, mobile, contrast, touch).
-4. `npm run build` — Clean Turbopack production compilation.
+2. `npm run lint` — 0 linting errors.
+3. `npm test` — 21 of 21 Playwright tests passing.
+4. `npm run build` — Clean Turbopack production build.
