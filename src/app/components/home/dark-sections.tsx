@@ -246,6 +246,7 @@ export function DarkSections() {
               type="button"
               className="lm-team-arrow"
               aria-label="Previous slide"
+              title="Previous slide"
               onClick={() => setTeamPos((position) => position - 1)}
             >
               <span aria-hidden="true">←</span>
@@ -267,6 +268,7 @@ export function DarkSections() {
               type="button"
               className="lm-team-arrow"
               aria-label="Next slide"
+              title="Next slide"
               onClick={() => setTeamPos((position) => position + 1)}
             >
               <span aria-hidden="true">→</span>
@@ -276,6 +278,7 @@ export function DarkSections() {
               className="lm-team-pause"
               onClick={() => setTeamPaused(!teamPaused)}
               aria-label={teamPaused ? "Resume team rotation" : "Pause team rotation"}
+              title={teamPaused ? "Resume team rotation" : "Pause team rotation"}
               aria-pressed={teamPaused}
             >
               <span aria-hidden="true">{teamPaused ? "▶" : "Ⅱ"}</span>
@@ -317,7 +320,8 @@ export function DarkSections() {
             <div className="lm-dark-video-wrap">
               <span className="review-placeholder">Video module · intro pending</span>
               <div className="lm-video-mockup">
-                <button type="button" className="lm-video-play-btn" aria-label="Play introductory advisory video">
+                <button type="button" className="lm-video-play-btn" aria-label="Play introductory advisory video"
+                  title="Play introductory advisory video">
                   <span aria-hidden="true">▶</span>
                 </button>
               </div>
