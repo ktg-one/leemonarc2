@@ -123,7 +123,8 @@ export function LightSections() {
     <div className="lm-light-dots">
       {features.map((feature, index) => <button key={feature.label} type="button" onClick={() => selectFeature(index)} aria-label={`Show ${feature.label}`} aria-current={active === index ? "true" : undefined} aria-controls={`lm-light-feature-${index}`}><span /></button>)}
     </div>
-    <button className="lm-light-pause" type="button" onClick={() => setPaused(!paused)} aria-label={paused ? "Resume service rotation" : "Pause service rotation"} aria-pressed={paused}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span></button>
+    <button className="lm-light-pause" type="button" onClick={() => setPaused(!paused)} aria-label={paused ? "Resume service rotation" : "Pause service rotation"}
+    title={paused ? "Resume service rotation" : "Pause service rotation"} aria-pressed={paused}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span></button>
   </div>;
 
   return (

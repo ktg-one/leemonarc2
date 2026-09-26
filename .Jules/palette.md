@@ -1,0 +1,3 @@
+## 2026-09-26 - Native Tooltip Hints for Icon-Only Interactive Controls
+**Learning:** Icon-only interactive controls (such as playback toggle buttons, carousel navigation arrows, and media buttons) rely on `aria-label` for screen reader accessibility, but desktop mouse/keyboard users lack immediate visual feedback on function without visual labels. Adding matching native `title` attributes provides lightweight hover tooltips without custom CSS/JS overlays or layout shift, enhancing clarity for all users while maintaining existing accessibility standards.
+**Action:** When working on icon-only buttons, ensure both `aria-label` and `title` attributes are applied with identical descriptive label text.

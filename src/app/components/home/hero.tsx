@@ -128,7 +128,8 @@ export function Hero() {
       <div className="lm-hero-media-footer">
         {heroMedia.source && !failed && !reducedMotion && <button type="button"
           className="lm-hero-playback" onClick={() => togglePlayback.current()}
-          aria-label={playing ? "Pause background video" : "Play background video"}>
+          aria-label={playing ? "Pause background video" : "Play background video"}
+          title={playing ? "Pause background video" : "Play background video"}>
           <span aria-hidden="true">{playing ? "Ⅱ" : "▶"}</span>
         </button>}
         {heroMedia.placeholder && <span className="review-placeholder">Placeholder visual · client video pending</span>}
