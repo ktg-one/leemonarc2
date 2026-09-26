@@ -41,7 +41,7 @@ Following the Paraform design rhythm, Frontend Taste Engineer directives, and ve
 ---
 
 ## 2. Verification Gates
-1. `pnpm typecheck` — 0 TypeScript errors.
-2. `pnpm lint` — 0 linting errors.
-3. `pnpm test` — 21 of 21 Playwright tests passing.
-4. `pnpm build` — Clean Turbopack production build.
+1. `npm run typecheck` — 0 TypeScript errors.
+2. `npm run lint` — 0 linting errors.
+3. `npm test` — 21 of 21 Playwright tests passing.
+4. `npm run build` — Clean Turbopack production build.
