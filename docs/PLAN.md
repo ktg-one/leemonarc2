@@ -96,3 +96,21 @@ flowchart TD
 2. `npm run lint` & `npm run oxlint` — 0 linting errors.
 3. `npm test` — 21 of 21 Playwright tests passing (cold load, mobile, contrast, touch).
 4. `npm run build` — Clean Turbopack production compilation.
+
+---
+
+## 4. Web Quality Audit Remediation Backlog (2026 Audit)
+
+The following items were identified during the Web Quality Audit and tracked for remediation prior to public indexing/launch:
+
+### SEO & Crawlability
+- [ ] **robots.txt / index directive**: Update `src/app/layout.tsx` metadata from `robots: { index: false, follow: false }` to indexable configuration for production environment.
+- [ ] **Sitemap & Canonical URLs**: Implement `sitemap.ts` and set base canonical URL in `layout.tsx` metadata.
+
+### Performance & LCP / CLS
+- [ ] **Logo Priority & Dimensions**: Add `priority` prop to header logo image in `src/app/components/site-header.tsx` and ensure `sizes` attribute is provided for modern display density.
+- [ ] **Hero Video Resource Hints**: Add `fetchPriority="high"` or preload hints for above-fold poster image in `src/app/components/home/hero.tsx`.
+
+### Accessibility (WCAG 2.2 AA)
+- [ ] **Interactive Control Contrast**: Enhance contrast for video playback toggle controls on dark overlays.
+- [ ] **Carousel Keyboard Focus Indicators**: Ensure focus rings are clearly visible on custom dot pagination buttons across light/dark sections.
