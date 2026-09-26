@@ -90,8 +90,6 @@ export function DarkSections() {
   const selected = services[proof];
 
   const teamRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [shift, setShift] = useState(0);
   const [teamPos, setTeamPos] = useState(teamCards.length);
   const [teamAnimate, setTeamAnimate] = useState(true);
   const [teamPaused, setTeamPaused] = useState(false);
@@ -135,20 +133,6 @@ export function DarkSections() {
   }, [teamPlaying]);
 
   useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return undefined;
-    const update = () => {
-      const card = stage.querySelector<HTMLElement>(".lm-team-card");
-      if (!card) return;
-      setShift(stage.clientWidth / 2 - (teamPos + 0.5) * card.offsetWidth);
-    };
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [teamPos]);
-
-  useEffect(() => {
     const jump = window.setTimeout(() => {
       if (teamPos >= teamCount * 2) {
         setTeamAnimate(false);
@@ -187,10 +171,10 @@ export function DarkSections() {
             <p className="home-kicker">Leadership &amp; Advisory</p>
             <h2 className="home-heading" id="lm-dark-team-heading">Meet the Founder.</h2>
           </div>
-          <div className="lm-team-stage" ref={stageRef}>
+          <div className="lm-team-stage">
             <div
               className="lm-team-track"
-              style={{ transform: `translateX(${shift}px)`, transition: teamAnimate ? undefined : "none" }}
+              style={{ transform: `translateX(calc(50% - ${teamPos + 0.5} * var(--lm-team-basis)))`, transition: teamAnimate ? undefined : "none" }}
             >
               {Array.from({ length: teamCount * 3 }, (_, position) => {
                 const index = ((position % teamCount) + teamCount) % teamCount;

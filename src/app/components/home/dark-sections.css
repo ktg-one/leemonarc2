@@ -93,14 +93,16 @@
   overflow: hidden;
   perspective: 1400px;
   padding: 12px 0 8px;
+  --lm-team-basis: 56%;
 }
 .lm-team-track {
   display: flex;
   align-items: stretch;
   transition: transform .55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 .lm-team-card {
-  flex: 0 0 56%;
+  flex: 0 0 var(--lm-team-basis);
   min-width: 0;
   border-radius: var(--radius-card);
   background: var(--card-dark);
@@ -336,7 +338,7 @@
 
 @media (max-width: 900px) {
   .lm-dark-video-tile { grid-template-columns: 1fr; }
-  .lm-team-card { flex-basis: 84%; }
+  .lm-team-stage { --lm-team-basis: 84%; }
   .lm-team-card[data-offset="-1"],
   .lm-team-card[data-offset="1"] { transform: scale(0.86) translateY(10px); }
   .lm-team-card-center { grid-template-columns: 1fr; padding: 24px; }
