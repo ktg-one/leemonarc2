@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import "./dark-sections.css";
 
@@ -108,14 +108,172 @@ export function DarkSections() {
           </div>
         </section>
 
-        {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO (ANIMATED WITH VIVIENNE'S CONTEXT) */}
+        {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO (PARAFORM CLONE MATCHING FILE 6.PNG) */}
         <section className="section-shell lm-bento-section" aria-labelledby="lm-bento-heading">
           <div className="lm-bento-header">
-            <p className="home-kicker">Core Philosophy</p>
-            <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
+            <p className="home-kicker">Core Philosophy &amp; Platform</p>
+            <h2 className="home-heading" id="lm-bento-heading">AI to supercharge you &amp; your business decisions.</h2>
           </div>
 
-          <div className="lm-bento-grid-4">
+          <div className="lm-bento-matrix-4">
+            {/* CARD 1: TOP WIDE CARD (2 COLUMNS) */}
+            <article className="lm-bento-card lm-bento-wide-card">
+              <div className="lm-bento-wide-left">
+                <div className="lm-bento-badge">AI &amp; DECISION ADVISORY</div>
+                <h3>AI to supercharge you</h3>
+                <p>
+                  Our AI agents do the heavy lifting - surfacing great-fit roles, getting hiring managers interested, and handling the busy work - so you can focus on what only you can do: building real relationships and placing great people.
+                </p>
+                <div className="lm-bento-footer">
+                  <span className="lm-bento-highlight">✓ Real-time ledger auditing &amp; decision support</span>
+                </div>
+              </div>
+              <div className="lm-bento-wide-right">
+                <div className="lm-bento-video-call-mockup">
+                  {/* Top Floating Badge */}
+                  <div className="lm-vcall-chip lm-vcall-chip-top">
+                    <span className="lm-vcall-icon">✨</span>
+                    <div className="lm-vcall-chip-text">
+                      <strong>5 opportunities matched</strong>
+                      <span>Senior Full Stack · $100k - $240k</span>
+                    </div>
+                  </div>
+
+                  {/* Main Video Call Window */}
+                  <div className="lm-vcall-window">
+                    <div className="lm-vcall-header">
+                      <span className="lm-vcall-status-dot" />
+                      <span>9:32 AM | Alex x Aiko</span>
+                    </div>
+                    <div className="lm-vcall-video-feed">
+                      <div className="lm-vcall-avatar-wrap">
+                        <div className="lm-vcall-avatar">AA</div>
+                        <span className="lm-vcall-mic">🎤</span>
+                      </div>
+                      <div className="lm-vcall-tag">
+                        <span>Aiko</span>
+                        <small>Candidate</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Floating Badge */}
+                  <div className="lm-vcall-chip lm-vcall-chip-right">
+                    <span className="lm-vcall-icon">⚙️</span>
+                    <div className="lm-vcall-chip-text">
+                      <strong>AI candidate calibration</strong>
+                      <span>Experience in technical, customer facing roles</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            {/* CARD 2: BOTTOM LEFT CARD (1 COLUMN) */}
+            <article className="lm-bento-card lm-bento-reward-card">
+              <div className="lm-bento-card-text">
+                <h3>Say goodbye to business development</h3>
+              </div>
+              <div className="lm-reward-widget">
+                <div className="lm-reward-header">
+                  <div className="lm-reward-brand-icon">🌱</div>
+                  <div className="lm-reward-header-info">
+                    <h4>Software Engineer, SDK</h4>
+                    <p>$200k - $230k • Brooklyn • Hiring 7</p>
+                  </div>
+                </div>
+                <div className="lm-reward-tabs" role="tablist">
+                  <button type="button" className="lm-reward-tab active" role="tab" aria-selected="true">Reward</button>
+                  <button type="button" className="lm-reward-tab" role="tab">Role details</button>
+                  <button type="button" className="lm-reward-tab" role="tab">About Fern</button>
+                  <button type="button" className="lm-reward-tab" role="tab">Ideal companies</button>
+                </div>
+                <div className="lm-reward-breakdown">
+                  <div className="lm-reward-row">
+                    <span>Base hire reward</span>
+                    <span>~ 40,250 x 7</span>
+                  </div>
+                  <div className="lm-reward-row">
+                    <span>Bonus</span>
+                    <span>$1,300</span>
+                  </div>
+                </div>
+                <div className="lm-reward-total-wrap">
+                  <span className="lm-reward-label">Total rewards</span>
+                  <div className="lm-reward-total-amount">$283,050</div>
+                </div>
+                <button type="button" className="lm-reward-submit-btn">
+                  Submit candidate
+                </button>
+              </div>
+            </article>
+
+            {/* CARD 3 & 4: BOTTOM RIGHT DUO CARD (1 COLUMN) */}
+            <article className="lm-bento-card lm-bento-duo-card">
+              {/* DUO TOP: ALL THE TOOLS */}
+              <div className="lm-duo-top-section">
+                <h3>All the tools to make recruiting easy</h3>
+                <p>
+                  Access an all-in-one AI toolkit with sourcing, candidate matching, CRM, notetaker, scheduler and more - completely free of charge.
+                </p>
+
+                <div className="lm-duo-search-container">
+                  <div className="lm-duo-profiles-bg">
+                    <div className="lm-profile-pill">
+                      <span className="lm-prof-avatar">HK</span>
+                      <div>
+                        <strong>Haeni Kim</strong>
+                        <small>iOS Developer</small>
+                      </div>
+                      <span className="lm-prof-icons">🔖 💬</span>
+                    </div>
+                    <div className="lm-profile-pill">
+                      <span className="lm-prof-avatar">CR</span>
+                      <div>
+                        <strong>Chisom Robertson</strong>
+                        <small>Frontend Developer</small>
+                      </div>
+                    </div>
+                    <div className="lm-profile-pill">
+                      <span className="lm-prof-avatar">MS</span>
+                      <div>
+                        <strong>Mike S...</strong>
+                        <small>Chief Frontend Architect</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="lm-duo-search-bar">
+                    <input
+                      type="text"
+                      placeholder="Search across 2.7M profiles..."
+                      value={bentoSearchQuery}
+                      onChange={(e) => setBentoSearchQuery(e.target.value)}
+                      aria-label="Search across profiles"
+                    />
+                    <button type="button" className="lm-duo-search-btn" aria-label="Submit search">
+                      🔍
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* DUO BOTTOM: LEAVE FOLLOW-UPS */}
+              <div className="lm-duo-bottom-section">
+                <h3>Leave the follow-ups to us</h3>
+                <p>
+                  From client comms to feedback and payments, we manage the manual work so you can stay focused on recruiting.
+                </p>
+                <div className="lm-duo-submitted-tag">
+                  <span className="lm-duo-check">✓</span>
+                  <span>You submitted a candidate</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          {/* CORE BELIEFS CAROUSEL / BENTO */}
+          <div className="lm-beliefs-grid">
             {beliefsContent.map((card, idx) => (
               <article
                 key={card.id}
