@@ -65,9 +65,14 @@ test("dark philosophy cards remain keyboard operable", async ({ page }) => {
   const card = page.locator(".lm-bento-grid-4").getByRole("radio", {
     name: /Profit and cash need separate conversations\./,
   });
-  await card.focus();
-  await page.keyboard.press("Enter");
+  const firstCard = page.locator(".lm-bento-grid-4").getByRole("radio", {
+    name: /Your accounts should help you make a decision\./,
+  });
+  await firstCard.focus();
+  await page.keyboard.press("ArrowDown");
   await expect(card).toHaveAttribute("aria-checked", "true");
+  await page.keyboard.press("ArrowUp");
+  await expect(firstCard).toHaveAttribute("aria-checked", "true");
 });
 
 test("reduced motion keeps the homepage free of the rejected scroll scene", async ({ page }) => {

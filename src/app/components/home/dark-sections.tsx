@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { type KeyboardEvent, useRef, useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import "./dark-sections.css";
 
@@ -45,7 +45,29 @@ export function DarkSections() {
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
   const [activeBentoTab, setActiveBentoTab] = useState(0);
+  const bentoRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const selected = services[proof];
+
+  const selectBentoCard = (index: number) => {
+    setActiveBentoTab(index);
+    bentoRefs.current[index]?.focus();
+  };
+
+  const handleBentoKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      selectBentoCard((index + 1) % beliefsContent.length);
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      selectBentoCard((index - 1 + beliefsContent.length) % beliefsContent.length);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      selectBentoCard(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      selectBentoCard(beliefsContent.length - 1);
+    }
+  };
 
   return (
     <>
@@ -123,7 +145,12 @@ export function DarkSections() {
                 role="radio"
                 className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
                 aria-checked={activeBentoTab === idx}
+                tabIndex={activeBentoTab === idx ? 0 : -1}
+                ref={(element) => {
+                  bentoRefs.current[idx] = element;
+                }}
                 onClick={() => setActiveBentoTab(idx)}
+                onKeyDown={(event) => handleBentoKeyDown(event, idx)}
                 onMouseEnter={() => setActiveBentoTab(idx)}
               >
                 <div className="lm-bento-badge">{card.badge}</div>
