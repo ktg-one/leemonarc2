@@ -400,11 +400,21 @@
   box-sizing: border-box;
   max-width: 100%;
 }
+button.lm-bento-card {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
 .lm-bento-card:hover, .lm-bento-card.lm-bento-active {
   border-color: rgba(204, 168, 91, 0.6);
   background: linear-gradient(160deg, rgba(204, 168, 91, 0.08), rgba(20, 26, 24, 0.95));
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 20px rgba(204, 168, 91, 0.1);
+}
+.lm-bento-card:focus-visible {
+  outline: 2px solid #cca85b;
+  outline-offset: 3px;
 }
 .lm-bento-badge {
   font: 600 10px var(--font-body);

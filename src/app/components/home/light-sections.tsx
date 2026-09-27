@@ -10,10 +10,10 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
-const brandGridCards = [
-  "Palantir", "Rippling", "Decagon", "Abridge", "Scale", "Retool", "Vercel",
-  "Stripe", "Figma", "Notion", "Linear", "Ramp", "Brex", "Deel"
-];
+const brandGridCards = Array.from({ length: 14 }, (_, index) => ({
+  id: `placeholder-${index + 1}`,
+  slot: `${index + 1}`.padStart(2, "0"),
+}));
 
 const features = [
   {
@@ -77,6 +77,7 @@ export function LightSections() {
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(true);
+  const [documentVisible, setDocumentVisible] = useState(true);
 
   const [story, setStory] = useState(0);
   const [activeBelief, setActiveBelief] = useState(0);
@@ -84,12 +85,12 @@ export function LightSections() {
 
   const featureRef = useRef<HTMLElement>(null);
   const enhanced = isHydrated && !reducedMotion;
-  const playing = enhanced && !paused && !hovered && !focused && inView;
+  const playing = enhanced && !paused && !hovered && !focused && inView && documentVisible;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateCapability = () => setReducedMotion(query.matches);
-    const updateVisibility = () => setInView(!document.hidden);
+    const updateVisibility = () => setDocumentVisible(!document.hidden);
     updateCapability();
     updateVisibility();
     query.addEventListener("change", updateCapability);
@@ -139,9 +140,9 @@ export function LightSections() {
         <div className="lm-brand-card-wrap">
           <div className="lm-brand-card-grid" aria-hidden="true">
             {brandGridCards.map((brand, i) => (
-              <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
-                <span className="lm-brand-card-symbol">{brand[0]}</span>
-                <span className="lm-brand-card-name">{brand}</span>
+              <div key={brand.id} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
+                <span className="lm-brand-card-symbol">{brand.slot}</span>
+                <span className="lm-brand-card-name">Client logo placeholder</span>
               </div>
             ))}
           </div>
@@ -156,18 +157,18 @@ export function LightSections() {
           </p>
           <div className="lm-trust-metrics">
             <div className="lm-trust-metric">
-              <b>$14.2B</b>
-              <span>AUM Advisory Scope</span>
+              <b>13 years</b>
+              <span>In accounting and advisory</span>
             </div>
             <div className="lm-trust-metric-divider" aria-hidden="true" />
             <div className="lm-trust-metric">
-              <b>Swiss Custody</b>
-              <span>Institutional Grade</span>
+              <b>Founded and led</b>
+              <span>By Chartered Accountant Vivienne Lee</span>
             </div>
             <div className="lm-trust-metric-divider" aria-hidden="true" />
             <div className="lm-trust-metric">
-              <b>24h SLA</b>
-              <span>Direct Principal Line</span>
+              <b>Perth-based</b>
+              <span>Working with clients across Australia</span>
             </div>
           </div>
         </div>
