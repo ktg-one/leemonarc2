@@ -16,8 +16,8 @@
   --focus: #9c692a;
   --font-display: var(--font-newsreader), Georgia, serif;
   --font-body: var(--font-manrope), Arial, sans-serif;
-  --content-width: 1248px;
-  --gutter: clamp(20px, 5vw, 80px);
+  --content-width: 1100px;
+  --gutter: clamp(20px, 4vw, 48px);
   --duration-fast: 200ms;
   --duration-scene: 600ms;
   --rotation-duration: 6000ms;

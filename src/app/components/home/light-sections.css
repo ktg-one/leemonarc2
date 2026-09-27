@@ -10,7 +10,8 @@
 .lm-light-brand-grid {
   padding-top: 56px;
   padding-bottom: 72px;
-  max-width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
   box-sizing: border-box;
 }
 .lm-brand-card-wrap {

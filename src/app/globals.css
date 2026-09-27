@@ -84,8 +84,10 @@ em {
   outline-offset: 6px;
 }
 .section-shell {
-  width: min(calc(100% - var(--gutter) * 2), var(--content-width));
+  width: calc(100% - var(--gutter) * 2);
+  max-width: var(--content-width);
   margin-inline: auto;
+  box-sizing: border-box;
 }
 .section-space {
   padding-block: 130px;
