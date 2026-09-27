@@ -48,10 +48,18 @@ export function SiteHeader() {
   const home = usePathname() === "/";
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 38);
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+    const sentinel = document.createElement("div");
+    sentinel.setAttribute("aria-hidden", "true");
+    sentinel.style.cssText = "position:absolute;top:0;left:0;width:1px;height:38px;pointer-events:none";
+    document.body.prepend(sentinel);
+    const observer = new IntersectionObserver(([entry]) => {
+      setScrolled(!entry.isIntersecting);
+    });
+    observer.observe(sentinel);
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
   }, []);
 
   return (
@@ -73,7 +81,7 @@ export function SiteHeader() {
             brand={
               <Link className="atd-modern__brand lm-brand" href="/" aria-label="Lee Monarc home">
                 <Image
-                  src="/brand/logo-banner-light.png"
+                  src="/brand/wordmark.svg"
                   width={812}
                   height={149}
                   alt="Lee Monarc Accounting & Advisory"

@@ -10,7 +10,8 @@
     "oxlint": "npx --yes oxlint .",
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
-    "doctor": "npx react-doctor@latest"
+    "doctor": "npx react-doctor@latest",
+    "lint:paraform": "node scripts/lint-paraform-standard.js"
   },
   "dependencies": {
     "next": "16.3.5",

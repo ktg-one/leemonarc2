@@ -7,18 +7,12 @@ import "./hero.css";
 
 const heroPills = [
   { label: "Professional services", href: "/who-we-help" },
-  { label: "Accounting & tax", href: "/services/accounting-compliance" },
-  { label: "Property & construction", href: "/who-we-help" },
-  { label: "Tax planning", href: "/services/tax-planning" },
+  { label: "Property and construction", href: "/who-we-help" },
   { label: "Healthcare", href: "/who-we-help" },
-  { label: "Business structuring", href: "/services/business-structuring" },
   { label: "Technology", href: "/who-we-help" },
-  { label: "CFO & business advisory", href: "/services/fractional-cfo-advisory" },
-  { label: "Engineering & manufacturing", href: "/who-we-help" },
-  { label: "Business acquisition", href: "/services/business-acquisition" },
+  { label: "Engineering and manufacturing", href: "/who-we-help" },
   { label: "Care services", href: "/who-we-help" },
-  { label: "Succession & exit", href: "/services/succession-exit" },
-  { label: "Beauty & wellness", href: "/who-we-help" },
+  { label: "Beauty and wellness", href: "/who-we-help" },
   { label: "Hospitality", href: "/who-we-help" },
 ];
 

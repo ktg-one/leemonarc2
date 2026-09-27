@@ -10,7 +10,7 @@ export default function NotFound() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "calc(100vh - 220px)",
+          minHeight: "calc(100dvh - 220px)",
           textAlign: "center",
           gap: "24px",
           padding: "clamp(64px, 10vh, 120px) 24px",

@@ -10,7 +10,7 @@ export function Header() { return <SiteHeader />; }
 export function Footer() {
   return <footer className="lm-footer"><div className="section-shell">
     <div className="lm-footer-grid">
-      <div className="lm-footer-brand"><Link href="/" aria-label="Lee Monarc home"><Image src="/brand/logo-banner-light.png" alt="Lee Monarc Accounting & Advisory" width={812} height={149} /></Link><p>Know your numbers.<br />Decide what comes next.</p></div>
+      <div className="lm-footer-brand"><Link href="/" aria-label="Lee Monarc home"><Image src="/brand/wordmark.svg" alt="Lee Monarc Accounting & Advisory" width={812} height={149} /></Link><p>Know your numbers.<br />Decide what comes next.</p></div>
       <div><h2>Explore</h2><nav aria-label="Footer navigation"><Link href="/services">Services</Link><Link href="/who-we-help">Who we help</Link><Link href="/about">About us</Link><Link href="/contact">Contact</Link></nav></div>
       <div><h2>How we help</h2><nav aria-label="Service navigation">{services.map(service => <Link key={service.href} href={service.href}>{service.title}</Link>)}</nav></div>
       <div><h2>Start a conversation</h2><nav aria-label="Contact details"><a href={`mailto:${business.email}`}>Email Vivienne ↗</a><a href={business.phoneHref}>{business.phone}</a><span>{business.location}</span></nav></div>
