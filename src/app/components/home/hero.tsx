@@ -52,7 +52,6 @@ export function Hero() {
           if (disposed || userPaused || !visible || document.hidden || preference.matches) media.pause();
         }
       }).catch(() => {
-        // Blocked autoplay leaves the poster and a real play button.
         if (!disposed && currentRequest === request) setPlaying(false);
       });
     };

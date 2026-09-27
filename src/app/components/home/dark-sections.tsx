@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import "./dark-sections.css";
 
@@ -45,7 +45,6 @@ export function DarkSections() {
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
   const [activeBentoTab, setActiveBentoTab] = useState(0);
-  const [bentoSearchQuery, setBentoSearchQuery] = useState("");
   const selected = services[proof];
 
   return (
