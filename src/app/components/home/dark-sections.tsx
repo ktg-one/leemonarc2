@@ -150,8 +150,8 @@ export function DarkSections() {
                   bentoRefs.current[idx] = element;
                 }}
                 onClick={() => setActiveBentoTab(idx)}
+                onFocus={() => setActiveBentoTab(idx)}
                 onKeyDown={(event) => handleBentoKeyDown(event, idx)}
-                onMouseEnter={() => setActiveBentoTab(idx)}
               >
                 <div className="lm-bento-badge">{card.badge}</div>
                 <h3>{card.title}</h3>
