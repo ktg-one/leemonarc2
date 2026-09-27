@@ -62,12 +62,12 @@ test("dark illustration can be paused", async ({ page }) => {
 
 test("dark philosophy cards remain keyboard operable", async ({ page }) => {
   await page.goto("/");
-  const card = page.locator(".lm-bento-grid-4").getByRole("button", {
+  const card = page.locator(".lm-bento-grid-4").getByRole("radio", {
     name: /Profit and cash need separate conversations\./,
   });
   await card.focus();
   await page.keyboard.press("Enter");
-  await expect(card).toHaveAttribute("aria-pressed", "true");
+  await expect(card).toHaveAttribute("aria-checked", "true");
 });
 
 test("reduced motion keeps the homepage free of the rejected scroll scene", async ({ page }) => {

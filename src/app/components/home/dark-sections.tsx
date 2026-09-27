@@ -115,13 +115,14 @@ export function DarkSections() {
             <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
           </div>
 
-          <div className="lm-bento-grid-4">
+          <div className="lm-bento-grid-4" role="radiogroup" aria-label="Core belief statements">
             {beliefsContent.map((card, idx) => (
               <button
                 key={card.id}
                 type="button"
+                role="radio"
                 className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
-                aria-pressed={activeBentoTab === idx}
+                aria-checked={activeBentoTab === idx}
                 onClick={() => setActiveBentoTab(idx)}
                 onMouseEnter={() => setActiveBentoTab(idx)}
               >
