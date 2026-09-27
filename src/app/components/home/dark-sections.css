@@ -799,6 +799,18 @@
 .lm-dark-team-header {
   margin-bottom: 36px;
 }
+.lm-dark-team-header .home-heading {
+  color: #f4f7f5;
+}
+.lm-dark-team-header .home-kicker {
+  color: #cca85b;
+}
+.lm-team-subhead {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #b9bec7;
+  max-width: 680px;
+}
 .lm-team-stage {
   overflow: hidden;
   perspective: 1400px;

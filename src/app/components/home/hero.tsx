@@ -1,22 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { heroMedia } from "@/content/hero-media";
+import { RectangleButtons } from "@designcodeio/threeui";
+import "@designcodeio/threeui/style.css";
 import "./hero.css";
 
-const heroPills = [
-  { label: "Professional services", href: "/who-we-help" },
-  { label: "Property and construction", href: "/who-we-help" },
-  { label: "Healthcare", href: "/who-we-help" },
-  { label: "Technology", href: "/who-we-help" },
-  { label: "Engineering and manufacturing", href: "/who-we-help" },
-  { label: "Care services", href: "/who-we-help" },
-  { label: "Beauty and wellness", href: "/who-we-help" },
-  { label: "Hospitality", href: "/who-we-help" },
+const brandBadges = [
+  { label: "Professional Services", href: "/who-we-help", icon: "⚖" },
+  { label: "Property & Construction", href: "/who-we-help", icon: "🏛" },
+  { label: "Healthcare & Medical", href: "/who-we-help", icon: "✦" },
+  { label: "Technology & High-Growth", href: "/who-we-help", icon: "⚡" },
+  { label: "Engineering & Fabrication", href: "/who-we-help", icon: "⚙" },
+  { label: "Care Services & NDIS", href: "/who-we-help", icon: "♥" },
+  { label: "Beauty & Wellness", href: "/who-we-help", icon: "◈" },
+  { label: "Hospitality & Tourism", href: "/who-we-help", icon: "🍸" },
+  { label: "Family Offices & Groups", href: "/who-we-help", icon: "⬡" },
 ];
 
 export function Hero() {
+  const router = useRouter();
   const section = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const togglePlayback = useRef<() => void>(() => {});
@@ -46,7 +51,6 @@ export function Hero() {
           if (disposed || userPaused || !visible || document.hidden || preference.matches) media.pause();
         }
       }).catch(() => {
-        // Blocked autoplay leaves the poster and a real play button.
         if (!disposed && currentRequest === request) setPlaying(false);
       });
     };
@@ -91,34 +95,81 @@ export function Hero() {
           muted playsInline loop preload="metadata" tabIndex={-1}
           data-visible={hasPlayed && !failed && !reducedMotion} />}
       </div>
+
+      {/* 2-Column Editorial Overlay */}
       <div className="section-shell lm-hero-inner">
         <div className="lm-hero-copy">
           <p className="lm-hero-eyebrow">Accounting &amp; Advisory · Perth</p>
           <h1 id="lm-hero-title">Know what your next move means for your money.</h1>
-          <p className="lm-hero-description">Can you afford another hire? Is growth putting pressure on cash? Is that business worth a closer look? Lee Monarc helps you work through the numbers behind decisions like these, alongside your accounting and tax.</p>
-          <Link href="/contact" className="lm-hero-cta">Tell us what’s on your mind <span aria-hidden="true">↗</span></Link>
-          <a className="lm-hero-secondary" href="#owner-questions">Start with three questions <span aria-hidden="true">↓</span></a>
+          <p className="lm-hero-description">
+            Can you afford another hire? Is growth putting pressure on cash? Is that business worth a closer look? Lee Monarc helps you work through the numbers behind decisions like these, alongside your accounting and tax.
+          </p>
+
+          <div className="lm-hero-cta-group">
+            <div
+              className="lm-hero-threeui-cta"
+              role="link"
+              tabIndex={0}
+              onClick={() => router.push("/contact")}
+              onKeyDown={(e) => { if (e.key === "Enter") router.push("/contact"); }}
+              aria-label="Tell us what’s on your mind · See the work"
+            >
+              <RectangleButtons
+                variant="halvorsen-arrow-pill"
+                mode="light"
+                hue={93}
+                saturation={1.06}
+                brightness={1.16}
+              />
+            </div>
+
+            <a className="lm-hero-secondary" href="#owner-questions">
+              Start with three questions <span aria-hidden="true">↓</span>
+            </a>
+          </div>
         </div>
+
+        {/* Elevated Glass Advisory Preview Card */}
         <aside className="lm-hero-notification" aria-label="Illustrative advisory conversation">
-          <span className="lm-hero-notification-icon" aria-hidden="true">↗</span>
-          <div>
+          <div className="lm-hero-card-header">
+            <span className="lm-hero-live-pill">
+              <span className="lm-hero-live-dot" aria-hidden="true" /> Live Advisory Preview
+            </span>
+            <span className="lm-hero-notification-icon" aria-hidden="true">↗</span>
+          </div>
+
+          <div className="lm-hero-card-body">
             <span className="lm-hero-example">Illustrative conversation</span>
             <h2>Your advisor, in your corner</h2>
-            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · New</p>
-            <p>Good news! Your cashflow forecast shows room for your next hire. Let’s walk through the numbers.</p>
+            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · Principal</p>
+            <p className="lm-hero-quote">
+              “Good news! Your cashflow forecast shows room for your next hire. Let’s walk through the numbers before you commit.”
+            </p>
+          </div>
+
+          <div className="lm-hero-card-footer">
+            <span className="lm-hero-stat-pill">Working Capital: <b>+$142k Safe</b></span>
+            <span className="lm-hero-stat-pill">Scope: <b>Quoted Upfront</b></span>
           </div>
         </aside>
       </div>
-      <div className="section-shell lm-hero-brands" aria-label="Industry experience and services">
-        <p className="lm-hero-brands-label">Industry experience &amp; services</p>
-        <ul className="lm-hero-pills" role="list">
-          {heroPills.map((pill) => (
-            <li key={pill.label}>
-              <Link href={pill.href} className="lm-hero-pill">{pill.label}</Link>
-            </li>
-          ))}
-        </ul>
+
+      {/* Elevated Badges Brand Carousel */}
+      <div className="lm-hero-brands-marquee" aria-label="Industry experience and advisory sectors">
+        <p className="lm-hero-brands-label">Industry experience &amp; advisory sectors</p>
+        <div className="lm-brand-marquee-track-container" tabIndex={0} aria-label="Continuous brand carousel">
+          <div className="lm-brand-marquee-track">
+            {[...brandBadges, ...brandBadges].map((badge, idx) => (
+              <Link href={badge.href} key={`${badge.label}-${idx}`} className="lm-hero-badge-card">
+                <span className="lm-hero-badge-icon" aria-hidden="true">{badge.icon}</span>
+                <span className="lm-hero-badge-label">{badge.label}</span>
+                <span className="lm-hero-badge-arrow" aria-hidden="true">↗</span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
+
       <div className="lm-hero-media-footer">
         {heroMedia.source && !failed && !reducedMotion && <button type="button"
           className="lm-hero-playback" onClick={() => togglePlayback.current()}

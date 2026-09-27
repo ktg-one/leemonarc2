@@ -22,6 +22,7 @@
   --duration-scene: 600ms;
   --rotation-duration: 6000ms;
   --surface-dark: #1a1a1a;
+  --dark-bg: #0b1219;
   --card-dark: #272727;
   --radius-card: 10px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

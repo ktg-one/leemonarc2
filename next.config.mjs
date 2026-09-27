@@ -5,7 +5,22 @@ import { fileURLToPath } from "node:url";
 const nextConfig = {
   poweredByHeader: false,
   devIndicators: false,
-  turbopack: { root: path.dirname(fileURLToPath(import.meta.url)) },
+  turbopack: {
+    root: path.dirname(fileURLToPath(import.meta.url)),
+    rules: {
+      "*.html": {
+        loaders: ["raw-loader"],
+        as: "*.js",
+      },
+    },
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.html$/,
+      type: "asset/source",
+    });
+    return config;
+  },
 };
 
 export default nextConfig;

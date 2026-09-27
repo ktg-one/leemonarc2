@@ -64,7 +64,7 @@ export function SiteHeader() {
 
   return (
     <div className="lm-site-top" data-home={home}>
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a className="skip-link sr-only" href="#main">Skip to content</a>
       <div className="lm-announcement">Lee Monarc Accounting &amp; Advisory <span aria-hidden="true">↗</span></div>
       <header className="lm-nav" data-home={home} data-scrolled={scrolled}>
         <div className="section-shell lm-nav-inner lm-nav-dock-shell">

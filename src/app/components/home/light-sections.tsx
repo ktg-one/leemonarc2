@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
+import { heroMedia } from "@/content/hero-media";
 import "./light-sections.css";
 
 const CADENCE = 6000;
@@ -103,23 +104,6 @@ export function LightSections() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!playing) return;
-    const timer = window.setInterval(() => setActive((index) => (index + 1) % features.length), CADENCE);
-    return () => window.clearInterval(timer);
-  }, [playing, revision]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const timer = window.setInterval(() => setStory((index) => (index + 1) % stories.length), 5500);
-    return () => window.clearInterval(timer);
-  }, [playing]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const timer = window.setInterval(() => setActiveBelief((index) => (index + 1) % beliefs.length), 5000);
-    return () => window.clearInterval(timer);
-  }, [playing]);
 
   const selectFeature = (index: number) => {
     setActive(index);
@@ -179,31 +163,111 @@ export function LightSections() {
         <p>Your tax return matters. So does the decision you need to make next month.<br className="lm-light-desktop-break" /> Find support for both.</p>
       </section>
 
-      <section ref={featureRef} className="lm-light-features section-shell" aria-label="Explore four ways we can help" aria-roledescription="carousel" data-playing={playing}
-        onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-        onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-        <div className="lm-light-features-stage">
-          <div
-            className="lm-light-features-track"
-            style={enhanced ? { transform: `translateX(-${active * 100}%)` } : undefined}
-          >
+      {/* 1/3 (stages nav) + 2/3 (animated slider with video media revealed under card) */}
+      <section ref={featureRef} className="lm-light-features section-shell" aria-label="Explore four ways we can help">
+        <div className="lm-feature-slider-layout">
+          {/* Left Column (1/3): Strategic Stage Selector */}
+          <div className="lm-feature-nav-col">
+            <span className="home-kicker">02 · Strategic Capabilities</span>
+            <h2 className="lm-feature-heading">Keep essentials in order. Get help with the bigger calls.</h2>
+            <p className="lm-feature-subhead">Explore our core advisory pillars designed for growing private enterprises.</p>
+            <div className="lm-feature-stage-list" role="tablist" aria-label="Service capabilities">
+              {features.map((feature, idx) => (
+                <button
+                  key={feature.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={active === idx}
+                  className={`lm-feature-tab-btn ${active === idx ? "lm-tab-active" : ""}`}
+                  onClick={() => selectFeature(idx)}
+                >
+                  <span className="lm-feature-tab-num">0{idx + 1}</span>
+                  <div className="lm-feature-tab-info">
+                    <span className="lm-feature-tab-title">{feature.label}</span>
+                    <span className="lm-feature-tab-sub">{feature.caption}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="lm-feature-controls-wrap">
+              {featureControls}
+            </div>
+          </div>
+
+          {/* Right Column (2/3): Animated Slider with Video Media Underneath */}
+          <div className="lm-feature-stage-container">
+            {/* Background Video Media (Revealed Under Card) */}
+            <div className="lm-feature-video-underlay" aria-hidden="true">
+              <video
+                src={heroMedia.source || undefined}
+                poster="/images/perspective.webp"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="lm-feature-underlay-video"
+              />
+              <div className="lm-feature-video-badge">
+                <span className="lm-video-dot" aria-hidden="true" />
+                <span>Advisory Media · Perth WA</span>
+              </div>
+            </div>
+
+            {/* Sliding Foreground Cards (GPU translateX) */}
             {features.map((feature, index) => (
-              <article key={feature.label} className="lm-light-feature" id={`lm-light-feature-${index}`} data-active={index === active} aria-label={`${index + 1} of 4: ${feature.label}`} aria-roledescription="slide">
-                <div className="lm-light-feature-copy">
-                  <p className="lm-light-feature-label">{feature.label}</p>
-                  <h3>{feature.title}</h3>
-                  <p className="lm-light-feature-description">{feature.text}</p>
-                  {index === active && featureControls}
-                  <div className="lm-light-feature-index"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
-                  <div className="lm-light-service-links">{feature.serviceIndexes.map((serviceIndex) => <Link href={services[serviceIndex].href} key={serviceIndex}>{services[serviceIndex].title}<span aria-hidden="true">↗</span></Link>)}</div>
+              <article
+                key={feature.label}
+                id={`lm-light-feature-${index}`}
+                data-active={active === index ? "true" : "false"}
+                className={`lm-feature-sliding-card ${active === index ? "lm-card-active" : "lm-card-hidden"}`}
+                style={{
+                  transform: enhanced ? `translateX(${active % 2 === 0 ? "0%" : "10%"})` : undefined,
+                }}
+              >
+                <div className="lm-card-top-row">
+                  <span className="lm-feature-badge">{feature.label}</span>
+                  <span className="lm-feature-step">0{index + 1} / 04</span>
                 </div>
-                <div className={`lm-light-illustration lm-light-tone-${feature.tone}`}>
-                  <span className="lm-light-illustration-note">Illustrative service view</span>
-                  <div className="lm-light-illustration-orbit" aria-hidden="true" />
-                  <div className="lm-light-card-stack" aria-hidden="true">{feature.cards.map((card, cardIndex) => <div className={`lm-light-mini-card lm-light-mini-card-${cardIndex}`} key={card}><span className="lm-light-card-symbol">{["◷", "≡", "↗"][cardIndex]}</span><span>{card}<small>Lee Monarc · Advisory</small></span><span className="lm-light-card-dot" /></div>)}</div>
-                  <div className="lm-light-illustration-bottom"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
+
+                <h3>{feature.title}</h3>
+                <p className="lm-feature-body">{feature.text}</p>
+
+                <div className="lm-feature-card-pills">
+                  {feature.cards.map((c) => (
+                    <span key={c} className="lm-card-pill">
+                      <span className="lm-pill-check" aria-hidden="true">✓</span> {c}
+                    </span>
+                  ))}
                 </div>
-                <aside className="lm-light-proof"><span className="review-placeholder">Client proof placeholder</span><div><span className="lm-light-proof-symbol" aria-hidden="true">↗</span><h4>{feature.proof}</h4><p>Space for an approved client story about the question, the work and what followed.</p></div><p className="lm-light-proof-note">Client name, story and permission to be supplied.</p></aside>
+
+                <div className="lm-feature-card-footer">
+                  <div className="lm-feature-service-links">
+                    {feature.serviceIndexes.map((serviceIndex) => (
+                      <Link href={services[serviceIndex].href} key={serviceIndex} className="lm-feature-link">
+                        {services[serviceIndex].title} <span aria-hidden="true">↗</span>
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="lm-slider-nav-arrows">
+                    <button
+                      type="button"
+                      className="lm-arrow-btn"
+                      aria-label="Previous capability"
+                      onClick={() => selectFeature((active - 1 + features.length) % features.length)}
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className="lm-arrow-btn"
+                      aria-label="Next capability"
+                      onClick={() => selectFeature((active + 1) % features.length)}
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
