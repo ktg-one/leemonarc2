@@ -1,7 +1,14 @@
+/* Hallmark · macrostructure: editorial-paraform · theme: lee-monarc-luxury · genre: editorial
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
+ * slop test: pass
+ */
 @import "./tokens.css";
 
 * {
   box-sizing: border-box;
+}
+html, body {
+  overflow-x: clip;
 }
 html {
   scroll-behavior: smooth;
@@ -15,6 +22,10 @@ body {
   font-size: 14px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 ::selection {
   background: var(--gold);
