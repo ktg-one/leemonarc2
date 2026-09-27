@@ -74,3 +74,14 @@ test("conversation page provides real direct contact details", async ({
     page.getByRole("main").getByRole("link", { name: "0413 149 137" }),
   ).toHaveAttribute("href", "tel:+61413149137");
 });
+
+test("footer renders clean 5-column grid and columns", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const footer = page.locator(".lm-footer");
+  await expect(footer).toBeVisible();
+  await expect(footer.getByRole("heading", { name: "Services" })).toBeVisible();
+  await expect(footer.getByRole("heading", { name: "Advisory & Stages" })).toBeVisible();
+  await expect(footer.getByRole("heading", { name: "Company" })).toBeVisible();
+  await expect(footer.getByRole("heading", { name: "Insights" })).toBeVisible();
+});

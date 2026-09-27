@@ -186,14 +186,138 @@
   color: #f5f8f6;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
-.lm-footer { background: var(--paper); color: var(--ink); padding-block: 72px 24px; font-size: 12px; }
-.lm-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1.4fr 1fr; gap: 45px; padding-bottom: 60px; }
-.lm-footer-brand img { width: 180px; height: auto; display: block; margin-bottom: 22px; }
-.lm-footer-brand p { max-width: 220px; color: var(--muted); font-size: 13px; }
-.lm-footer h2 { font: 500 11px var(--font-body); color: var(--muted); margin-bottom: 20px; text-transform: uppercase; letter-spacing: .03em; }
-.lm-footer nav { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; }
-.lm-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
-.lm-footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; border-top: 1px solid var(--rule); padding-top: 22px; color: var(--muted); font-size: 11px; }
+.lm-footer {
+  background: var(--paper);
+  color: var(--ink);
+  padding-block: 72px 32px;
+  font-size: 13px;
+}
+.lm-footer .section-shell {
+  width: calc(100% - var(--gutter) * 2);
+  max-width: var(--content-width);
+  margin-inline: auto;
+}
+.lm-footer-grid {
+  display: grid !important;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr !important;
+  gap: 36px !important;
+  padding-bottom: 60px !important;
+  align-items: start !important;
+}
+.lm-footer-brand {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  max-width: 240px !important;
+}
+.lm-footer-brand a {
+  display: block !important;
+  width: 180px !important;
+  max-width: 180px !important;
+  margin-bottom: 16px !important;
+}
+.lm-footer-brand img {
+  width: 180px !important;
+  max-width: 180px !important;
+  height: auto !important;
+  display: block !important;
+}
+.lm-footer-brand p {
+  max-width: 220px !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  margin: 0 0 16px 0 !important;
+}
+.lm-footer-reg {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  font-size: 11px !important;
+  color: var(--muted) !important;
+}
+.lm-footer h2 {
+  font-family: var(--font-body), sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--muted) !important;
+  margin: 0 0 18px 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+}
+.lm-footer nav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+}
+.lm-footer nav a {
+  display: block !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  text-decoration: none !important;
+  white-space: normal !important;
+  transition: color 0.15s ease !important;
+}
+.lm-footer nav a:hover {
+  text-decoration: underline !important;
+  color: var(--gold-dark) !important;
+}
+.lm-footer-badge {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--gold-dark) !important;
+  margin-top: 4px !important;
+  display: block !important;
+}
+.lm-footer-text {
+  font-size: 12px !important;
+  color: var(--muted) !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}
+.lm-footer-bottom {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 18px !important;
+  border-top: 1px solid var(--rule) !important;
+  padding-top: 24px !important;
+  color: var(--muted) !important;
+  font-size: 11px !important;
+}
+.lm-footer-bottom-links {
+  display: flex !important;
+  gap: 20px !important;
+}
+.lm-footer-bottom a {
+  color: var(--muted) !important;
+  text-decoration: none !important;
+}
+.lm-footer-bottom a:hover {
+  text-decoration: underline !important;
+}
+@media (max-width: 1024px) {
+  .lm-footer-grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 32px 24px !important;
+  }
+}
+@media (max-width: 640px) {
+  .lm-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px 18px !important;
+  }
+  .lm-footer-brand {
+    grid-column: 1 / -1 !important;
+  }
+}
 /* Supporting route primitives, shared by the existing page compositions. */
 .section-stack {
   width: calc(100% - var(--gutter) * 2);
