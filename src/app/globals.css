@@ -23,13 +23,6 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
-.section-shell {
-  width: 100%;
-  max-width: var(--content-width);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-  box-sizing: border-box;
-}
 h1, h2, h3, h4, h5, h6 {
   overflow-wrap: anywhere;
   min-width: 0;

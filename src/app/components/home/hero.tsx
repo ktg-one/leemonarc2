@@ -98,23 +98,24 @@ export function Hero() {
       </div>
       <div className="section-shell lm-hero-inner">
         <div className="lm-hero-copy">
-          <p className="lm-hero-eyebrow">CHARTERED ACCOUNTANT · PERTH AND AUSTRALIA WIDE</p>
+          <p className="lm-hero-eyebrow">Accounting &amp; Advisory · Perth</p>
           <h1 id="lm-hero-title">Know what your next move means for your money.</h1>
           <p className="lm-hero-description">Can you afford another hire? Is growth putting pressure on cash? Is that business worth a closer look? Lee Monarc helps you work through the numbers behind decisions like these, alongside your accounting and tax.</p>
-          <Link href="/contact" className="lm-hero-cta">Tell us what’s on your mind <span aria-hidden="true">→</span></Link>
+          <Link href="/contact" className="lm-hero-cta">Tell us what’s on your mind <span aria-hidden="true">↗</span></Link>
           <a className="lm-hero-secondary" href="#owner-questions">Start with three questions <span aria-hidden="true">↓</span></a>
         </div>
-        <aside className="lm-hero-notification" aria-label="Vivienne Lee live insight preview">
+        <aside className="lm-hero-notification" aria-label="Illustrative advisory conversation">
           <span className="lm-hero-notification-icon" aria-hidden="true">↗</span>
           <div>
-            <span className="lm-hero-example">Your advisor, in your corner</span>
-            <h2>Vivienne Lee · Chartered Accountant · New</h2>
+            <span className="lm-hero-example">Illustrative conversation</span>
+            <h2>Your advisor, in your corner</h2>
+            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · New</p>
             <p>Good news! Your cashflow forecast shows room for your next hire. Let’s walk through the numbers.</p>
           </div>
         </aside>
       </div>
-      <div className="section-shell lm-hero-brands" aria-label="Corporate advisory sectors">
-        <p className="lm-hero-brands-label">Corporate advisory sectors</p>
+      <div className="section-shell lm-hero-brands" aria-label="Industry experience and services">
+        <p className="lm-hero-brands-label">Industry experience &amp; services</p>
         <ul className="lm-hero-pills" role="list">
           {heroPills.map((pill) => (
             <li key={pill.label}>

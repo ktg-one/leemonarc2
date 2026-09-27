@@ -21,9 +21,9 @@ const DOCK_ITEMS: readonly DockItem[] = [
     ),
   },
   {
-    id: "advisory",
-    label: "Advisory",
-    href: "/services/fractional-cfo-advisory",
+    id: "who-we-help",
+    label: "Who we help",
+    href: "/who-we-help",
     icon: (
       <>
         <circle cx="8" cy="5.5" r="2.8" />
@@ -33,33 +33,12 @@ const DOCK_ITEMS: readonly DockItem[] = [
   },
   {
     id: "about",
-    label: "About",
+    label: "About us",
     href: "/about",
     icon: (
       <>
         <circle cx="8" cy="8" r="5.8" />
         <path d="M8 5.2v.01M8 7.8v3.4" />
-      </>
-    ),
-  },
-  {
-    id: "insights",
-    label: "Insights",
-    href: "/who-we-help",
-    icon: (
-      <>
-        <path d="M3 4h10M3 8h10M3 12h6" />
-      </>
-    ),
-  },
-  {
-    id: "client-portal",
-    label: "Client Portal",
-    href: "/contact",
-    icon: (
-      <>
-        <path d="M12 11v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1" />
-        <circle cx="8" cy="4" r="3" />
       </>
     ),
   },
@@ -106,8 +85,9 @@ export function SiteHeader() {
             items={DOCK_ITEMS}
             actions={
               <div className="atd-modern__actions lm-nav-actions">
-                <Link href="/contact" className="atd-modern__cta lm-nav-contact" aria-label="Tell us what's on your mind — Contact Lee Monarc">
-                  <span>Tell us what's on your mind →</span>
+                <Link href="/contact" className="atd-modern__cta lm-nav-contact" aria-label="Let’s talk — Contact Lee Monarc">
+                  <span>Let’s talk</span>
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 8h9.1M8.6 4.3 12.4 8l-3.8 3.7" /></svg>
                 </Link>
                 <MobileMenu />
               </div>

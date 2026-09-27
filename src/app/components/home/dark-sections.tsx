@@ -9,192 +9,152 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
-const timelineTabs = ["Palantir", "Owner", "Basis", "Hightouch", "Pallet", "Decagon"];
-
-const timelineQuotes: Record<string, { quote: string; metrics: string }> = {
-  Palantir: { quote: "Partnering with Lee Monarc unlocked capital strategy and precision execution across complex portfolios.", metrics: "$84M Capital Protected • 24h Principal SLA • 100% Audit Precision" },
-  Owner: { quote: "Their cashflow forecasting and advisory provided total clarity before every expansion phase.", metrics: "$42M Portfolio Scope • Weekly Cashflow Syncs • 0% Unplanned Deficits" },
-  Basis: { quote: "The strategic due diligence saved us millions in unrecorded enterprise liabilities.", metrics: "$65M Transaction Scope • 14 Sector Coverage • 100% Due Diligence Depth" },
-  Hightouch: { quote: "The fractional CFO advice helped us transition from rapid growth to high profit margins.", metrics: "$32M Annual Revenue • 3.2x Margin Expansion • 24h SLA Support" },
-  Pallet: { quote: "Lee Monarc gives us institutional grade ledger auditing and clear owner options.", metrics: "$18M Capital Allocation • 100% Tax Alignment • Full Peace of Mind" },
-  Decagon: { quote: "From business structuring to succession planning, Vivienne Lee is an irreplaceable advisor.", metrics: "$50M Wealth Scope • Family Group Structuring • Multi-Entity Governance" },
-};
+const beliefsContent = [
+  {
+    id: "decision",
+    badge: "DECISION-DRIVEN REPORTING",
+    title: "Your accounts should help you make a decision.",
+    body: "A report needs to do more than arrive in your inbox. It should help answer a question about the business: what’s working, where cash is going or what needs to change.",
+    highlight: "Real-time ledger auditing & decision support"
+  },
+  {
+    id: "cashflow",
+    badge: "PROFIT VS CASH",
+    title: "Profit and cash need separate conversations.",
+    body: "A profitable business can still struggle to meet its commitments. Looking at both gives you a more useful picture of what the business can afford.",
+    highlight: "Cashflow forecasting & liquidity analysis"
+  },
+  {
+    id: "timing",
+    badge: "STRATEGIC TIMING",
+    title: "Advice is most useful while you still have options.",
+    body: "Before you hire, buy, restructure or sell, there’s an opportunity to test the assumptions. After you’ve committed, some of those choices have already gone.",
+    highlight: "Pre-commitment scenario modelling"
+  },
+  {
+    id: "options",
+    badge: "OWNER FREEDOM",
+    title: "A business should give its owner options.",
+    body: "That might mean growing, reducing day-to-day involvement or preparing for a future sale. Those goals deserve attention long before you’re ready to step away.",
+    highlight: "Succession & exit readiness"
+  }
+];
 
 export function DarkSections() {
   const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
-  const [activeTimeline, setActiveTimeline] = useState("Palantir");
-  const [darkEmailInput, setDarkEmailInput] = useState("");
-  const [castleEmailInput, setCastleEmailInput] = useState("");
+  const [activeBentoTab, setActiveBentoTab] = useState(0);
   const selected = services[proof];
 
   return (
     <>
       <div className="lm-dark">
-        {/* PAGE 5: MEET THE TEAM 3D DEPTH CAROUSEL (DARKMODE) */}
+        {/* PAGE 5: MEET THE TEAM / FOUNDER SHOWCASE */}
         <section className="section-shell lm-team-section" aria-labelledby="lm-team-heading">
           <div className="lm-team-header">
-            <p className="home-kicker">04 · About Us &amp; Team</p>
-            <h2 className="home-heading" id="lm-team-heading">Meet the Advisory Leadership</h2>
+            <p className="home-kicker">04 · About Us</p>
+            <h2 className="home-heading" id="lm-team-heading">An accountant who wants to know what you’re building.</h2>
+            <p className="lm-team-subhead">
+              Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
+            </p>
           </div>
 
-          <div className="lm-3d-team-showcase">
-            <div className="lm-3d-card lm-3d-side-left">
-              <div className="lm-3d-avatar">AD</div>
-              <h4>Associate Director</h4>
-              <p className="lm-3d-impact">$42,000,000 Client Capital Advised</p>
-            </div>
-
-            <div className="lm-3d-card lm-3d-centerpiece">
-              <div className="lm-3d-avatar-main">VL</div>
-              <span className="lm-founder-tag">FOUNDER &amp; CHARTERED ACCOUNTANT</span>
-              <h3>Vivienne Lee</h3>
-              <div className="lm-monetary-impact-overlay">
-                <b>$84,000,000</b>
-                <span>client capital protected &amp; unlocked</span>
+          <div className="lm-founder-card-grid">
+            <article className="lm-founder-main-card">
+              <div className="lm-founder-photo-area">
+                <div className="lm-founder-avatar">
+                  <span>VL</span>
+                </div>
+                <div className="lm-founder-badge-list">
+                  <span className="lm-fbadge">13+ Years Advisory</span>
+                  <span className="lm-fbadge">Chartered Accountant</span>
+                  <span className="lm-fbadge">Perth · Australia-Wide</span>
+                </div>
               </div>
-              <p className="lm-3d-bio">
-                Over 13 years in accounting and advisory. Partner in her early 30s before founding Lee Monarc to bring direct principal support and commercial clarity to business owners.
-              </p>
-            </div>
+              <div className="lm-founder-bio-area">
+                <span className="lm-founder-tag">FOUNDER &amp; PRINCIPAL</span>
+                <h3>Vivienne Lee</h3>
+                <p className="lm-founder-lead">
+                  “I built Lee Monarc around the way I believe advice should work.”
+                </p>
+                <div className="lm-founder-story">
+                  <p>
+                    Over 13 years in accounting and advisory, I’ve worked with business owners and family groups whose decisions reach well beyond a set of accounts. A hire changes someone’s workload. An acquisition changes their exposure to risk. A succession plan affects their family and the future of something they’ve spent years building.
+                  </p>
+                  <p>
+                    I began in a boutique firm, completed my CA while working full time and became a partner in my early 30s. After two years as a partner, I established Lee Monarc to build a firm around my own standards of advice, reliability and care.
+                  </p>
+                </div>
+                <Link href="/contact" className="lm-dark-pill lm-founder-cta">
+                  Tell us about your business <span aria-hidden="true">↗</span>
+                </Link>
+              </div>
+            </article>
 
-            <div className="lm-3d-card lm-3d-side-right">
-              <div className="lm-3d-avatar">SP</div>
-              <h4>Senior Partner</h4>
-              <p className="lm-3d-impact">$65,000,000 Transaction Advisory</p>
-            </div>
-          </div>
-
-          <div className="lm-clarity-bento-column">
-            <div className="lm-clarity-card">
-              <span className="lm-clarity-icon">⚡</span>
-              <h4>Institutional Execution Speed</h4>
-              <p>Direct principal access with 24-hour SLA response times on urgent financial advisory calls.</p>
-            </div>
-            <div className="lm-clarity-card">
-              <span className="lm-clarity-icon">🔍</span>
-              <h4>Real-time Ledger Auditing</h4>
-              <p>Proactive cashflow and ledger reviews before major commitments, hires, or acquisitions.</p>
+            <div className="lm-clarity-bento-column">
+              <div className="lm-clarity-card">
+                <span className="lm-clarity-icon">⚡</span>
+                <h4>Institutional Execution Speed</h4>
+                <p>Direct principal access with 24-hour SLA response times on urgent financial advisory calls.</p>
+              </div>
+              <div className="lm-clarity-card">
+                <span className="lm-clarity-icon">🔍</span>
+                <h4>Real-time Ledger Auditing</h4>
+                <p>Proactive cashflow and ledger reviews before major commitments, hires, or acquisitions.</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO */}
+        {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO (ANIMATED WITH VIVIENNE'S CONTEXT) */}
         <section className="section-shell lm-bento-section" aria-labelledby="lm-bento-heading">
           <div className="lm-bento-header">
-            <p className="home-kicker">MATRIX ARCHITECTURE</p>
-            <h2 className="home-heading" id="lm-bento-heading">Precision Advisory Matrix</h2>
+            <p className="home-kicker">Core Philosophy</p>
+            <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
           </div>
 
-          <div className="lm-matrix-4grid">
-            {/* Top Left */}
-            <article className="lm-matrix-card lm-matrix-tl">
-              <span className="lm-editorial-badge">• STRATEGIC ADVISORY</span>
-              <h3>Decision-Driven Financial Reporting</h3>
-              <p>
-                Your accounts should help you make a decision. We connect your bookkeeping, financial statements, and tax returns directly with your strategic growth targets.
+          <div className="lm-bento-grid-4">
+            {beliefsContent.map((card, idx) => (
+              <article
+                key={card.id}
+                className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
+                onClick={() => setActiveBentoTab(idx)}
+                onMouseEnter={() => setActiveBentoTab(idx)}
+              >
+                <div className="lm-bento-badge">{card.badge}</div>
+                <h3>{card.title}</h3>
+                <p>{card.body}</p>
+                <div className="lm-bento-footer">
+                  <span className="lm-bento-highlight">✓ {card.highlight}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* WORKING TOGETHER & CLOSING INVITATION MODULE */}
+          <div className="lm-working-together-card">
+            <div className="lm-wt-left">
+              <span className="home-kicker">Working Together</span>
+              <h3>What working together should feel like</h3>
+              <p className="lm-wt-lead">
+                <strong>You can ask the question you think you should already know the answer to.</strong>
               </p>
-            </article>
-
-            {/* Top Right */}
-            <article className="lm-matrix-card lm-matrix-tr">
-              <div className="lm-video-call-mockup">
-                <div className="lm-video-status-bar">
-                  <span className="lm-dot-red" />
-                  <span>CALIBRATION ACTIVE · ROLE MATCHED</span>
-                </div>
-                <div className="lm-video-screen">
-                  <span className="lm-video-speaker">Vivienne Lee (Principal)</span>
-                  <p>“Good news! Your cashflow forecast shows room for your next hire.”</p>
-                </div>
-              </div>
-            </article>
-
-            {/* Bottom Left */}
-            <article className="lm-matrix-card lm-matrix-bl">
-              <div className="lm-reward-breakdown">
-                <span className="home-kicker">Live Candidate Reward &amp; Fee Calculation</span>
-                <b className="lm-reward-figure">$283,050</b>
-                <span className="lm-reward-sub">projected rewards &amp; capital tax savings</span>
-              </div>
-            </article>
-
-            {/* Bottom Right */}
-            <article className="lm-matrix-card lm-matrix-br">
-              <div className="lm-duo-search-card">
-                <h4>Candidate &amp; Advisor Search</h4>
-                <div className="lm-search-bar-wrap">
-                  <span className="lm-search-icon">🔍</span>
-                  <input
-                    type="text"
-                    readOnly
-                    value="Search across 2.7M profiles..."
-                    className="lm-search-input"
-                  />
-                </div>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        {/* PAGE 6.5 & 7: TIMELINE SLIDER & DYNAMIC QUOTES */}
-        <section className="section-shell lm-timeline-section" aria-label="Timeline Slider & Banner Break">
-          {/* 6.5 Banner Break */}
-          <div className="lm-banner-break-65">
-            <h2 className="home-heading light-text">The fastest way to scale your recruiting business</h2>
-            <div className="lm-email-capture">
-              <input
-                type="email"
-                placeholder="Enter work email..."
-                value={darkEmailInput}
-                onChange={(e) => setDarkEmailInput(e.target.value)}
-              />
-              <button type="button" className="pill-link">Get Started →</button>
+              <p>
+                You don’t need to speak accounting language. Tell me what’s happening in the business and what you’re trying to decide. We can work from there.
+              </p>
+              <p>
+                I’ll explain the reasoning behind my advice, raise questions that need attention and tell you when we need more information or another specialist’s input.
+              </p>
             </div>
-          </div>
-
-          {/* Page 7: Mountain Backdrop & Dynamic Quotes */}
-          <div className="lm-mountain-backdrop-container">
-            <div className="lm-mountain-overlay">
-              <div className="lm-timeline-tabs" role="tablist">
-                {timelineTabs.map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    role="tab"
-                    aria-selected={activeTimeline === tab}
-                    className={`lm-timeline-tab ${activeTimeline === tab ? "active" : ""}`}
-                    onClick={() => setActiveTimeline(tab)}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-
-              <div className="lm-dynamic-quote-box">
-                <p className="lm-dynamic-quote">“{timelineQuotes[activeTimeline].quote}”</p>
-                <div className="lm-metrics-strip">
-                  <span>{timelineQuotes[activeTimeline].metrics}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FINAL PAGE: CASTLE HERO */}
-        <section className="lm-castle-hero-section" aria-label="Castle Hero Banner">
-          <div className="lm-castle-landscape-banner">
-            <div className="lm-castle-overlay-content">
-              <h2 className="home-heading light-text">Make hiring your competitive advantage</h2>
-              <div className="lm-email-pill-cta">
-                <input
-                  type="email"
-                  placeholder="Enter work email address..."
-                  value={castleEmailInput}
-                  onChange={(e) => setCastleEmailInput(e.target.value)}
-                />
-                <button type="button" className="pill-link">Tell us what's on your mind →</button>
+            <div className="lm-wt-right">
+              <div className="lm-closing-invitation-box">
+                <span className="home-kicker">Closing Invitation</span>
+                <h3>What are you building towards?</h3>
+                <p>I’d like to hear about your business and the decisions ahead.</p>
+                <Link href="/contact" className="lm-dark-pill">
+                  Start a conversation with Vivienne <span aria-hidden="true">↗</span>
+                </Link>
               </div>
             </div>
           </div>
