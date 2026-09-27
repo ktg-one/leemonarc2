@@ -10,9 +10,15 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
-const brandGridCards = [
-  "Palantir", "Rippling", "Decagon", "Abridge", "Scale", "Retool", "Vercel",
-  "Stripe", "Figma", "Notion", "Linear", "Ramp", "Brex", "Deel"
+const brandGridCards16 = [
+  "Palantir", "Rippling", "Decagon", "Abridge", "Scale", "Retool", "Vercel", "Stripe",
+  "Figma", "Notion", "Linear", "Ramp", "Brex", "Deel", "OpenAI", "Anthropic"
+];
+
+const bannerCards = [
+  { company: "Basis", quote: "Lee Monarc transformed our financial trajectory before our Series B round.", author: "Mitchell Watson, Founder" },
+  { company: "Owner", quote: "Having Vivienne Lee in our corner gave us total clarity on cashflow.", author: "Sarah Lin, CEO" },
+  { company: "Hightouch", quote: "The strategic advisory and forecasting allowed us to scale with confidence.", author: "David Chen, Managing Director" },
 ];
 
 const features = [
@@ -78,6 +84,11 @@ export function LightSections() {
   const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(true);
 
+  const [scrubberVal, setScrubberVal] = useState(70);
+  const [candidateTab, setCandidateTab] = useState("match");
+  const [bannerIdx, setBannerIdx] = useState(0);
+  const [emailInput, setEmailInput] = useState("");
+
   const [story, setStory] = useState(0);
   const [activeBelief, setActiveBelief] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -135,10 +146,11 @@ export function LightSections() {
 
   return (
     <div className="lm-light" data-enhanced={enhanced}>
-      <section className="lm-light-brand-grid section-shell" aria-label="Brand Grid and Strategic Editorial">
+      {/* PAGE 1: BRAND GRID & EDITORIAL QUOTE */}
+      <section className="lm-light-brand-grid section-shell" aria-label="Brand Grid and Editorial Quote">
         <div className="lm-brand-card-wrap">
-          <div className="lm-brand-card-grid" aria-hidden="true">
-            {brandGridCards.map((brand, i) => (
+          <div className="lm-brand-card-grid-2x8" aria-hidden="true">
+            {brandGridCards16.map((brand, i) => (
               <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
                 <span className="lm-brand-card-symbol">{brand[0]}</span>
                 <span className="lm-brand-card-name">{brand}</span>
@@ -168,6 +180,121 @@ export function LightSections() {
             <div className="lm-trust-metric">
               <b>24h SLA</b>
               <span>Direct Principal Line</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PAGE 2: 1/3 TO 2/3 SPLIT & CAROUSEL FLOW */}
+      <section className="lm-page2-split section-shell home-section" aria-label="Split Carousel Flow">
+        <div className="lm-split-grid">
+          <div className="lm-split-left">
+            <span className="home-kicker">ADVISORY INTEL</span>
+            <h2 className="home-heading">Custom AI agents that think like you</h2>
+            <p className="lm-split-copy">
+              Model scenarios instantly and assess candidate opportunities or financial hires with precision calibration.
+            </p>
+            <div className="lm-scrubber-box">
+              <label htmlFor="scrubber">Conversion Calibration Rate: {scrubberVal}%</label>
+              <input
+                id="scrubber"
+                type="range"
+                min="30"
+                max="95"
+                value={scrubberVal}
+                onChange={(e) => setScrubberVal(Number(e.target.value))}
+                className="lm-range-slider"
+              />
+            </div>
+            <div className="lm-big-stat-display">
+              <span className="lm-stat-number">{scrubberVal}%</span>
+              <span className="lm-stat-label">interview conversion rate</span>
+            </div>
+          </div>
+
+          <div className="lm-split-right">
+            <div className="lm-candidate-card-3stage">
+              <div className="lm-candidate-header">
+                <div className="lm-candidate-avatar">VL</div>
+                <div>
+                  <h3>Vivienne Lee</h3>
+                  <p>Chartered Accountant &amp; Financial Advisor</p>
+                </div>
+                <span className="lm-stage-badge">Stage 3 / Vetted</span>
+              </div>
+              <div className="lm-candidate-tags">
+                <span className="lm-tag">13+ Yrs Advisory</span>
+                <span className="lm-tag">Perth &amp; AU-Wide</span>
+                <span className="lm-tag">Swiss Custody Audit</span>
+                <span className="lm-tag">CFO &amp; Cashflow</span>
+              </div>
+              <div className="lm-candidate-actions">
+                <div className="lm-tab-buttons">
+                  <button type="button" className={candidateTab === "match" ? "active" : ""} onClick={() => setCandidateTab("match")}>Match Criteria</button>
+                  <button type="button" className={candidateTab === "actions" ? "active" : ""} onClick={() => setCandidateTab("actions")}>Tabbed Actions</button>
+                </div>
+                <div className="lm-tab-content">
+                  {candidateTab === "match" ? (
+                    <p>✓ 98% match for fractional CFO, tax planning &amp; business structuring advisory.</p>
+                  ) : (
+                    <p>⚡ Action: Request live forecast audit / Direct principal SLA line active.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="lm-bottom-email-cta">
+          <h3>See what your hiring partner can do for you</h3>
+          <div className="lm-email-capture">
+            <input
+              type="email"
+              placeholder="Enter your work email..."
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+            />
+            <button type="button" className="pill-link">Get Started →</button>
+          </div>
+        </div>
+      </section>
+
+      {/* PAGE 4: BANNER CAROUSEL & DARK TRANSITION */}
+      <section className="lm-banner-carousel-section section-shell home-section" aria-label="Banner Carousel">
+        <div className="lm-horizontal-banner-carousel">
+          {bannerCards.map((card, idx) => (
+            <div
+              key={card.company}
+              className={`lm-banner-card ${idx === bannerIdx ? "lm-banner-active" : "lm-banner-dimmed"}`}
+              onClick={() => setBannerIdx(idx)}
+            >
+              <span className="lm-banner-company">{card.company}</span>
+              <p className="lm-banner-quote">“{card.quote}”</p>
+              <span className="lm-banner-author">{card.author}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="lm-melt-to-darkmode">
+          <div className="lm-melt-gradient" />
+          <div className="lm-dark-melt-content">
+            <h2 className="home-heading light-text">The proven stewards of enterprise wealth</h2>
+            <div className="lm-3-pillar-cards">
+              <div className="lm-pillar-card">
+                <span className="lm-pillar-num">01</span>
+                <h4>Precision Accounting</h4>
+                <p>Reliable records, tax returns, and company compliance kept in order.</p>
+              </div>
+              <div className="lm-pillar-card">
+                <span className="lm-pillar-num">02</span>
+                <h4>CFO &amp; Cashflow Advisory</h4>
+                <p>Real-time cash forecasting and commercial guidance before big hires.</p>
+              </div>
+              <div className="lm-pillar-card">
+                <span className="lm-pillar-num">03</span>
+                <h4>Structuring &amp; Exit</h4>
+                <p>Prepare for acquisition, succession, or stepping back with clear terms.</p>
+              </div>
             </div>
           </div>
         </div>
