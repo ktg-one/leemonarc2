@@ -29,23 +29,59 @@
 .lm-desktop-links a:hover { text-decoration: underline; text-underline-offset: 5px; }
 .lm-nav-contact { border: 1px solid #92989260; border-radius: 999px; padding: 9px 18px; font-size: 12px; white-space: nowrap; }
 .lm-nav[data-scrolled='true'] .lm-nav-contact, .lm-nav[data-home='false'] .lm-nav-contact { background: var(--ink); color: white; }
-.lm-nav .mobile-menu { margin-left: auto; }
-.lm-nav .mobile-menu summary { color: inherit; }
-.lm-nav .mobile-menu nav { top: 76px; background: var(--paper); color: var(--ink); box-shadow: 0 15px 30px #0002; }
+.lm-nav .mobile-menu { margin-left: auto; position: static; }
+.lm-nav .mobile-menu summary { color: var(--ink); border: 1px solid var(--ink); }
+.lm-nav[data-home='true'][data-scrolled='false'] .mobile-menu summary { color: #ffffff; border-color: rgba(204, 168, 91, 0.4); }
+.lm-nav[data-home='false'] .mobile-menu summary,
+.lm-nav[data-scrolled='true'] .mobile-menu summary {
+  color: var(--ink) !important;
+  border-color: rgba(26, 36, 30, 0.25) !important;
+}
+.lm-nav .mobile-menu nav {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 15px 30px #0002;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 13px 24px 21px;
+  z-index: 999;
+}
+.lm-nav .mobile-menu nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--ink);
+}
+.lm-nav .mobile-menu nav a:last-child {
+  color: var(--gold-dark);
+}
 
 /* ThreeUI AnimatedTopDock Integration */
 .lm-nav-dock-shell {
   min-height: 76px;
   display: flex;
   align-items: center;
-  width: auto;
+  width: 100%;
 }
 .lm-nav-dock.animated-top-dock-component.atd-modern {
-  width: auto;
+  width: 100%;
+  flex: 1 1 100%;
   background: transparent;
   padding: 0;
   overflow: visible;
   display: block;
+  position: relative;
 }
 .lm-nav-dock .atd-modern__aurora {
   display: none;
@@ -55,8 +91,8 @@
   top: auto;
   left: auto;
   transform: none;
-  width: auto;
-  max-width: auto;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   margin: 0;
   display: flex;
@@ -214,7 +250,17 @@ a:hover span[aria-hidden="true"] {
   .lm-nav .mobile-menu { display: block !important; margin-left: auto; }
   .lm-brand { width: 140px; }
   .lm-nav-inner { min-height: 64px; }
-  .lm-nav-dock .atd-modern__bar { width: 100% !important; max-width: 100% !important; }
+  .lm-nav-dock,
+  .lm-nav-dock .atd-modern__bar,
+  .lm-nav-dock .atd-modern__actions {
+    overflow: visible !important;
+  }
+  .lm-nav-dock .atd-modern__bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+  }
   .lm-footer-grid { grid-template-columns: 1fr 1fr; gap: 36px 22px; }
   .lm-footer-brand { grid-column: 1/-1; }
   .lm-footer { padding-top: 50px; }

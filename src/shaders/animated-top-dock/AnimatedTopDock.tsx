@@ -239,6 +239,7 @@ export function AnimatedTopDock({
           href={item.href}
           className={itemClass}
           data-dock-item
+          aria-label={item.label}
           aria-current={active === item.id ? "page" : undefined}
           onClick={() => setActive(item.id)}
         >
@@ -253,6 +254,7 @@ export function AnimatedTopDock({
         className={itemClass}
         data-dock-item
         type="button"
+        aria-label={item.label}
         aria-pressed={active === item.id}
         onClick={() => setActive(item.id)}
       >

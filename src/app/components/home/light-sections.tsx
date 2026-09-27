@@ -182,25 +182,32 @@ export function LightSections() {
       <section ref={featureRef} className="lm-light-features section-shell" aria-label="Explore four ways we can help" aria-roledescription="carousel" data-playing={playing}
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-        {features.map((feature, index) => (
-          <article key={feature.label} className="lm-light-feature" id={`lm-light-feature-${index}`} data-active={index === active} aria-label={`${index + 1} of 4: ${feature.label}`} aria-roledescription="slide">
-            <div className="lm-light-feature-copy">
-              <p className="lm-light-feature-label">{feature.label}</p>
-              <h3>{feature.title}</h3>
-              <p className="lm-light-feature-description">{feature.text}</p>
-              {featureControls}
-              <div className="lm-light-feature-index"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
-              <div className="lm-light-service-links">{feature.serviceIndexes.map((serviceIndex) => <Link href={services[serviceIndex].href} key={serviceIndex}>{services[serviceIndex].title}<span aria-hidden="true">↗</span></Link>)}</div>
-            </div>
-            <div className={`lm-light-illustration lm-light-tone-${feature.tone}`}>
-              <span className="lm-light-illustration-note">Illustrative service view</span>
-              <div className="lm-light-illustration-orbit" aria-hidden="true" />
-              <div className="lm-light-card-stack" aria-hidden="true">{feature.cards.map((card, cardIndex) => <div className={`lm-light-mini-card lm-light-mini-card-${cardIndex}`} key={card}><span className="lm-light-card-symbol">{["◷", "≡", "↗"][cardIndex]}</span><span>{card}<small>Lee Monarc · Advisory</small></span><span className="lm-light-card-dot" /></div>)}</div>
-              <div className="lm-light-illustration-bottom"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
-            </div>
-            <aside className="lm-light-proof"><span className="review-placeholder">Client proof placeholder</span><div><span className="lm-light-proof-symbol" aria-hidden="true">↗</span><h4>{feature.proof}</h4><p>Space for an approved client story about the question, the work and what followed.</p></div><p className="lm-light-proof-note">Client name, story and permission to be supplied.</p></aside>
-          </article>
-        ))}
+        <div className="lm-light-features-stage">
+          <div
+            className="lm-light-features-track"
+            style={enhanced ? { transform: `translateX(-${active * 100}%)` } : undefined}
+          >
+            {features.map((feature, index) => (
+              <article key={feature.label} className="lm-light-feature" id={`lm-light-feature-${index}`} data-active={index === active} aria-label={`${index + 1} of 4: ${feature.label}`} aria-roledescription="slide">
+                <div className="lm-light-feature-copy">
+                  <p className="lm-light-feature-label">{feature.label}</p>
+                  <h3>{feature.title}</h3>
+                  <p className="lm-light-feature-description">{feature.text}</p>
+                  {index === active && featureControls}
+                  <div className="lm-light-feature-index"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
+                  <div className="lm-light-service-links">{feature.serviceIndexes.map((serviceIndex) => <Link href={services[serviceIndex].href} key={serviceIndex}>{services[serviceIndex].title}<span aria-hidden="true">↗</span></Link>)}</div>
+                </div>
+                <div className={`lm-light-illustration lm-light-tone-${feature.tone}`}>
+                  <span className="lm-light-illustration-note">Illustrative service view</span>
+                  <div className="lm-light-illustration-orbit" aria-hidden="true" />
+                  <div className="lm-light-card-stack" aria-hidden="true">{feature.cards.map((card, cardIndex) => <div className={`lm-light-mini-card lm-light-mini-card-${cardIndex}`} key={card}><span className="lm-light-card-symbol">{["◷", "≡", "↗"][cardIndex]}</span><span>{card}<small>Lee Monarc · Advisory</small></span><span className="lm-light-card-dot" /></div>)}</div>
+                  <div className="lm-light-illustration-bottom"><span aria-hidden="true">0{index + 1}</span><p>{feature.caption}</p></div>
+                </div>
+                <aside className="lm-light-proof"><span className="review-placeholder">Client proof placeholder</span><div><span className="lm-light-proof-symbol" aria-hidden="true">↗</span><h4>{feature.proof}</h4><p>Space for an approved client story about the question, the work and what followed.</p></div><p className="lm-light-proof-note">Client name, story and permission to be supplied.</p></aside>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section id="owner-questions" className="lm-light-questions section-shell" aria-labelledby="lm-light-questions-heading">
@@ -217,7 +224,16 @@ export function LightSections() {
           <h2 className="home-heading" id="lm-light-beliefs-heading">Four perspectives on building a business that gives you options.</h2>
         </div>
         <div className="lm-beliefs-carousel">
-          <div className="lm-beliefs-track">
+          <div
+            className="lm-beliefs-track"
+            style={
+              enhanced
+                ? {
+                    transform: `translateX(calc(50% - var(--lm-belief-width) / 2 - ${activeBelief} * (var(--lm-belief-width) + var(--lm-belief-gap))))`,
+                  }
+                : undefined
+            }
+          >
             {beliefs.map((b, i) => (
               <button
                 key={b.title}
@@ -235,11 +251,35 @@ export function LightSections() {
             ))}
           </div>
           <div className="lm-beliefs-controls" aria-label="Belief statements controls">
-            {beliefs.map((b, i) => (
-              <button key={b.title} type="button" aria-label={`View principle ${i + 1}: ${b.title}`} aria-current={activeBelief === i ? "true" : undefined} onClick={() => setActiveBelief(i)}>
-                <span />
-              </button>
-            ))}
+            <button
+              type="button"
+              className="lm-beliefs-arrow"
+              aria-label="Previous principle"
+              onClick={() => setActiveBelief((i) => (i - 1 + beliefs.length) % beliefs.length)}
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+            <div className="lm-beliefs-dots">
+              {beliefs.map((b, i) => (
+                <button
+                  key={b.title}
+                  type="button"
+                  aria-label={`View principle ${i + 1}: ${b.title}`}
+                  aria-current={activeBelief === i ? "true" : undefined}
+                  onClick={() => setActiveBelief(i)}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="lm-beliefs-arrow"
+              aria-label="Next principle"
+              onClick={() => setActiveBelief((i) => (i + 1) % beliefs.length)}
+            >
+              <span aria-hidden="true">→</span>
+            </button>
           </div>
         </div>
       </section>

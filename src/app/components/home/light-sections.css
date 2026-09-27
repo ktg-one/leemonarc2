@@ -141,11 +141,44 @@
 .lm-light-intro { text-align: center; padding-bottom: 110px; }
 .lm-light-intro h2 { max-width: 740px; margin: 0 auto 24px; }
 .lm-light-intro > p:last-child { margin-inline: auto; max-width: 660px; }
-.lm-light-features { position: relative; }
-.lm-light-feature { display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 24px; min-width: 0; }
-.lm-light-feature + .lm-light-feature { margin-top: 52px; }
-.lm-light[data-enhanced='true'] .lm-light-feature { display: none; }
-.lm-light[data-enhanced='true'] .lm-light-feature[data-active='true'] { display: grid; margin-top: 0; }
+.lm-light-features { position: relative; overflow: hidden; }
+.lm-light-features-stage { overflow: hidden; position: relative; width: 100%; }
+.lm-light-features-track { width: 100%; }
+.lm-light[data-enhanced='true'] .lm-light-features-track {
+  display: flex;
+  transition: transform .65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.lm-light[data-enhanced='true'] .lm-light-feature {
+  display: grid;
+  flex: 0 0 100%;
+  min-width: 100%;
+  max-width: 100%;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 24px;
+  box-sizing: border-box;
+  margin-top: 0;
+  transition: opacity .5s ease, transform .6s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.25;
+  transform: scale(0.985);
+}
+.lm-light[data-enhanced='true'] .lm-light-feature[data-active='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
+.lm-light:not([data-enhanced='true']) .lm-light-features-track {
+  display: block;
+}
+.lm-light:not([data-enhanced='true']) .lm-light-feature {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr;
+  gap: 24px;
+  opacity: 1;
+  transform: none;
+}
+.lm-light:not([data-enhanced='true']) .lm-light-feature + .lm-light-feature {
+  margin-top: 52px;
+}
 .lm-light-feature-copy { border-left: 1px solid #dfe4e0; padding: 12px 24px 10px 42px; display: flex; flex-direction: column; min-width: 0; }
 .lm-light-feature-label { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
 .lm-light-feature-copy h3 { font: 600 22px/1.25 var(--font-body); letter-spacing: -.025em; max-width: 390px; margin-bottom: 12px; }
@@ -223,57 +256,113 @@
 .lm-light-story-controls button[aria-current='true'] { color: white; background: var(--ink); border-color: var(--ink); }
 
 /* Belief statements banner carousel */
-.lm-light-beliefs { padding-block: 72px 48px; }
-.lm-beliefs-header { text-align: center; margin-bottom: 40px; }
-.lm-beliefs-header .home-heading { max-width: 680px; margin-inline: auto; font-size: clamp(28px, 3vw, 40px); }
-.lm-beliefs-carousel { position: relative; }
-.lm-beliefs-track { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1); }
+.lm-light-beliefs {
+  padding-block: 72px 48px;
+  overflow: hidden;
+}
+.lm-beliefs-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.lm-beliefs-header .home-heading {
+  max-width: 680px;
+  margin-inline: auto;
+  font-size: clamp(28px, 3vw, 40px);
+}
+.lm-beliefs-carousel {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 0 24px;
+  width: 100%;
+  --lm-belief-width: clamp(340px, 48vw, 560px);
+  --lm-belief-gap: 24px;
+}
+.lm-beliefs-track {
+  display: flex;
+  gap: var(--lm-belief-gap);
+  transition: transform .6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
 .lm-belief-card {
+  flex: 0 0 var(--lm-belief-width);
+  min-width: 0;
+  box-sizing: border-box;
   text-align: left;
   font: inherit;
   color: inherit;
-  width: 100%;
-  padding: 32px 28px;
-  border-radius: 12px;
+  padding: clamp(28px, 3.5vw, 40px);
+  border-radius: 16px;
   background: #ffffff;
   border: 1px solid #dce2dd;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  transition: transform .3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .3s ease, border-color .3s ease, opacity .3s ease;
+  transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .4s ease, border-color .3s ease, opacity .4s ease;
   position: relative;
-  min-height: 250px;
+  min-height: 240px;
+  opacity: 0.65;
+  transform: scale(0.96);
 }
 .lm-belief-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.06), 0 0 15px rgba(212, 175, 55, 0.15);
+  opacity: 0.9;
+  transform: scale(0.98) translateY(-2px);
   border-color: #cca85b80;
 }
 .lm-belief-card[data-active='true'] {
+  opacity: 1;
+  transform: scale(1);
   border-color: var(--gold-dark);
-  box-shadow: 0 10px 25px rgba(26, 26, 26, 0.08);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 0 0 20px rgba(212, 175, 55, 0.12);
 }
 .lm-belief-num {
-  font: 500 12px var(--font-body);
+  font: 600 12px var(--font-body);
   color: var(--gold-dark);
   margin-bottom: 16px;
-  letter-spacing: .05em;
+  letter-spacing: .08em;
 }
 .lm-belief-title, .lm-belief-card h3 {
   display: block;
-  font: 600 19px/1.3 var(--font-body);
+  font: 600 clamp(18px, 1.8vw, 22px)/1.3 var(--font-body);
   letter-spacing: -.02em;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   color: var(--ink);
 }
 .lm-belief-card p {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
   color: var(--muted);
 }
-.lm-beliefs-controls { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
-.lm-beliefs-controls button {
+.lm-beliefs-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.lm-beliefs-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #d8dfd9;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 15px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color .25s ease, background-color .25s ease;
+}
+.lm-beliefs-arrow:hover {
+  border-color: var(--gold-dark);
+  background: #fafbfa;
+}
+.lm-beliefs-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lm-beliefs-dots button {
   width: 32px;
   height: 32px;
   display: grid;
@@ -281,8 +370,9 @@
   border: 0;
   background: transparent;
   padding: 4px;
+  cursor: pointer;
 }
-.lm-beliefs-controls button span {
+.lm-beliefs-dots button span {
   display: block;
   width: 6px;
   height: 6px;
@@ -290,9 +380,30 @@
   border-radius: 10px;
   transition: width .25s ease, background .25s ease;
 }
-.lm-beliefs-controls button[aria-current='true'] span {
-  width: 24px;
+.lm-beliefs-dots button[aria-current='true'] span {
+  width: 28px;
   background: var(--ink);
+}
+
+@media (max-width: 767px) {
+  .lm-beliefs-carousel {
+    --lm-belief-width: 86vw;
+    --lm-belief-gap: 16px;
+  }
+}
+
+.lm-light:not([data-enhanced='true']) .lm-beliefs-track {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  transform: none !important;
+}
+.lm-light:not([data-enhanced='true']) .lm-belief-card {
+  flex: initial;
+  opacity: 1;
+  transform: none;
+}
+.lm-light:not([data-enhanced='true']) .lm-beliefs-controls {
+  display: none;
 }
 
 @media (min-width: 768px) and (max-width: 1100px) {
@@ -357,14 +468,6 @@
   .lm-brand-card-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 100%; }
   .lm-brand-card { padding: 8px 10px; font-size: 11px; min-width: 0; }
   .lm-brand-card-name { font-size: 11px; }
-}
-@media (max-width: 900px) {
-  .lm-beliefs-track { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 600px) {
-  .lm-beliefs-track { grid-template-columns: 1fr; }
-  .lm-belief-card:not([data-active='true']) { display: none; }
-}
 @media (prefers-reduced-motion: reduce) {
   .lm-light-feature .lm-light-mini-card { animation: none !important; }
 }
