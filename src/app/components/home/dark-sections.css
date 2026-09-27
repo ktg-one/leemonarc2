@@ -121,6 +121,9 @@
   text-underline-offset: 4px;
 }
 .lm-dark-video-tile {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
   gap: 20px;
 }
 .lm-dark-video-wrap {
