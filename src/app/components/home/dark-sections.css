@@ -122,8 +122,8 @@
 }
 .lm-dark-video-tile {
   display: grid;
-  grid-template-columns: 1fr;
-  align-content: start;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
   gap: 20px;
 }
 .lm-dark-video-wrap {
@@ -530,6 +530,7 @@
   .lm-dark-copy { padding: 8px 8px 0; }
   .lm-dark-visual { min-height: 300px; }
   .lm-dark-tile, .lm-dark-decisions { min-height: 0; }
+  .lm-dark-video-tile { grid-template-columns: 1fr; }
   .lm-closing { min-height: 640px; }
   .lm-founder-main-card { padding: 20px; grid-template-columns: 1fr; }
   .lm-working-together-card { padding: 20px; grid-template-columns: 1fr; }
