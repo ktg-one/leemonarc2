@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { services } from "@/content/site";
+import { services, business } from "@/content/site";
 import "./dark-sections.css";
 
 const subscribeHydration = () => () => {};
@@ -40,7 +40,64 @@ const beliefsContent = [
   }
 ];
 
+
+const engagementStages = [
+  {
+    id: "stage-1",
+    label: "1. First Conversation",
+    stageName: "First Conversation · Bringing the Question",
+    quote: "“Tell us where your business stands, what you want to achieve, and the financial decisions on your mind. You don’t need to speak accounting language.”",
+    client: "Vivienne Lee · Chartered Accountant",
+    role: "Founder & Principal",
+    metrics: [
+      { label: "Initial SLA", value: "24h Response" },
+      { label: "Preparation Required", value: "Zero Brief Needed" },
+      { label: "Scope Alignment", value: "Clear Upfront Fees" },
+    ],
+  },
+  {
+    id: "stage-2",
+    label: "2. Diagnosis",
+    stageName: "Diagnosis · Finding What Needs Attention",
+    quote: "“We look beyond profit to examine cashflow timing, commitments, and structural dependencies before recommending the appropriate advisory scope.”",
+    client: "Growing Business Owner",
+    role: "Property & Healthcare Client",
+    metrics: [
+      { label: "Cashflow Clarity", value: "100% Transparent" },
+      { label: "Structure Review", value: "Risk & Tax Aligned" },
+      { label: "Key Focus", value: "Working Capital" },
+    ],
+  },
+  {
+    id: "stage-3",
+    label: "3. The Work",
+    stageName: "The Work · Connecting Numbers to Decisions",
+    quote: "“Whether testing hire assumptions, modeling acquisition scenarios, or setting up fractional CFO reporting, we put reliable accounts to work.”",
+    client: "Professional Services Partner",
+    role: "Fractional CFO & Advisory",
+    metrics: [
+      { label: "Reporting Frequency", value: "Tailored Monthly" },
+      { label: "Decision Support", value: "Active Guidance" },
+      { label: "Tax Integration", value: "Proactive Planning" },
+    ],
+  },
+  {
+    id: "stage-4",
+    label: "4. The Outcome",
+    stageName: "The Outcome · Know Your Numbers, Decide Next",
+    quote: "“You gain full options and confidence: knowing what you can afford, where cash is tied up, and how your business supports your long-term goals.”",
+    client: "Family Group & Enterprise Owner",
+    role: "Succession & Exit Client",
+    metrics: [
+      { label: "Capital Protected", value: "Optimised Growth" },
+      { label: "Owner Dependence", value: "Systematised" },
+      { label: "Next Step", value: "Decisive Action" },
+    ],
+  },
+];
+
 export function DarkSections() {
+  const [activeStage, setActiveStage] = useState(0);
   const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
@@ -213,11 +270,72 @@ export function DarkSections() {
           </article>
         </div>
 
+
+        {/* PAGE 6.5: DARK BANNER BREAK & EMAIL CTA */}
         <section className="section-shell lm-dark-invite" aria-labelledby="lm-dark-invite-heading">
+          <span className="home-kicker">Start the Conversation</span>
           <h2 id="lm-dark-invite-heading">Bring the question.</h2>
           <p>Share where your business stands, what you want to achieve and the questions on your mind.</p>
-          <Link className="lm-dark-pill" href="/contact">Tell us what’s on your mind <span aria-hidden="true">↗</span></Link>
+          <div className="lm-dark-invite-ctas">
+            <Link className="lm-dark-pill" href="/contact">
+              Tell us what’s on your mind <span aria-hidden="true">↗</span>
+            </Link>
+            <a href={`mailto:${business.email}`} className="lm-email-cta-link">
+              Email Vivienne Direct → <span className="lm-email-addr">{business.email}</span>
+            </a>
+          </div>
         </section>
+
+        {/* PAGE 7: PANORAMIC BACKDROP & INTERACTIVE TIMELINE QUOTES */}
+        <section className="section-shell lm-timeline-section" aria-labelledby="lm-timeline-heading">
+          <div className="lm-timeline-header">
+            <span className="home-kicker">Engagement Journey</span>
+            <h2 className="home-heading" id="lm-timeline-heading">How Lee Monarc puts your numbers to work.</h2>
+            <p className="lm-timeline-subhead">Explore the 4 stages from initial diagnostic conversation to decisive financial strategy.</p>
+          </div>
+
+          <div className="lm-timeline-tabs" role="tablist" aria-label="Engagement stages timeline">
+            {engagementStages.map((stage, index) => (
+              <button
+                key={stage.id}
+                type="button"
+                role="tab"
+                id={`lm-stage-tab-${index}`}
+                aria-selected={activeStage === index}
+                aria-controls="lm-stage-panel"
+                onClick={() => setActiveStage(index)}
+                className={`lm-timeline-tab-btn ${activeStage === index ? "lm-tab-active" : ""}`}
+              >
+                {stage.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="lm-timeline-card" id="lm-stage-panel" role="tabpanel" aria-labelledby={`lm-stage-tab-${activeStage}`}>
+            <span className="review-placeholder">Client engagement quote &amp; metrics · Illustrative preview</span>
+            <div className="lm-stage-badge">{engagementStages[activeStage].stageName}</div>
+            <blockquote className="lm-stage-quote">
+              <p>{engagementStages[activeStage].quote}</p>
+            </blockquote>
+            <div className="lm-stage-author">
+              <div className="lm-author-avatar">{engagementStages[activeStage].client.charAt(0)}</div>
+              <div>
+                <strong>{engagementStages[activeStage].client}</strong>
+                <span>{engagementStages[activeStage].role}</span>
+              </div>
+            </div>
+
+            <div className="lm-stage-metrics-strip">
+              {engagementStages[activeStage].metrics.map((m, idx) => (
+                <div key={idx} className="lm-metric-cell">
+                  <div className="lm-metric-val">{m.value}</div>
+                  <div className="lm-metric-lbl">{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <section className="lm-proof section-shell" aria-labelledby="lm-proof-heading" data-enhanced={enhanced}>
@@ -258,14 +376,24 @@ export function DarkSections() {
         </div>
       </section>
 
+
+      {/* PAGE 8: PANORAMIC CASTLE LANDSCAPE & CINEMATIC CLOSE HERO */}
       <section className="lm-closing" aria-labelledby="lm-closing-heading">
         <div className="section-shell lm-closing-inner">
-          <span className="review-placeholder">Mood image · not the office</span>
+          <span className="review-placeholder">Panoramic Banner · Strategic Horizon</span>
           <h2 className="home-heading" id="lm-closing-heading">What’s the decision on your mind?</h2>
           <p>Tell us what’s happening. You don’t need to know which service to ask for.</p>
-          <Link className="lm-dark-pill" href="/contact">Tell us what’s on your mind <span aria-hidden="true">↗</span></Link>
+          <div className="lm-closing-ctas">
+            <Link className="lm-dark-pill" href="/contact">
+              Tell us what’s on your mind <span aria-hidden="true">↗</span>
+            </Link>
+            <a href={`mailto:${business.email}`} className="lm-closing-email-pill">
+              {business.email} <span aria-hidden="true">✉</span>
+            </a>
+          </div>
         </div>
       </section>
+
     </>
   );
 }
