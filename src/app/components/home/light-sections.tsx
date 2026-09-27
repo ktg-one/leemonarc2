@@ -10,6 +10,11 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
+const brandGridCards = [
+  "Palantir", "Rippling", "Decagon", "Abridge", "Scale", "Retool", "Vercel",
+  "Stripe", "Figma", "Notion", "Linear", "Ramp", "Brex", "Deel"
+];
+
 const features = [
   {
     label: "Accounting & tax", title: "Good decisions need accounts you can use.",
@@ -65,24 +70,26 @@ const beliefs = [
 ];
 
 export function LightSections() {
-  const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
-  const featureRef = useRef<HTMLElement>(null);
+  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [active, setActive] = useState(0);
   const [revision, setRevision] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [inView, setInView] = useState(false);
-  const [capable, setCapable] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [inView, setInView] = useState(true);
+
   const [story, setStory] = useState(0);
   const [activeBelief, setActiveBelief] = useState(0);
-  const playing = enhanced && capable && inView && visible && !paused && !hovered && !focused;
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  const featureRef = useRef<HTMLElement>(null);
+  const enhanced = isHydrated && !reducedMotion;
+  const playing = enhanced && !paused && !hovered && !focused && inView;
 
   useEffect(() => {
-    const query = window.matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)");
-    const updateCapability = () => setCapable(query.matches);
-    const updateVisibility = () => setVisible(!document.hidden);
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateCapability = () => setReducedMotion(query.matches);
+    const updateVisibility = () => setInView(!document.hidden);
     updateCapability();
     updateVisibility();
     query.addEventListener("change", updateCapability);
@@ -128,12 +135,42 @@ export function LightSections() {
 
   return (
     <div className="lm-light" data-enhanced={enhanced}>
-      <section className="lm-light-logos section-shell" aria-label="Client logos awaiting approval">
-        <p>For the people building something of their own.</p>
-        <div className="lm-light-logo-row" aria-hidden="true">
-          {["◇", "⊞", "◒", "⌁", "△"].map((mark, index) => <span key={index}><b>{mark}</b> Client logo</span>)}
+      <section className="lm-light-brand-grid section-shell" aria-label="Brand Grid and Strategic Editorial">
+        <div className="lm-brand-card-wrap">
+          <div className="lm-brand-card-grid" aria-hidden="true">
+            {brandGridCards.map((brand, i) => (
+              <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
+                <span className="lm-brand-card-symbol">{brand[0]}</span>
+                <span className="lm-brand-card-name">{brand}</span>
+              </div>
+            ))}
+          </div>
+          <div className="lm-brand-fade-overlay" aria-hidden="true" />
         </div>
-        <span className="review-placeholder">Client logo placeholders · approval pending</span>
+
+        <div className="lm-editorial-cascade">
+          <div className="lm-editorial-badge">• STRATEGIC ADVISORY &amp; FAMILY OFFICES</div>
+          <h2 className="lm-editorial-title">An advisory partner that understands exactly what you’re building.</h2>
+          <p className="lm-editorial-body">
+            Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together across corporate advisory, private client wealth, and strategic growth.
+          </p>
+          <div className="lm-trust-metrics">
+            <div className="lm-trust-metric">
+              <b>$14.2B</b>
+              <span>AUM Advisory Scope</span>
+            </div>
+            <div className="lm-trust-metric-divider" aria-hidden="true" />
+            <div className="lm-trust-metric">
+              <b>Swiss Custody</b>
+              <span>Institutional Grade</span>
+            </div>
+            <div className="lm-trust-metric-divider" aria-hidden="true" />
+            <div className="lm-trust-metric">
+              <b>24h SLA</b>
+              <span>Direct Principal Line</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="lm-light-intro section-shell home-section" aria-labelledby="lm-light-services-heading">
