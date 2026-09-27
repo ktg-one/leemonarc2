@@ -8,6 +8,19 @@ test("homepage presents the advisory proposition", async ({ page }) => {
   await expect(page.getByRole("main")).toContainText("Accounting");
 });
 
+test("homepage review placeholders replace unsupported proof and metrics", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.getByText("Client logo placeholder").first()).toBeVisible();
+  await expect(page.getByText("Founder portrait placeholder")).toBeVisible();
+  await expect(page.getByText("CLIENT-TO-SUPPLY · Chartered Accountant")).toBeVisible();
+  await expect(page.getByText("$14.2B")).toHaveCount(0);
+  await expect(page.getByText("24h SLA")).toHaveCount(0);
+  await expect(page.getByText("Institutional Execution Speed")).toHaveCount(0);
+  await expect(page.getByText("Palantir")).toHaveCount(0);
+});
+
 test("service selectors explain each area without relying on animation", async ({
   page,
 }) => {
@@ -45,6 +58,16 @@ test("dark illustration can be paused", async ({ page }) => {
     "aria-pressed",
     "true",
   );
+});
+
+test("dark philosophy cards remain keyboard operable", async ({ page }) => {
+  await page.goto("/");
+  const card = page.locator(".lm-bento-grid-4").getByRole("button", {
+    name: /Profit and cash need separate conversations\./,
+  });
+  await card.focus();
+  await page.keyboard.press("Enter");
+  await expect(card).toHaveAttribute("aria-pressed", "true");
 });
 
 test("reduced motion keeps the homepage free of the rejected scroll scene", async ({ page }) => {

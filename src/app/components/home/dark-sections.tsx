@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import "./dark-sections.css";
 
@@ -45,7 +45,6 @@ export function DarkSections() {
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
   const [activeBentoTab, setActiveBentoTab] = useState(0);
-  const [bentoSearchQuery, setBentoSearchQuery] = useState("");
   const selected = services[proof];
 
   return (
@@ -64,13 +63,14 @@ export function DarkSections() {
           <div className="lm-founder-card-grid">
             <article className="lm-founder-main-card">
               <div className="lm-founder-photo-area">
-                <div className="lm-founder-avatar">
+                <div className="lm-founder-avatar" aria-hidden="true">
                   <span>VL</span>
                 </div>
+                <span className="review-placeholder">Founder portrait placeholder</span>
                 <div className="lm-founder-badge-list">
-                  <span className="lm-fbadge">13+ Years Advisory</span>
-                  <span className="lm-fbadge">Chartered Accountant</span>
-                  <span className="lm-fbadge">Perth · Australia-Wide</span>
+                  <span className="lm-fbadge">CLIENT-TO-SUPPLY · Years in advisory</span>
+                  <span className="lm-fbadge">CLIENT-TO-SUPPLY · Chartered Accountant</span>
+                  <span className="lm-fbadge">CLIENT-TO-SUPPLY · Perth and Australia-wide</span>
                 </div>
               </div>
               <div className="lm-founder-bio-area">
@@ -96,13 +96,13 @@ export function DarkSections() {
             <div className="lm-clarity-bento-column">
               <div className="lm-clarity-card">
                 <span className="lm-clarity-icon">⚡</span>
-                <h4>Institutional Execution Speed</h4>
-                <p>Direct principal access with 24-hour SLA response times on urgent financial advisory calls.</p>
+                <h4>Good decisions need accounts you can use.</h4>
+                <p>Reliable financial information helps you run your business with confidence. We support your bookkeeping, financial statements, tax returns and company compliance, while helping you plan ahead for tax.</p>
               </div>
               <div className="lm-clarity-card">
                 <span className="lm-clarity-icon">🔍</span>
-                <h4>Real-time Ledger Auditing</h4>
-                <p>Proactive cashflow and ledger reviews before major commitments, hires, or acquisitions.</p>
+                <h4>Ask the questions before you sign.</h4>
+                <p>Buying a business, changing your structure or preparing to sell can shape your future for years to come.</p>
               </div>
             </div>
           </div>
@@ -117,9 +117,11 @@ export function DarkSections() {
 
           <div className="lm-bento-grid-4">
             {beliefsContent.map((card, idx) => (
-              <article
+              <button
                 key={card.id}
+                type="button"
                 className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
+                aria-pressed={activeBentoTab === idx}
                 onClick={() => setActiveBentoTab(idx)}
                 onMouseEnter={() => setActiveBentoTab(idx)}
               >
@@ -129,7 +131,7 @@ export function DarkSections() {
                 <div className="lm-bento-footer">
                   <span className="lm-bento-highlight">✓ {card.highlight}</span>
                 </div>
-              </article>
+              </button>
             ))}
           </div>
 
