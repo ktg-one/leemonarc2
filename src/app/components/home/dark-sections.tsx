@@ -28,7 +28,7 @@ const beliefsContent = [
     id: "timing",
     badge: "STRATEGIC TIMING",
     title: "Advice is most useful while you still have options.",
-    body: "Before you hire, buy, restructure or sell, there’s an opportunity to test the assumptions. After you’ve committed, some of those choices have already gone.",
+    body: "Before you buy, restructure or sell, there’s an opportunity to test the assumptions. After you’ve committed, some of those choices have already gone.",
     highlight: "Pre-commitment scenario modelling"
   },
   {
@@ -50,9 +50,9 @@ const engagementStages = [
     client: "Vivienne Lee · Chartered Accountant",
     role: "Founder & Principal",
     metrics: [
-      { label: "Initial SLA", value: "24h Response" },
-      { label: "Preparation Required", value: "Zero Brief Needed" },
-      { label: "Scope Alignment", value: "Clear Upfront Fees" },
+      { label: "Response", value: "Timing confirmed in engagement letter" },
+      { label: "Preparation", value: "Bring your current question" },
+      { label: "Scope", value: "Quoted before work begins" },
     ],
   },
   {
@@ -63,8 +63,8 @@ const engagementStages = [
     client: "Growing Business Owner",
     role: "Property & Healthcare Client",
     metrics: [
-      { label: "Cashflow Clarity", value: "100% Transparent" },
-      { label: "Structure Review", value: "Risk & Tax Aligned" },
+      { label: "Cashflow Review", value: "Receipts and commitments mapped" },
+      { label: "Structure Review", value: "Risk and tax considered together" },
       { label: "Key Focus", value: "Working Capital" },
     ],
   },
@@ -152,8 +152,8 @@ export function DarkSections() {
             <div className="lm-clarity-bento-column">
               <div className="lm-clarity-card">
                 <span className="lm-clarity-icon">⚡</span>
-                <h4>Institutional Execution Speed</h4>
-                <p>Direct principal access with 24-hour SLA response times on urgent financial advisory calls.</p>
+                <h4>Direct Principal Access</h4>
+                <p>You work directly with Vivienne on advisory questions, scope and next steps.</p>
               </div>
               <div className="lm-clarity-card">
                 <span className="lm-clarity-icon">🔍</span>
@@ -218,7 +218,7 @@ export function DarkSections() {
         </section>
 
         <div className="section-shell lm-dark-grid">
-          <article className="lm-dark-wide">
+          <article className="lm-dark-tile lm-dark-story-tile">
             <div className="lm-dark-copy">
               <h2>Profit on paper won’t pay next month’s wages.</h2>
               <p>
@@ -228,6 +228,8 @@ export function DarkSections() {
                 Explore business advisory <span aria-hidden="true">↗</span>
               </Link>
             </div>
+          </article>
+          <article className="lm-dark-tile lm-dark-visual-tile">
             <div className="lm-dark-visual" data-paused={paused || undefined}>
               <span className="review-placeholder">Illustrative view · not a client report</span>
               <div className="lm-dark-layers" aria-hidden="true">
