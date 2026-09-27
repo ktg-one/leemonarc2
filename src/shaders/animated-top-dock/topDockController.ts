@@ -55,8 +55,19 @@ export function createTopDockController(
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
+  // Start the animation loop on-demand only when state is dirty and active.
+  const ensureLoop = () => {
+    if (!frame && enabled) {
+      frame = requestAnimationFrame(draw);
+    }
+  };
+
   const measure = () => {
     enabled = canAnimate();
+    if (frame) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    }
     /* released first, so the rest width is measured against the track's own
        content rather than against the width the last measurement pinned */
     if (getOptions().lockTrack) root.style.width = "";
@@ -101,6 +112,7 @@ export function createTopDockController(
     pointerActive = true;
     dirty = true;
     root.dataset.dockState = "active";
+    ensureLoop();
   };
 
   const focusItem = (item: HTMLElement) => {
@@ -114,6 +126,7 @@ export function createTopDockController(
     pointerActive = false;
     dirty = true;
     root.dataset.dockState = "focus";
+    ensureLoop();
   };
 
   const reset = () => {
@@ -123,6 +136,7 @@ export function createTopDockController(
       state.target = 0;
       state.element.dataset.dockNear = "false";
     });
+    ensureLoop();
   };
 
   /* the only place item geometry is written, so the three fits stay one
@@ -182,7 +196,13 @@ export function createTopDockController(
       if (!moving) {
         dirty = false;
         if (items.every((state) => state.target === 0)) root.dataset.dockState = "idle";
+        // Pause animation loop when spring simulation has settled to avoid idle CPU usage.
+        frame = 0;
+        return;
       }
+    } else if (!dirty) {
+      frame = 0;
+      return;
     }
     frame = requestAnimationFrame(draw);
   };
@@ -236,7 +256,6 @@ export function createTopDockController(
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
   measure();
-  frame = requestAnimationFrame(draw);
 
   return () => {
     released = true;
