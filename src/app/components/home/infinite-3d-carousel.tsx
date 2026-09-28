@@ -160,14 +160,19 @@ export function Infinite3DCarousel() {
       const isCore = dist < s.step * 1.4;
       const blur = isCore ? 0 : 2 * Math.pow(absNorm, 1.1);
       el.style.filter = `blur(${blur.toFixed(1)}px)`;
-      el.setAttribute("data-active", dist < s.step * 0.5 ? "true" : "false");
+
+      // Guard DOM attribute mutation to avoid unnecessary style invalidations per frame
+      const isActiveStr = dist < s.step * 0.5 ? "true" : "false";
+      if (el.getAttribute("data-active") !== isActiveStr) {
+        el.setAttribute("data-active", isActiveStr);
+      }
     }
 
     if (closestIdx !== -1 && closestIdx !== s.activeIndex) {
       s.activeIndex = closestIdx;
       setActiveIndex(closestIdx);
     }
-  }, [teamPillars.length, MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
+  }, [MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
 
   const snapTo = useCallback((index: number) => {
     const s = stateRef.current;
@@ -181,7 +186,7 @@ export function Infinite3DCarousel() {
 
     s.targetScrollX = mod(s.scrollX + delta * s.step, s.track);
     s.vx = delta * 400; // Impel towards direction
-  }, [teamPillars.length]);
+  }, []);
 
   // Main animation tick
   useEffect(() => {
@@ -241,7 +246,7 @@ export function Infinite3DCarousel() {
     };
   }, [hydrated, isPaused, isHovered, GAP, FRICTION, updateCardTransforms]);
 
-  // Canvas ambient gradient background
+  // Canvas ambient gradient background - optimized to prevent forced synchronous layout
   useEffect(() => {
     if (!hydrated) return;
     const canvas = canvasRef.current;
@@ -252,14 +257,27 @@ export function Infinite3DCarousel() {
     let bgRaf: number;
     let angle = 0;
 
-    const renderBg = () => {
-      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-        canvas.width = canvas.clientWidth || 800;
-        canvas.height = canvas.clientHeight || 500;
-      }
+    // Cache canvas dimensions on resize rather than querying clientWidth/clientHeight inside 60FPS RAF loop
+    const syncCanvasSize = () => {
+      const w = canvas.clientWidth || 800;
+      const h = canvas.clientHeight || 500;
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
+    };
 
-      const w = canvas.width;
-      const h = canvas.height;
+    syncCanvasSize();
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => syncCanvasSize());
+      resizeObserver.observe(canvas);
+    } else {
+      window.addEventListener("resize", syncCanvasSize);
+    }
+
+    const renderBg = () => {
+      const w = canvas.width || 800;
+      const h = canvas.height || 500;
       angle += 0.003;
 
       const cx = w * 0.5 + Math.cos(angle) * (w * 0.15);
@@ -280,6 +298,11 @@ export function Infinite3DCarousel() {
 
     return () => {
       cancelAnimationFrame(bgRaf);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", syncCanvasSize);
+      }
     };
   }, [hydrated]);
 
