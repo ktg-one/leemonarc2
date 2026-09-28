@@ -50,7 +50,7 @@ const engagementStages = [
     stageName: "First Conversation · Bringing the Question",
     quote: "“Tell us where your business stands, what you want to achieve, and the financial decisions on your mind. You don’t need to speak accounting language.”",
     client: "Vivienne Lee · Chartered Accountant",
-    role: "Founder & Principal",
+    role: "Founder",
     metrics: [
       { label: "Response", value: "Timing confirmed in engagement letter" },
       { label: "Preparation", value: "Bring your current question" },

@@ -1,20 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import type React from "react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import { heroMedia } from "@/content/hero-media";
 import "./light-sections.css";
 
 const CADENCE = 6000;
+
+function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.15 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ref]);
+  return inView;
+}
 const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
-const brandGridCards = [
-  "Palantir", "Rippling", "Decagon", "Abridge", "Scale", "Retool", "Vercel",
-  "Stripe", "Figma", "Notion", "Linear", "Ramp", "Brex", "Deel"
-];
+// Client logos not yet supplied: CANON-BRIEF marks tech logos as template residue.
+const brandGridCards = Array.from({ length: 14 }, (_, i) => `Client logo ${String(i + 1).padStart(2, "0")}`);
 
 const features = [
   {
@@ -84,8 +95,19 @@ export function LightSections() {
   const [reducedMotion, setReducedMotion] = useState(false);
 
   const featureRef = useRef<HTMLElement>(null);
+  const beliefsRef = useRef<HTMLElement>(null);
+  const storiesRef = useRef<HTMLElement>(null);
+  const beliefsInView = useSectionInView(beliefsRef);
+  const storiesInView = useSectionInView(storiesRef);
   const enhanced = isHydrated && !reducedMotion;
+  const pageVisible = useSyncExternalStore(
+    (notify) => { document.addEventListener("visibilitychange", notify); return () => document.removeEventListener("visibilitychange", notify); },
+    () => !document.hidden,
+    () => true,
+  );
   const playing = enhanced && !paused && !hovered && !focused && inView;
+  const beliefsPlaying = enhanced && !hovered && !focused && beliefsInView && pageVisible;
+  const storiesPlaying = enhanced && !hovered && !focused && storiesInView && pageVisible;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -103,6 +125,24 @@ export function LightSections() {
       observer.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setInterval(() => setActive((index) => (index + 1) % features.length), CADENCE);
+    return () => window.clearInterval(timer);
+  }, [playing, revision]);
+
+  useEffect(() => {
+    if (!storiesPlaying) return;
+    const timer = window.setInterval(() => setStory((index) => (index + 1) % stories.length), 5500);
+    return () => window.clearInterval(timer);
+  }, [storiesPlaying]);
+
+  useEffect(() => {
+    if (!beliefsPlaying) return;
+    const timer = window.setInterval(() => setActiveBelief((index) => (index + 1) % beliefs.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [beliefsPlaying]);
 
 
   const selectFeature = (index: number) => {
@@ -124,34 +164,35 @@ export function LightSections() {
           <div className="lm-brand-card-grid" aria-hidden="true">
             {brandGridCards.map((brand, i) => (
               <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
-                <span className="lm-brand-card-symbol">{brand[0]}</span>
+                <span className="lm-brand-card-symbol">·</span>
                 <span className="lm-brand-card-name">{brand}</span>
               </div>
             ))}
           </div>
           <div className="lm-brand-fade-overlay" aria-hidden="true" />
+          <span className="review-placeholder">Client logos · client to supply</span>
         </div>
 
         <div className="lm-editorial-cascade">
-          <div className="lm-editorial-badge">• STRATEGIC ADVISORY &amp; FAMILY OFFICES</div>
+          <div className="lm-editorial-badge">• CHARTERED ACCOUNTANT · PERTH AND AUSTRALIA WIDE</div>
           <h2 className="lm-editorial-title">An advisory partner that understands exactly what you’re building.</h2>
           <p className="lm-editorial-body">
-            Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together across corporate advisory, private client wealth, and strategic growth.
+            Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
           </p>
           <div className="lm-trust-metrics">
             <div className="lm-trust-metric">
-              <b>$14.2B</b>
-              <span>AUM Advisory Scope</span>
+              <b>13 years</b>
+              <span>Accounting and advisory</span>
             </div>
             <div className="lm-trust-metric-divider" aria-hidden="true" />
             <div className="lm-trust-metric">
-              <b>Swiss Custody</b>
-              <span>Institutional Grade</span>
+              <b>Chartered Accountant</b>
+              <span>Vivienne Lee</span>
             </div>
             <div className="lm-trust-metric-divider" aria-hidden="true" />
             <div className="lm-trust-metric">
-              <b>24h SLA</b>
-              <span>Direct Principal Line</span>
+              <b>Perth</b>
+              <span>Australia-wide</span>
             </div>
           </div>
         </div>
@@ -280,7 +321,7 @@ export function LightSections() {
         <Link href="/services/fractional-cfo-advisory">See how financial advisory can help <span aria-hidden="true">↗</span></Link>
       </section>
 
-      <section className="lm-light-beliefs section-shell home-section" aria-labelledby="lm-light-beliefs-heading"
+      <section ref={beliefsRef} className="lm-light-beliefs section-shell home-section" aria-labelledby="lm-light-beliefs-heading"
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
         <div className="lm-beliefs-header">
@@ -350,7 +391,7 @@ export function LightSections() {
 
       <section className="lm-light-cta section-shell home-section" aria-labelledby="lm-light-cta-heading"><h2 id="lm-light-cta-heading" className="home-heading">Start with the question<br />you can’t answer yet.</h2><Link className="pill-link" href="/contact">Let’s start a conversation <span aria-hidden="true">↗</span></Link></section>
 
-      <section className="lm-light-stories section-shell" aria-labelledby="lm-light-stories-heading"
+      <section ref={storiesRef} className="lm-light-stories section-shell" aria-labelledby="lm-light-stories-heading"
         onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
         <div className="lm-light-stories-heading"><div><p className="home-kicker">The work, in perspective</p><h2 className="home-heading" id="lm-light-stories-heading">Every business has a story.</h2></div><span className="review-placeholder">Client stories awaiting approval</span></div>

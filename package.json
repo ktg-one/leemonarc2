@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
     "doctor": "npx react-doctor@latest",
-    "lint:paraform": "node scripts/lint-paraform-standard.js"
+    "lint:paraform": "node scripts/lint-paraform-standard.js",
+    "lint:motion": "playwright test tests/motion-contract.spec.ts"
   },
   "dependencies": {
     "@designcodeio/threeui": "^1.2.0",

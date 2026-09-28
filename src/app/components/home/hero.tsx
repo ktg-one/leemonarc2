@@ -9,15 +9,14 @@ import "@designcodeio/threeui/style.css";
 import "./hero.css";
 
 const brandBadges = [
-  { label: "Professional Services", href: "/who-we-help", icon: "⚖" },
-  { label: "Property & Construction", href: "/who-we-help", icon: "🏛" },
-  { label: "Healthcare & Medical", href: "/who-we-help", icon: "✦" },
-  { label: "Technology & High-Growth", href: "/who-we-help", icon: "⚡" },
-  { label: "Engineering & Fabrication", href: "/who-we-help", icon: "⚙" },
-  { label: "Care Services & NDIS", href: "/who-we-help", icon: "♥" },
-  { label: "Beauty & Wellness", href: "/who-we-help", icon: "◈" },
-  { label: "Hospitality & Tourism", href: "/who-we-help", icon: "🍸" },
-  { label: "Family Offices & Groups", href: "/who-we-help", icon: "⬡" },
+  { label: "Professional services", href: "/who-we-help", icon: "⚖" },
+  { label: "Property and construction", href: "/who-we-help", icon: "🏛" },
+  { label: "Healthcare", href: "/who-we-help", icon: "✦" },
+  { label: "Technology", href: "/who-we-help", icon: "⚡" },
+  { label: "Engineering and manufacturing", href: "/who-we-help", icon: "⚙" },
+  { label: "Care services", href: "/who-we-help", icon: "♥" },
+  { label: "Beauty and wellness", href: "/who-we-help", icon: "◈" },
+  { label: "Hospitality", href: "/who-we-help", icon: "🍸" },
 ];
 
 export function Hero() {
@@ -141,15 +140,15 @@ export function Hero() {
           <div className="lm-hero-card-body">
             <span className="lm-hero-example">Illustrative conversation</span>
             <h2>Your advisor, in your corner</h2>
-            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · Principal</p>
+            <p className="lm-hero-notification-from">Vivienne Lee · Chartered Accountant · Founder</p>
             <p className="lm-hero-quote">
               “Good news! Your cashflow forecast shows room for your next hire. Let’s walk through the numbers before you commit.”
             </p>
           </div>
 
           <div className="lm-hero-card-footer">
-            <span className="lm-hero-stat-pill">Working Capital: <b>+$142k Safe</b></span>
-            <span className="lm-hero-stat-pill">Scope: <b>Quoted Upfront</b></span>
+            <span className="lm-hero-stat-pill">Topic: <b>Cashflow forecast</b></span>
+            <span className="lm-hero-stat-pill">Fees: <b>Explained upfront</b></span>
           </div>
         </aside>
       </div>

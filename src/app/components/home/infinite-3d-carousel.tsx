@@ -21,15 +21,14 @@ export interface TeamPillar {
 export const teamPillars: TeamPillar[] = [
   {
     id: "vivienne",
-    badge: "Founder & Principal",
+    badge: "Founder",
     tag: "Chartered Accountant",
     title: "Vivienne Lee",
-    role: "CA ANZ · Registered Tax Agent",
-    image: "/images/vivienne-profile.jpg",
-    bio: "Over a decade advising private business owners, medical practitioners, and family enterprises across Western Australia on structural cashflow, proactive tax governance, and commercial strategy.",
+    role: "Chartered Accountant · Perth and Australia wide",
+    bio: "After becoming a partner in her early 30s, Chartered Accountant Vivienne Lee went on to establish Lee Monarc. She brings 13 years of experience and a belief that accounting should help shape what happens next.",
     href: "/about",
     linkLabel: "Read Vivienne's background",
-    highlights: ["Chartered Accountants ANZ", "Registered Tax Agent", "Perth WA"],
+    highlights: ["Chartered Accountant", "13 years experience", "Perth WA"],
     isFounder: true,
   },
   {
