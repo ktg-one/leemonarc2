@@ -167,7 +167,7 @@ export function Infinite3DCarousel() {
       s.activeIndex = closestIdx;
       setActiveIndex(closestIdx);
     }
-  }, [teamPillars.length, MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
+  }, [MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
 
   const snapTo = useCallback((index: number) => {
     const s = stateRef.current;
@@ -181,18 +181,20 @@ export function Infinite3DCarousel() {
 
     s.targetScrollX = mod(s.scrollX + delta * s.step, s.track);
     s.vx = delta * 400; // Impel towards direction
-  }, [teamPillars.length]);
+  }, []);
 
-  // Main animation tick
+  // Main animation tick (optimized with IntersectionObserver & visibility pause)
   useEffect(() => {
     if (!hydrated) return;
 
-    const measure = () => {
-      const container = containerRef.current;
-      const sample = cardElementsRef.current[0];
-      if (!container) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-      const rect = container.getBoundingClientRect();
+    const measure = () => {
+      const sample = cardElementsRef.current[0];
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
       const s = stateRef.current;
       s.vwHalf = rect.width * 0.5 || 600;
       if (sample) {
@@ -204,13 +206,28 @@ export function Infinite3DCarousel() {
     };
 
     measure();
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", measure, { passive: true });
 
     // Initial positioning
     updateCardTransforms();
 
     let lastTime = performance.now();
     const s = stateRef.current;
+    let isIntersecting = true;
+
+    const startLoop = () => {
+      if (!s.rafId && isIntersecting && !document.hidden) {
+        lastTime = performance.now();
+        s.rafId = requestAnimationFrame(loop);
+      }
+    };
+
+    const stopLoop = () => {
+      if (s.rafId) {
+        cancelAnimationFrame(s.rafId);
+        s.rafId = 0;
+      }
+    };
 
     const loop = (now: number) => {
       const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.1) : 0;
@@ -230,27 +247,71 @@ export function Infinite3DCarousel() {
       }
 
       updateCardTransforms();
-      s.rafId = requestAnimationFrame(loop);
+
+      if (isIntersecting && !document.hidden) {
+        s.rafId = requestAnimationFrame(loop);
+      } else {
+        s.rafId = 0;
+      }
     };
 
-    s.rafId = requestAnimationFrame(loop);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopLoop();
+      } else if (isIntersecting) {
+        startLoop();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    startLoop();
 
     return () => {
       window.removeEventListener("resize", measure);
-      cancelAnimationFrame(s.rafId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      observer.disconnect();
+      stopLoop();
     };
   }, [hydrated, isPaused, isHovered, GAP, FRICTION, updateCardTransforms]);
 
-  // Canvas ambient gradient background
+  // Canvas ambient gradient background (optimized with IntersectionObserver & visibility pause)
   useEffect(() => {
     if (!hydrated) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let bgRaf: number;
+    let bgRaf = 0;
     let angle = 0;
+    let isIntersecting = true;
+
+    const startBg = () => {
+      if (!bgRaf && isIntersecting && !document.hidden) {
+        bgRaf = requestAnimationFrame(renderBg);
+      }
+    };
+
+    const stopBg = () => {
+      if (bgRaf) {
+        cancelAnimationFrame(bgRaf);
+        bgRaf = 0;
+      }
+    };
 
     const renderBg = () => {
       if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
@@ -273,13 +334,41 @@ export function Infinite3DCarousel() {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      bgRaf = requestAnimationFrame(renderBg);
+      if (isIntersecting && !document.hidden) {
+        bgRaf = requestAnimationFrame(renderBg);
+      } else {
+        bgRaf = 0;
+      }
     };
 
-    bgRaf = requestAnimationFrame(renderBg);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          startBg();
+        } else {
+          stopBg();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopBg();
+      } else if (isIntersecting) {
+        startBg();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    startBg();
 
     return () => {
-      cancelAnimationFrame(bgRaf);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      observer.disconnect();
+      stopBg();
     };
   }, [hydrated]);
 
