@@ -103,6 +103,8 @@ export function Infinite3DCarousel() {
   const SCALE_RANGE = 0.10;
   const GAP = 36;          // 36px physical spacing guarantees zero overlap
 
+  const isVisibleRef = useRef(false);
+
   const stateRef = useRef({
     scrollX: 0,
     vx: 0,
@@ -160,14 +162,19 @@ export function Infinite3DCarousel() {
       const isCore = dist < s.step * 1.4;
       const blur = isCore ? 0 : 2 * Math.pow(absNorm, 1.1);
       el.style.filter = `blur(${blur.toFixed(1)}px)`;
-      el.setAttribute("data-active", dist < s.step * 0.5 ? "true" : "false");
+
+      // Avoid redundant setAttribute calls on high-frequency animation frames
+      const activeStr = dist < s.step * 0.5 ? "true" : "false";
+      if (el.getAttribute("data-active") !== activeStr) {
+        el.setAttribute("data-active", activeStr);
+      }
     }
 
     if (closestIdx !== -1 && closestIdx !== s.activeIndex) {
       s.activeIndex = closestIdx;
       setActiveIndex(closestIdx);
     }
-  }, [teamPillars.length, MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
+  }, [MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
 
   const snapTo = useCallback((index: number) => {
     const s = stateRef.current;
@@ -181,14 +188,15 @@ export function Infinite3DCarousel() {
 
     s.targetScrollX = mod(s.scrollX + delta * s.step, s.track);
     s.vx = delta * 400; // Impel towards direction
-  }, [teamPillars.length]);
+  }, []);
 
-  // Main animation tick
+  // Main animation tick with IntersectionObserver pausing when off-screen
   useEffect(() => {
     if (!hydrated) return;
 
+    const container = containerRef.current;
+
     const measure = () => {
-      const container = containerRef.current;
       const sample = cardElementsRef.current[0];
       if (!container) return;
 
@@ -213,6 +221,11 @@ export function Infinite3DCarousel() {
     const s = stateRef.current;
 
     const loop = (now: number) => {
+      if (!isVisibleRef.current) {
+        s.rafId = 0;
+        return;
+      }
+
       const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.1) : 0;
       lastTime = now;
 
@@ -233,15 +246,30 @@ export function Infinite3DCarousel() {
       s.rafId = requestAnimationFrame(loop);
     };
 
-    s.rafId = requestAnimationFrame(loop);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !s.rafId) {
+          lastTime = performance.now();
+          s.rafId = requestAnimationFrame(loop);
+        }
+      },
+      { threshold: 0 }
+    );
+
+    if (container) {
+      observer.observe(container);
+    }
 
     return () => {
       window.removeEventListener("resize", measure);
-      cancelAnimationFrame(s.rafId);
+      if (container) observer.unobserve(container);
+      if (s.rafId) cancelAnimationFrame(s.rafId);
+      s.rafId = 0;
     };
   }, [hydrated, isPaused, isHovered, GAP, FRICTION, updateCardTransforms]);
 
-  // Canvas ambient gradient background
+  // Canvas ambient gradient background with visibility pausing
   useEffect(() => {
     if (!hydrated) return;
     const canvas = canvasRef.current;
@@ -249,10 +277,15 @@ export function Infinite3DCarousel() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let bgRaf: number;
+    let bgRaf = 0;
     let angle = 0;
 
     const renderBg = () => {
+      if (!isVisibleRef.current) {
+        bgRaf = 0;
+        return;
+      }
+
       if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
         canvas.width = canvas.clientWidth || 800;
         canvas.height = canvas.clientHeight || 500;
@@ -276,10 +309,25 @@ export function Infinite3DCarousel() {
       bgRaf = requestAnimationFrame(renderBg);
     };
 
-    bgRaf = requestAnimationFrame(renderBg);
+    const container = containerRef.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !bgRaf) {
+          bgRaf = requestAnimationFrame(renderBg);
+        }
+      },
+      { threshold: 0 }
+    );
+
+    if (container) {
+      observer.observe(container);
+    }
 
     return () => {
-      cancelAnimationFrame(bgRaf);
+      if (container) observer.unobserve(container);
+      if (bgRaf) cancelAnimationFrame(bgRaf);
+      bgRaf = 0;
     };
   }, [hydrated]);
 

@@ -1,0 +1,3 @@
+## 2026-09-28 - IntersectionObserver Visibility Tracking across Animation Effects
+**Learning:** When using `IntersectionObserver` across multiple `useEffect` animation loops in a single component, each observer callback must independently update shared visibility refs (e.g. `isVisibleRef.current = entry.isIntersecting`). Otherwise, observer execution order differences can cause one loop to see `isVisibleRef.current === false` when scrolling into view and halt permanently.
+**Action:** Always update `isVisibleRef.current = entry.isIntersecting` inside every observer callback attached to the component container.
