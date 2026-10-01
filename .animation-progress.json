@@ -1,0 +1,75 @@
+[
+  {
+    "id": "header-nav-links",
+    "component": "src/app/components/site-header.tsx",
+    "type": "hover/underline",
+    "status": "completed",
+    "note": "Implemented GPU-accelerated dynamic gold underline indicators with transform: scaleX and opacity transitions, micro-interaction hover transforms on CTA buttons, 1.2s smooth scroll background transitions, and full prefers-reduced-motion compliance."
+  },
+  {
+    "id": "hero-advisory-card",
+    "component": "src/app/components/home/hero.tsx",
+    "type": "scroll/float-parallax",
+    "status": "pending"
+  },
+  {
+    "id": "hero-industry-pills",
+    "component": "src/app/components/home/hero.tsx",
+    "type": "hover/pill-scale",
+    "status": "pending"
+  },
+  {
+    "id": "light-sections-brand-grid",
+    "component": "src/app/components/home/light-sections.tsx",
+    "type": "scroll/fade-slide",
+    "status": "pending"
+  },
+  {
+    "id": "light-sections-feature-scrubber",
+    "component": "src/app/components/home/light-sections.tsx",
+    "type": "hover/scrubber-slider",
+    "status": "pending"
+  },
+  {
+    "id": "dark-sections-matrix-cards",
+    "component": "src/app/components/home/dark-sections.tsx",
+    "type": "animated-lines/border-trail",
+    "status": "pending"
+  },
+  {
+    "id": "3d-team-carousel-depth",
+    "component": "src/app/components/home/infinite-3d-carousel.tsx",
+    "type": "scroll/3d-parallax",
+    "status": "pending"
+  },
+  {
+    "id": "custom-cursor-magnetic",
+    "component": "src/app/components/cursor.tsx",
+    "type": "micro-interaction/magnetic",
+    "status": "pending"
+  },
+  {
+    "id": "services-card-hover",
+    "component": "src/app/services/page.tsx",
+    "type": "hover/card-lift",
+    "status": "pending"
+  },
+  {
+    "id": "who-we-help-section-reveal",
+    "component": "src/app/who-we-help/page.tsx",
+    "type": "scroll/fade-slide",
+    "status": "pending"
+  },
+  {
+    "id": "contact-form-ripple",
+    "component": "src/app/contact/page.tsx",
+    "type": "micro-interaction/focus-ripple",
+    "status": "pending"
+  },
+  {
+    "id": "footer-nav-underline",
+    "component": "src/app/components/chrome.tsx",
+    "type": "hover/underline",
+    "status": "pending"
+  }
+]
