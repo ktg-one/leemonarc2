@@ -182,14 +182,14 @@
 
 /* Dark hero state */
 .lm-nav[data-home='true'][data-scrolled='false'] .lm-nav-dock .atd-modern__bar {
-  background: linear-gradient(180deg, rgba(20, 25, 23, 0.88), rgba(12, 16, 14, 0.94));
-  border: 1px solid rgba(204, 168, 91, 0.25);
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(204, 168, 91, 0.15);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .lm-nav[data-home='true'][data-scrolled='false'] .lm-nav-dock .atd-modern__item {
-  color: #c9d0cb;
+  color: #ffffff;
 }
 .lm-nav-dock .atd-modern__item {
   position: relative;
@@ -222,13 +222,14 @@
 .lm-nav[data-home='true'][data-scrolled='false'] .lm-nav-dock .atd-modern__item[data-dock-near="true"],
 .lm-nav[data-home='true'][data-scrolled='false'] .lm-nav-dock .atd-modern__item:hover {
   color: #ffffff;
-  background: rgba(204, 168, 91, 0.14);
-  border-color: rgba(204, 168, 91, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 .lm-nav[data-home='true'][data-scrolled='false'] .lm-nav-dock .atd-modern__cta {
-  background: linear-gradient(135deg, #cca85b, #b38f44);
-  color: #0c100e;
-  box-shadow: 0 4px 16px rgba(204, 168, 91, 0.35);
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: none;
 }
 
 /* Scrolled or on light pages */

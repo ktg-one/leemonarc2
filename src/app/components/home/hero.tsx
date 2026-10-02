@@ -9,14 +9,14 @@ import "@designcodeio/threeui/style.css";
 import "./hero.css";
 
 const brandBadges = [
-  { label: "Professional services", href: "/who-we-help", icon: "⚖" },
-  { label: "Property and construction", href: "/who-we-help", icon: "🏛" },
-  { label: "Healthcare", href: "/who-we-help", icon: "✦" },
-  { label: "Technology", href: "/who-we-help", icon: "⚡" },
-  { label: "Engineering and manufacturing", href: "/who-we-help", icon: "⚙" },
-  { label: "Care services", href: "/who-we-help", icon: "♥" },
-  { label: "Beauty and wellness", href: "/who-we-help", icon: "◈" },
-  { label: "Hospitality", href: "/who-we-help", icon: "🍸" },
+  { label: "Professional services", href: "/who-we-help" },
+  { label: "Property and construction", href: "/who-we-help" },
+  { label: "Healthcare", href: "/who-we-help" },
+  { label: "Technology", href: "/who-we-help" },
+  { label: "Engineering and manufacturing", href: "/who-we-help" },
+  { label: "Care services", href: "/who-we-help" },
+  { label: "Beauty and wellness", href: "/who-we-help" },
+  { label: "Hospitality", href: "/who-we-help" },
 ];
 
 export function Hero() {
@@ -160,10 +160,7 @@ export function Hero() {
             >
               <RectangleButtons
                 variant="halvorsen-arrow-pill"
-                mode="light"
-                hue={93}
-                saturation={1.06}
-                brightness={1.16}
+                mode="dark"
               />
             </div>
 
@@ -205,7 +202,6 @@ export function Hero() {
           <div className="lm-brand-marquee-track">
             {[...brandBadges, ...brandBadges].map((badge, idx) => (
               <Link href={badge.href} key={`${badge.label}-${idx}`} className="lm-hero-badge-card">
-                <span className="lm-hero-badge-icon" aria-hidden="true">{badge.icon}</span>
                 <span className="lm-hero-badge-label">{badge.label}</span>
                 <span className="lm-hero-badge-arrow" aria-hidden="true">↗</span>
               </Link>

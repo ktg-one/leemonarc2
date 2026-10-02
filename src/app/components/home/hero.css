@@ -14,7 +14,7 @@
 }
 
 .lm-hero-copy { max-width: 600px; }
-.lm-hero-eyebrow { font: 500 11px/1.5 var(--font-body); letter-spacing: .03em; margin-bottom: 20px; color: #cca85b; text-transform: uppercase; }
+.lm-hero-eyebrow { font: 500 11px/1.5 var(--font-body); letter-spacing: .03em; margin-bottom: 20px; color: #ffffff; text-transform: uppercase; }
 .lm-hero h1 { font: 400 clamp(42px, 3.6vw, 56px)/1.08 var(--font-display); letter-spacing: -.025em; text-wrap: balance; max-width: 570px; margin: 0 0 22px; color: #ffffff; }
 .lm-hero-description { max-width: 510px; font-size: 15px; line-height: 1.7; color: #e1e5e5; margin-bottom: 30px; }
 
@@ -62,7 +62,7 @@
 }
 
 .lm-hero-secondary:hover {
-  color: #cca85b;
+  color: #ffffff;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -120,9 +120,9 @@
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #cca85b;
-  background: rgba(204, 168, 91, 0.14);
-  border: 1px solid rgba(204, 168, 91, 0.32);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   padding: 4px 11px;
   border-radius: 999px;
 }
@@ -140,9 +140,9 @@
   height: 28px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(204, 168, 91, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  color: #cca85b;
+  color: #ffffff;
   font-size: 13px;
 }
 
@@ -340,7 +340,7 @@
 }
 
 .lm-hero-media-status { font-size: 11px; }
-.lm-hero :is(a,button):focus-visible { outline: 2px solid #cca85b; outline-offset: 5px; }
+.lm-hero :is(a,button):focus-visible { outline: 2px solid #ffffff; outline-offset: 5px; }
 
 @media (max-width: 1000px) {
   .lm-hero-inner { gap: 32px; }

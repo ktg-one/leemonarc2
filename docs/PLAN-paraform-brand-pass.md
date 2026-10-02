@@ -12,8 +12,10 @@ This brief overrides the brass direction in `docs/DESIGN.md` and `AGENTS.md` for
 
 Kev's read of the client changed: she likes flashy (her first site brief was neon). The "restraint" theory above is unconfirmed and may be wrong. Until she answers the A/B question:
 
-- **Run only tasks 8, 9 and 10.** They are safe under either theory.
-- **Tasks 1 to 7 are ON HOLD.** Do not start them.
+- Kev decided to build the restrained version anyway as a second option, on branch `paraform-brand-pass` only. `main` keeps the gold version.
+- **Done on the branch:** tasks 1, 2, 3 and 7, plus hero gold accents switched to white (the advisor name line in the hero card is the one gold accent left).
+- **Task 4 is cancelled.** The hero card stays; removing it changes structure.
+- **Still open:** 5, 6, 8, 9, 10. Keep effort small; 5 and 6 wait for the client's answer.
 - **Do not change the site structure.** No sections added, removed or reordered, and no components deleted. The structure follows Paraform and stays as it is.
 
 ## Rules
