@@ -53,6 +53,28 @@ export function createTopDockController(
   let dirty = false;
   let frame = 0;
 
+  // Cached bounding geometries to eliminate layout thrashing on high-frequency pointermove events
+  let cachedRootLeft = 0;
+  let cachedRootRight = 0;
+  let cachedRootTop = 0;
+  let cachedMaxBottom = 0;
+  let cachedItemCenters: number[] = [];
+
+  const updateCachedBounds = () => {
+    const rootRect = root.getBoundingClientRect();
+    cachedRootLeft = rootRect.left;
+    cachedRootRight = rootRect.right;
+    cachedRootTop = rootRect.top;
+    const vertical = getOptions().axis === "y";
+    let maxBottom = rootRect.bottom;
+    cachedItemCenters = items.map((state) => {
+      const rect = state.element.getBoundingClientRect();
+      if (rect.bottom > maxBottom) maxBottom = rect.bottom;
+      return vertical ? rect.top + rect.height * 0.5 : rect.left + rect.width * 0.5;
+    });
+    cachedMaxBottom = maxBottom;
+  };
+
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
   const measure = () => {
@@ -82,6 +104,7 @@ export function createTopDockController(
     if (getOptions().lockTrack) root.style.width = `${root.getBoundingClientRect().width.toFixed(2)}px`;
     root.dataset.dockState = enabled ? "idle" : "static";
     root.dataset.dockMax = "0.00";
+    updateCachedBounds();
   };
 
   const scheduleDraw = () => {
@@ -96,10 +119,8 @@ export function createTopDockController(
     const options = getOptions();
     const vertical = options.axis === "y";
     const pointer = vertical ? clientY : clientX;
-    const rects = items.map((state) => state.element.getBoundingClientRect());
     for (let index = 0; index < items.length; index += 1) {
-      const rect = rects[index];
-      const center = vertical ? rect.top + rect.height * 0.5 : rect.left + rect.width * 0.5;
+      const center = cachedItemCenters[index] ?? 0;
       const proximity = clamp(1 - Math.abs(pointer - center) / Math.max(1, options.proximity), 0, 1);
       const influence = proximity * proximity * (3 - 2 * proximity);
       items[index].target = influence;
@@ -199,10 +220,7 @@ export function createTopDockController(
   const onPointerMove = (event: PointerEvent) => setTargets(event.clientX, event.clientY);
   const onWindowPointerMove = (event: PointerEvent) => {
     if (!pointerActive) return;
-    const rootRect = root.getBoundingClientRect();
-    const itemRects = items.map((state) => state.element.getBoundingClientRect());
-    const bottom = Math.max(rootRect.bottom, ...itemRects.map((rect) => rect.bottom));
-    const outside = event.clientX < rootRect.left || event.clientX > rootRect.right || event.clientY < rootRect.top || event.clientY > bottom;
+    const outside = event.clientX < cachedRootLeft || event.clientX > cachedRootRight || event.clientY < cachedRootTop || event.clientY > cachedMaxBottom;
     if (outside) reset();
   };
   const onFocusIn = (event: FocusEvent) => {
@@ -242,6 +260,8 @@ export function createTopDockController(
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
+  window.addEventListener("scroll", updateCachedBounds, { passive: true });
+  window.addEventListener("resize", updateCachedBounds, { passive: true });
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
   measure();
@@ -259,6 +279,8 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
+    window.removeEventListener("scroll", updateCachedBounds);
+    window.removeEventListener("resize", updateCachedBounds);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
   };
