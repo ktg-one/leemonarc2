@@ -22,12 +22,50 @@ const brandBadges = [
 export function Hero() {
   const router = useRouter();
   const section = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const togglePlayback = useRef<() => void>(() => {});
   const [playing, setPlaying] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [failed, setFailed] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const sec = section.current;
+    if (!card || !sec) return;
+
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (preference.matches) return;
+
+    let visible = false;
+
+    const handleScroll = () => {
+      if (!visible || preference.matches) return;
+      const rect = sec.getBoundingClientRect();
+      const heroHeight = rect.height || 655;
+      const scrollProgress = Math.max(0, Math.min(1, -rect.top / heroHeight));
+      const parallaxY = scrollProgress * 42;
+      card.style.setProperty("--hero-card-y", `${parallaxY.toFixed(2)}px`);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) handleScroll();
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(sec);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const media = video.current;
@@ -129,7 +167,7 @@ export function Hero() {
         </div>
 
         {/* Elevated Glass Advisory Preview Card */}
-        <aside className="lm-hero-notification" aria-label="Illustrative advisory conversation">
+        <aside ref={cardRef} className="lm-hero-notification" aria-label="Illustrative advisory conversation">
           <div className="lm-hero-card-header">
             <span className="lm-hero-live-pill">
               <span className="lm-hero-live-dot" aria-hidden="true" /> Live Advisory Preview
