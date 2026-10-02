@@ -84,6 +84,13 @@ export function createTopDockController(
     root.dataset.dockMax = "0.00";
   };
 
+  const scheduleDraw = () => {
+    dirty = true;
+    if (!frame && enabled) {
+      frame = requestAnimationFrame(draw);
+    }
+  };
+
   const setTargets = (clientX: number, clientY: number) => {
     if (!enabled) return;
     const options = getOptions();
@@ -99,7 +106,7 @@ export function createTopDockController(
       items[index].element.dataset.dockNear = influence > 0.08 ? "true" : "false";
     }
     pointerActive = true;
-    dirty = true;
+    scheduleDraw();
     root.dataset.dockState = "active";
   };
 
@@ -112,17 +119,17 @@ export function createTopDockController(
       state.element.dataset.dockNear = state.target > 0.08 ? "true" : "false";
     });
     pointerActive = false;
-    dirty = true;
+    scheduleDraw();
     root.dataset.dockState = "focus";
   };
 
   const reset = () => {
     pointerActive = false;
-    dirty = true;
     items.forEach((state) => {
       state.target = 0;
       state.element.dataset.dockNear = "false";
     });
+    scheduleDraw();
   };
 
   /* the only place item geometry is written, so the three fits stay one
@@ -161,28 +168,30 @@ export function createTopDockController(
   };
 
   const draw = () => {
-    if (enabled && dirty) {
-      const options = getOptions();
-      let moving = false;
-      let maxValue = 0;
-      for (const state of items) {
-        state.velocity += (state.target - state.value) * options.spring;
-        state.velocity *= options.damping;
-        state.value += state.velocity;
-        if (Math.abs(state.target - state.value) < 0.001 && Math.abs(state.velocity) < 0.001) {
-          state.value = state.target;
-          state.velocity = 0;
-        } else {
-          moving = true;
-        }
-        maxValue = Math.max(maxValue, clamp(state.value, 0, 1.08));
+    frame = 0;
+    if (!enabled || !dirty) return;
+
+    const options = getOptions();
+    let moving = false;
+    let maxValue = 0;
+    for (const state of items) {
+      state.velocity += (state.target - state.value) * options.spring;
+      state.velocity *= options.damping;
+      state.value += state.velocity;
+      if (Math.abs(state.target - state.value) < 0.001 && Math.abs(state.velocity) < 0.001) {
+        state.value = state.target;
+        state.velocity = 0;
+      } else {
+        moving = true;
       }
-      applyLayout();
-      root.dataset.dockMax = maxValue.toFixed(2);
-      if (!moving) {
-        dirty = false;
-        if (items.every((state) => state.target === 0)) root.dataset.dockState = "idle";
-      }
+      maxValue = Math.max(maxValue, clamp(state.value, 0, 1.08));
+    }
+    applyLayout();
+    root.dataset.dockMax = maxValue.toFixed(2);
+    if (!moving) {
+      dirty = false;
+      if (items.every((state) => state.target === 0)) root.dataset.dockState = "idle";
+      return;
     }
     frame = requestAnimationFrame(draw);
   };
@@ -236,7 +245,7 @@ export function createTopDockController(
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
   measure();
-  frame = requestAnimationFrame(draw);
+  scheduleDraw();
 
   return () => {
     released = true;
