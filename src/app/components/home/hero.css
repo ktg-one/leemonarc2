@@ -82,6 +82,24 @@
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  will-change: transform;
+  transform: translateY(calc(var(--lm-card-scroll-offset, 0px)));
+  animation: lmHeroCardFloat 6s ease-in-out infinite alternate;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+@keyframes lmHeroCardFloat {
+  0% {
+    transform: translateY(calc(var(--lm-card-scroll-offset, 0px) + 0px));
+  }
+  100% {
+    transform: translateY(calc(var(--lm-card-scroll-offset, 0px) - 10px));
+  }
+}
+
+.lm-hero-notification:hover {
+  border-color: rgba(204, 168, 91, 0.4);
+  box-shadow: 0 32px 72px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .lm-hero-card-header {
@@ -319,4 +337,9 @@
 @media (prefers-reduced-motion: reduce) {
   .lm-hero-media video { visibility: hidden; }
   .lm-brand-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; }
+  .lm-hero-notification {
+    animation: none;
+    transform: none;
+    transition: none;
+  }
 }
