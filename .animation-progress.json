@@ -10,7 +10,8 @@
     "id": "hero-advisory-card",
     "component": "src/app/components/home/hero.tsx",
     "type": "scroll/float-parallax",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated scroll float-parallax using requestAnimationFrame custom CSS properties with 1.2s smooth transform transitions, continuous 6s ambient floating keyframe animation, hover depth styling, and full prefers-reduced-motion compliance."
   },
   {
     "id": "hero-industry-pills",
