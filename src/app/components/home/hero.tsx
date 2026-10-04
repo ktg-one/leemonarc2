@@ -22,12 +22,44 @@ const brandBadges = [
 export function Hero() {
   const router = useRouter();
   const section = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const togglePlayback = useRef<() => void>(() => {});
   const [playing, setPlaying] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [failed, setFailed] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const sec = section.current;
+    if (!card || !sec) return;
+
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (preference.matches) return;
+
+    let rafId = 0;
+    const handleScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const rect = sec.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        if (rect.bottom > 0 && rect.top < viewportHeight) {
+          const scrollProgress = -rect.top;
+          const parallaxY = Math.min(Math.max(scrollProgress * 0.14, -60), 120);
+          card.style.setProperty("--lm-hero-parallax-y", `${parallaxY.toFixed(1)}px`);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const media = video.current;
@@ -129,7 +161,7 @@ export function Hero() {
         </div>
 
         {/* Elevated Glass Advisory Preview Card */}
-        <aside className="lm-hero-notification" aria-label="Illustrative advisory conversation">
+        <aside ref={cardRef} className="lm-hero-notification" aria-label="Illustrative advisory conversation">
           <div className="lm-hero-card-header">
             <span className="lm-hero-live-pill">
               <span className="lm-hero-live-dot" aria-hidden="true" /> Live Advisory Preview
