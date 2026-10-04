@@ -1,14 +1,9 @@
 
 > lee-monarc-site@0.1.0 start /app
-> next start --hostname 127.0.0.1 --port 3100 -p 3100
+> next start --hostname 127.0.0.1 --port 3100
 
-⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use 127.0.0.1:3100
-    at <unknown> (Error: listen EADDRINUSE: address already in use 127.0.0.1:3100) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '127.0.0.1',
-  port: 3100
-}
- ELIFECYCLE  Command failed with exit code 1.
+▲ Next.js 16.3.5
+- Local:         http://127.0.0.1:3100
+- Network:       http://127.0.0.1:3100
+✓ Ready in 205ms
+✓ Running next.config.mjs took 23ms
