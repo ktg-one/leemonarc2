@@ -122,13 +122,24 @@ export function Infinite3DCarousel() {
     activeIndex: 0,
     targetScrollX: 0,
     isSnapping: false,
+    // Cached render state to prevent redundant DOM updates when position is stationary
+    lastRenderedScrollX: -1,
+    lastRenderedVwHalf: -1,
   });
 
-  const updateCardTransforms = useCallback(() => {
+  const updateCardTransforms = useCallback((force = false) => {
     const s = stateRef.current;
     const cards = cardElementsRef.current;
     const count = teamPillars.length;
     if (!cards || cards.length === 0) return;
+
+    // Skip expensive math and DOM mutations if scroll position and viewport haven't changed
+    if (!force && s.scrollX === s.lastRenderedScrollX && s.vwHalf === s.lastRenderedVwHalf) {
+      return;
+    }
+
+    s.lastRenderedScrollX = s.scrollX;
+    s.lastRenderedVwHalf = s.vwHalf;
 
     const half = s.track / 2;
     let closestIdx = -1;
@@ -176,6 +187,8 @@ export function Infinite3DCarousel() {
     }
   }, [MAX_ROTATION, MAX_DEPTH, MIN_SCALE, SCALE_RANGE]);
 
+  const startLoopRef = useRef<() => void>(() => {});
+
   const snapTo = useCallback((index: number) => {
     const s = stateRef.current;
     const count = teamPillars.length;
@@ -188,6 +201,7 @@ export function Infinite3DCarousel() {
 
     s.targetScrollX = mod(s.scrollX + delta * s.step, s.track);
     s.vx = delta * 400; // Impel towards direction
+    startLoopRef.current();
   }, []);
 
   // Main animation tick with IntersectionObserver pausing when off-screen
@@ -209,13 +223,14 @@ export function Infinite3DCarousel() {
       }
       s.step = s.cardW + GAP;
       s.track = teamPillars.length * s.step;
+      updateCardTransforms(true);
     };
 
     measure();
     window.addEventListener("resize", measure);
 
     // Initial positioning
-    updateCardTransforms();
+    updateCardTransforms(true);
 
     let lastTime = performance.now();
     const s = stateRef.current;
@@ -235,23 +250,44 @@ export function Infinite3DCarousel() {
           s.vx = 22; // subtle continuous drift
         }
 
-        s.scrollX = mod(s.scrollX + s.vx * dt, s.track);
+        if (s.vx !== 0) {
+          s.scrollX = mod(s.scrollX + s.vx * dt, s.track);
 
-        const decay = Math.pow(FRICTION, dt * 60);
-        s.vx *= decay;
-        if (Math.abs(s.vx) < 0.1) s.vx = 0;
+          const decay = Math.pow(FRICTION, dt * 60);
+          s.vx *= decay;
+          if (Math.abs(s.vx) < 0.1) s.vx = 0;
+        }
       }
 
       updateCardTransforms();
+
+      // On-demand rAF scheduling: halt loop when idle to eliminate CPU drain and main thread work
+      if (s.vx === 0 && !s.dragging && (isPaused || isHovered)) {
+        s.rafId = 0;
+        return;
+      }
+
       s.rafId = requestAnimationFrame(loop);
     };
+
+    const startLoop = () => {
+      if (!s.rafId && isVisibleRef.current) {
+        lastTime = performance.now();
+        s.rafId = requestAnimationFrame(loop);
+      }
+    };
+    startLoopRef.current = startLoop;
+
+    // Trigger loop when unpaused / unhovered
+    if (!isPaused && !isHovered) {
+      startLoop();
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         isVisibleRef.current = entry.isIntersecting;
-        if (entry.isIntersecting && !s.rafId) {
-          lastTime = performance.now();
-          s.rafId = requestAnimationFrame(loop);
+        if (entry.isIntersecting) {
+          startLoop();
         }
       },
       { threshold: 0 }
@@ -339,6 +375,7 @@ export function Infinite3DCarousel() {
     s.lastT = performance.now();
     s.lastDelta = 0;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    startLoopRef.current();
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -353,6 +390,7 @@ export function Infinite3DCarousel() {
     s.lastDelta = dx / dt;
     s.lastX = e.clientX;
     s.lastT = now;
+    startLoopRef.current();
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
@@ -365,12 +403,14 @@ export function Infinite3DCarousel() {
       // ignore
     }
     s.vx = -s.lastDelta * DRAG_SENS;
+    startLoopRef.current();
   };
 
   const handleWheel = (e: React.WheelEvent) => {
     const s = stateRef.current;
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     s.vx += delta * WHEEL_SENS * 12;
+    startLoopRef.current();
   };
 
   return (
