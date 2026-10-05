@@ -258,31 +258,50 @@
   letter-spacing: 0.02em;
   text-decoration: none;
   white-space: nowrap;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow, border-color, background-color;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.4s ease;
 }
 
 .lm-hero-badge-icon {
   font-size: 13px;
   color: #cca85b;
+  will-change: transform;
+  transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  transition: transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lm-hero-badge-arrow {
   font-size: 11px;
   opacity: 0.6;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.4s ease, transform 1.0s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lm-hero-badge-card:hover {
   border-color: rgba(204, 168, 91, 0.85);
-  background: rgba(204, 168, 91, 0.14);
+  background: rgba(204, 168, 91, 0.16);
   color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transform: translate3d(0, -3px, 0) scale(1.05);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(204, 168, 91, 0.25);
+}
+
+.lm-hero-badge-card:hover .lm-hero-badge-icon {
+  transform: scale(1.15) rotate(4deg);
 }
 
 .lm-hero-badge-card:hover .lm-hero-badge-arrow {
   opacity: 1;
-  transform: translate(2px, -2px);
+  transform: translate3d(3px, -3px, 0);
+}
+
+.lm-hero-badge-card:active {
+  transform: translate3d(0, -1px, 0) scale(0.98);
 }
 
 .lm-hero-media-footer {
@@ -341,4 +360,10 @@
   .lm-hero-media video { visibility: hidden; }
   .lm-brand-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; }
   .lm-hero-notification { animation: none; transform: none; transition: none; }
+  .lm-hero-badge-card,
+  .lm-hero-badge-icon,
+  .lm-hero-badge-arrow {
+    transition: none !important;
+    transform: none !important;
+  }
 }
