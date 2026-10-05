@@ -118,7 +118,6 @@ export function Infinite3DCarousel() {
     lastT: 0,
     lastDelta: 0,
     rafId: 0,
-    bgRafId: 0,
     activeIndex: 0,
     targetScrollX: 0,
     isSnapping: false,
@@ -190,25 +189,39 @@ export function Infinite3DCarousel() {
     s.vx = delta * 400; // Impel towards direction
   }, []);
 
-  // Main animation tick with IntersectionObserver pausing when off-screen
+  // Combined animation loop: updates card transforms & renders background canvas without layout thrashing
   useEffect(() => {
     if (!hydrated) return;
 
     const container = containerRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+
+    let angle = 0;
 
     const measure = () => {
-      const sample = cardElementsRef.current[0];
       if (!container) return;
-
       const rect = container.getBoundingClientRect();
       const s = stateRef.current;
       s.vwHalf = rect.width * 0.5 || 600;
+
+      const sample = cardElementsRef.current[0];
       if (sample) {
         const sampleRect = sample.getBoundingClientRect();
         if (sampleRect.width > 0) s.cardW = sampleRect.width;
       }
       s.step = s.cardW + GAP;
       s.track = teamPillars.length * s.step;
+
+      // Update canvas dimensions during resize to prevent layout thrashing inside rAF
+      if (canvas && rect.width > 0 && rect.height > 0) {
+        const newW = Math.round(rect.width);
+        const newH = Math.round(rect.height);
+        if (canvas.width !== newW || canvas.height !== newH) {
+          canvas.width = newW;
+          canvas.height = newH;
+        }
+      }
     };
 
     measure();
@@ -224,6 +237,24 @@ export function Infinite3DCarousel() {
       if (!isVisibleRef.current) {
         s.rafId = 0;
         return;
+      }
+
+      // Render ambient canvas background without forcing layout recalculations
+      if (canvas && ctx && canvas.width > 0 && canvas.height > 0) {
+        const w = canvas.width;
+        const h = canvas.height;
+        angle += 0.003;
+
+        const cx = w * 0.5 + Math.cos(angle) * (w * 0.15);
+        const cy = h * 0.5 + Math.sin(angle * 0.8) * (h * 0.15);
+
+        const grad = ctx.createRadialGradient(cx, cy, 20, w * 0.5, h * 0.5, Math.max(w, h) * 0.6);
+        grad.addColorStop(0, "rgba(204, 168, 91, 0.12)"); // Subtle bronze glow
+        grad.addColorStop(0.4, "rgba(24, 34, 55, 0.45)"); // Deep luxury navy
+        grad.addColorStop(1, "rgba(8, 14, 22, 0.95)");   // Background darkness
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
       }
 
       const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.1) : 0;
@@ -268,68 +299,6 @@ export function Infinite3DCarousel() {
       s.rafId = 0;
     };
   }, [hydrated, isPaused, isHovered, GAP, FRICTION, updateCardTransforms]);
-
-  // Canvas ambient gradient background with visibility pausing
-  useEffect(() => {
-    if (!hydrated) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let bgRaf = 0;
-    let angle = 0;
-
-    const renderBg = () => {
-      if (!isVisibleRef.current) {
-        bgRaf = 0;
-        return;
-      }
-
-      if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-        canvas.width = canvas.clientWidth || 800;
-        canvas.height = canvas.clientHeight || 500;
-      }
-
-      const w = canvas.width;
-      const h = canvas.height;
-      angle += 0.003;
-
-      const cx = w * 0.5 + Math.cos(angle) * (w * 0.15);
-      const cy = h * 0.5 + Math.sin(angle * 0.8) * (h * 0.15);
-
-      const grad = ctx.createRadialGradient(cx, cy, 20, w * 0.5, h * 0.5, Math.max(w, h) * 0.6);
-      grad.addColorStop(0, "rgba(204, 168, 91, 0.12)"); // Subtle bronze glow
-      grad.addColorStop(0.4, "rgba(24, 34, 55, 0.45)"); // Deep luxury navy
-      grad.addColorStop(1, "rgba(8, 14, 22, 0.95)");   // Background darkness
-
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      bgRaf = requestAnimationFrame(renderBg);
-    };
-
-    const container = containerRef.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisibleRef.current = entry.isIntersecting;
-        if (entry.isIntersecting && !bgRaf) {
-          bgRaf = requestAnimationFrame(renderBg);
-        }
-      },
-      { threshold: 0 }
-    );
-
-    if (container) {
-      observer.observe(container);
-    }
-
-    return () => {
-      if (container) observer.unobserve(container);
-      if (bgRaf) cancelAnimationFrame(bgRaf);
-      bgRaf = 0;
-    };
-  }, [hydrated]);
 
   // Pointer drag & mouse wheel events
   const handlePointerDown = (e: React.PointerEvent) => {
