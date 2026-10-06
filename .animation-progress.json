@@ -17,7 +17,8 @@
     "id": "hero-industry-pills",
     "component": "src/app/components/home/hero.tsx",
     "type": "hover/pill-scale",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated pill scale and hover micro-interactions (translate3d, scale 1.05, gold glow, icon rotation/scale, arrow offset) on .lm-hero-badge-card, while maintaining continuous marquee motion and full prefers-reduced-motion compliance."
   },
   {
     "id": "light-sections-brand-grid",
