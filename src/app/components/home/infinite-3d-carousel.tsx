@@ -86,6 +86,8 @@ export function Infinite3DCarousel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const cardElementsRef = useRef<(HTMLElement | null)[]>([]);
+  // Cache per-card style string outputs to eliminate redundant DOM writes and DOM getters during animation ticks
+  const cardCacheRef = useRef<Array<{ transform: string; zIndex: string; filter: string; active: string }>>([]);
 
   const hydrated = useSyncExternalStore(subscribe, getClientHydrated, getServerHydrated);
 
@@ -127,6 +129,7 @@ export function Infinite3DCarousel() {
   const updateCardTransforms = useCallback(() => {
     const s = stateRef.current;
     const cards = cardElementsRef.current;
+    const cache = cardCacheRef.current;
     const count = teamPillars.length;
     if (!cards || cards.length === 0) return;
 
@@ -137,6 +140,11 @@ export function Infinite3DCarousel() {
     for (let i = 0; i < count; i++) {
       const el = cards[i];
       if (!el) continue;
+
+      if (!cache[i]) {
+        cache[i] = { transform: "", zIndex: "", filter: "", active: "" };
+      }
+      const c = cache[i];
 
       let pos = (i * s.step) - s.scrollX;
       if (pos < -half) pos += s.track;
@@ -156,17 +164,31 @@ export function Infinite3DCarousel() {
       const tz = invNorm * MAX_DEPTH;
       const scale = MIN_SCALE + invNorm * SCALE_RANGE;
 
-      el.style.transform = `translate3d(${pos.toFixed(1)}px, -50%, ${tz.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-      el.style.zIndex = String(1000 + Math.round(tz));
+      const newTransform = `translate3d(${pos.toFixed(1)}px, -50%, ${tz.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      if (c.transform !== newTransform) {
+        el.style.transform = newTransform;
+        c.transform = newTransform;
+      }
+
+      const newZIndex = String(1000 + Math.round(tz));
+      if (c.zIndex !== newZIndex) {
+        el.style.zIndex = newZIndex;
+        c.zIndex = newZIndex;
+      }
 
       const isCore = dist < s.step * 1.4;
       const blur = isCore ? 0 : 2 * Math.pow(absNorm, 1.1);
-      el.style.filter = `blur(${blur.toFixed(1)}px)`;
+      const newFilter = `blur(${blur.toFixed(1)}px)`;
+      if (c.filter !== newFilter) {
+        el.style.filter = newFilter;
+        c.filter = newFilter;
+      }
 
-      // Avoid redundant setAttribute calls on high-frequency animation frames
+      // Avoid redundant setAttribute calls and DOM getters on high-frequency animation frames
       const activeStr = dist < s.step * 0.5 ? "true" : "false";
-      if (el.getAttribute("data-active") !== activeStr) {
+      if (c.active !== activeStr) {
         el.setAttribute("data-active", activeStr);
+        c.active = activeStr;
       }
     }
 
