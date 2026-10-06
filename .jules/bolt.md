@@ -9,3 +9,7 @@
 ## 2026-09-28 - Caching Style Output Strings for 3D Carousel Cards
 **Learning:** Continuously computing and assigning inline CSS transform/filter strings and querying `getAttribute` during high-frequency rAF animation loops creates Garbage Collection pressure and JS-to-DOM boundary overhead.
 **Action:** Use a ref cache (`cardCacheRef`) to store previously formatted style/attribute strings per card and only mutate the DOM element properties when the newly computed value differs from the cache.
+
+## 2026-10-06 - Off-Screen Scroll Handler Guarding & CSS Value Caching
+**Learning:** Parallax or scroll-position event handlers attached to `window` often invoke `getBoundingClientRect()` on every scroll event, forcing synchronous layout recalculations even when the element is off-screen. Additionally, setting CSS custom properties or inline styles on every scroll frame without checking if the formatted string value changed creates redundant DOM mutations.
+**Action:** Guard scroll event handlers with an `IntersectionObserver` `isIntersecting` flag so `getBoundingClientRect()` is skipped when off-screen, and cache formatted CSS string values before calling `style.setProperty`.
