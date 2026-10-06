@@ -39,15 +39,34 @@ export function Hero() {
     if (preference.matches) return;
 
     let rafId = 0;
+    let isIntersecting = false;
+    let lastParallaxY = "";
+
+    // Optimization: Skip getBoundingClientRect() layout measurement when hero is off-screen
+    const observer = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry.isIntersecting;
+      if (isIntersecting) {
+        handleScroll();
+      }
+    }, { threshold: 0 });
+    observer.observe(sec);
+
     const handleScroll = () => {
+      if (!isIntersecting) return;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
+        if (!isIntersecting) return;
         const rect = sec.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         if (rect.bottom > 0 && rect.top < viewportHeight) {
           const scrollProgress = -rect.top;
           const parallaxY = Math.min(Math.max(scrollProgress * 0.14, -60), 120);
-          card.style.setProperty("--lm-hero-parallax-y", `${parallaxY.toFixed(1)}px`);
+          const formattedY = `${parallaxY.toFixed(1)}px`;
+          // Cache check: only update DOM property when the CSS value actually changes
+          if (lastParallaxY !== formattedY) {
+            lastParallaxY = formattedY;
+            card.style.setProperty("--lm-hero-parallax-y", formattedY);
+          }
         }
       });
     };
@@ -56,6 +75,7 @@ export function Hero() {
     handleScroll();
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", handleScroll);
     };
