@@ -26,6 +26,8 @@ type DockItemState = {
   element: HTMLElement;
   baseWidth: number;
   baseHeight: number;
+  baseLeft: number;
+  baseTop: number;
   value: number;
   velocity: number;
   target: number;
@@ -43,6 +45,8 @@ export function createTopDockController(
     element,
     baseWidth: 0,
     baseHeight: 0,
+    baseLeft: 0,
+    baseTop: 0,
     value: 0,
     velocity: 0,
     target: 0,
@@ -52,11 +56,66 @@ export function createTopDockController(
   let pointerActive = false;
   let dirty = false;
   let frame = 0;
+  let cachedRootRect: DOMRect | null = null;
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
+  const getGeometry = (options: TopDockOptions) => {
+    const vertical = options.axis === "y";
+    const centers: number[] = [];
+    let maxBottom = 0;
+
+    if (options.distribute && !vertical) {
+      const weights = items.map((state) => state.baseWidth + options.widthGrowth * clamp(state.value, 0, 1.08));
+      const total = weights.reduce((sum, weight) => sum + weight, 0);
+      const natural = items.reduce((sum, state) => sum + state.baseWidth, 0);
+      const track = root.clientWidth >= natural ? root.clientWidth : 0;
+      let currentLeft = 0;
+
+      for (let i = 0; i < items.length; i++) {
+        const state = items[i];
+        const w = track ? (track * weights[i]) / total : state.baseWidth;
+        const left = track ? currentLeft : state.baseLeft;
+        centers.push(left + w * 0.5);
+        currentLeft += w;
+        maxBottom = Math.max(maxBottom, state.baseTop + state.baseHeight);
+      }
+    } else if (vertical) {
+      let currentShift = 0;
+      for (let i = 0; i < items.length; i++) {
+        const state = items[i];
+        const value = clamp(state.value, 0, 1.08);
+        const extraH = options.heightGrowth * value;
+        const h = state.baseHeight + extraH;
+        const top = state.baseTop + currentShift;
+        centers.push(top + h * 0.5);
+        currentShift += extraH;
+        maxBottom = Math.max(maxBottom, top + h);
+      }
+    } else {
+      let currentShift = 0;
+      for (let i = 0; i < items.length; i++) {
+        const state = items[i];
+        const value = clamp(state.value, 0, 1.08);
+        const isLogo = state.element.classList.contains("animated-top-dock__logo");
+        const extraWidth = isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
+        const extraHeight = isLogo ? options.heightGrowth * (14 / 16) : options.heightGrowth;
+        const w = state.baseWidth + extraWidth * value;
+        const h = state.baseHeight + extraHeight * value;
+        const left = state.baseLeft + currentShift;
+        centers.push(left + w * 0.5);
+        currentShift += extraWidth * value;
+        const bottom = state.baseTop + h + value * options.drop;
+        maxBottom = Math.max(maxBottom, bottom);
+      }
+    }
+
+    return { centers, maxBottom };
+  };
+
   const measure = () => {
     enabled = canAnimate();
+    cachedRootRect = null;
     /* released first, so the rest width is measured against the track's own
        content rather than against the width the last measurement pinned */
     if (getOptions().lockTrack) root.style.width = "";
@@ -66,10 +125,13 @@ export function createTopDockController(
       state.element.style.transform = "";
       state.element.dataset.dockNear = "false";
     }
+    const rootRect = root.getBoundingClientRect();
     for (const state of items) {
       const rect = state.element.getBoundingClientRect();
       state.baseWidth = rect.width;
       state.baseHeight = rect.height;
+      state.baseLeft = rect.left - rootRect.left;
+      state.baseTop = rect.top - rootRect.top;
       state.value = 0;
       state.velocity = 0;
       state.target = 0;
@@ -96,10 +158,15 @@ export function createTopDockController(
     const options = getOptions();
     const vertical = options.axis === "y";
     const pointer = vertical ? clientY : clientX;
-    const rects = items.map((state) => state.element.getBoundingClientRect());
+
+    // Cache root bounding rect and compute item centers analytically to prevent
+    // high-frequency DOM layout thrashing during pointer movement.
+    cachedRootRect = root.getBoundingClientRect();
+    const { centers } = getGeometry(options);
+    const rootOrigin = vertical ? cachedRootRect.top : cachedRootRect.left;
+
     for (let index = 0; index < items.length; index += 1) {
-      const rect = rects[index];
-      const center = vertical ? rect.top + rect.height * 0.5 : rect.left + rect.width * 0.5;
+      const center = rootOrigin + centers[index];
       const proximity = clamp(1 - Math.abs(pointer - center) / Math.max(1, options.proximity), 0, 1);
       const influence = proximity * proximity * (3 - 2 * proximity);
       items[index].target = influence;
@@ -199,10 +266,15 @@ export function createTopDockController(
   const onPointerMove = (event: PointerEvent) => setTargets(event.clientX, event.clientY);
   const onWindowPointerMove = (event: PointerEvent) => {
     if (!pointerActive) return;
-    const rootRect = root.getBoundingClientRect();
-    const itemRects = items.map((state) => state.element.getBoundingClientRect());
-    const bottom = Math.max(rootRect.bottom, ...itemRects.map((rect) => rect.bottom));
-    const outside = event.clientX < rootRect.left || event.clientX > rootRect.right || event.clientY < rootRect.top || event.clientY > bottom;
+    const options = getOptions();
+    const rootRect = cachedRootRect || root.getBoundingClientRect();
+    const { maxBottom } = getGeometry(options);
+    const bottom = Math.max(rootRect.bottom, rootRect.top + maxBottom);
+    const outside =
+      event.clientX < rootRect.left ||
+      event.clientX > rootRect.right ||
+      event.clientY < rootRect.top ||
+      event.clientY > bottom;
     if (outside) reset();
   };
   const onFocusIn = (event: FocusEvent) => {
