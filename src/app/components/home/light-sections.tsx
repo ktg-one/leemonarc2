@@ -20,6 +20,25 @@ function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
   }, [ref]);
   return inView;
 }
+
+function useHasBeenInView(ref: React.RefObject<HTMLElement | null>) {
+  const [hasBeenInView, setHasBeenInView] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasBeenInView(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ref]);
+  return hasBeenInView;
+}
 const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
@@ -97,6 +116,8 @@ export function LightSections() {
   const featureRef = useRef<HTMLElement>(null);
   const beliefsRef = useRef<HTMLElement>(null);
   const storiesRef = useRef<HTMLElement>(null);
+  const brandGridRef = useRef<HTMLDivElement>(null);
+  const brandGridVisible = useHasBeenInView(brandGridRef);
   const beliefsInView = useSectionInView(beliefsRef);
   const storiesInView = useSectionInView(storiesRef);
   const enhanced = isHydrated && !reducedMotion;
@@ -160,10 +181,18 @@ export function LightSections() {
   return (
     <div className="lm-light" data-enhanced={enhanced}>
       <section className="lm-light-brand-grid section-shell" aria-label="Brand Grid and Strategic Editorial">
-        <div className="lm-brand-card-wrap">
-          <div className="lm-brand-card-grid" aria-hidden="true">
+        <div className="lm-brand-card-wrap" ref={brandGridRef}>
+          <div
+            className="lm-brand-card-grid"
+            data-in-view={!enhanced || brandGridVisible ? "true" : "false"}
+            aria-hidden="true"
+          >
             {brandGridCards.map((brand, i) => (
-              <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
+              <div
+                key={brand}
+                className="lm-brand-card"
+                style={{ "--card-index": i } as React.CSSProperties}
+              >
                 <span className="lm-brand-card-symbol">·</span>
                 <span className="lm-brand-card-name">{brand}</span>
               </div>
