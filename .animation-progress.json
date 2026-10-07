@@ -24,7 +24,8 @@
     "id": "light-sections-brand-grid",
     "component": "src/app/components/home/light-sections.tsx",
     "type": "scroll/fade-slide",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated staggered scroll-triggered fade/slide-in entrance animations (1.2s ease with 0.05s stagger delay) and hover micro-interactions (translate3d, scale 1.02, gold glow) on brand grid cards, with full prefers-reduced-motion compliance."
   },
   {
     "id": "light-sections-feature-scrubber",
