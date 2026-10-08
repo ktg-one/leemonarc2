@@ -56,7 +56,7 @@ export function createTopDockController(
   let pointerActive = false;
   let dirty = false;
   let frame = 0;
-  let cachedRootRect: DOMRect | null = null;
+  let cachedRootRect: Pick<DOMRect, "left" | "top" | "width" | "height"> | null = null;
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
@@ -64,12 +64,15 @@ export function createTopDockController(
     const vertical = options.axis === "y";
     const centers: number[] = [];
     let maxBottom = 0;
+    let horizontalGrowth = 0;
+    let verticalGrowth = 0;
 
     if (options.distribute && !vertical) {
       const weights = items.map((state) => state.baseWidth + options.widthGrowth * clamp(state.value, 0, 1.08));
       const total = weights.reduce((sum, weight) => sum + weight, 0);
       const natural = items.reduce((sum, state) => sum + state.baseWidth, 0);
-      const track = root.clientWidth >= natural ? root.clientWidth : 0;
+      const trackWidth = cachedRootRect?.width ?? 0;
+      const track = trackWidth >= natural ? trackWidth : 0;
       let currentLeft = 0;
 
       for (let i = 0; i < items.length; i++) {
@@ -86,6 +89,7 @@ export function createTopDockController(
         const state = items[i];
         const value = clamp(state.value, 0, 1.08);
         const extraH = options.heightGrowth * value;
+        verticalGrowth += extraH;
         const h = state.baseHeight + extraH;
         const top = state.baseTop + currentShift;
         centers.push(top + h * 0.5);
@@ -93,7 +97,13 @@ export function createTopDockController(
         maxBottom = Math.max(maxBottom, top + h);
       }
     } else {
-      let currentShift = 0;
+      horizontalGrowth = items.reduce((growth, state) => {
+        const value = clamp(state.value, 0, 1.08);
+        const isLogo = state.element.classList.contains("animated-top-dock__logo");
+        const extraWidth = isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
+        return growth + extraWidth * value;
+      }, 0);
+      let currentShift = options.lockTrack ? -horizontalGrowth * 0.5 : 0;
       for (let i = 0; i < items.length; i++) {
         const state = items[i];
         const value = clamp(state.value, 0, 1.08);
@@ -110,12 +120,37 @@ export function createTopDockController(
       }
     }
 
-    return { centers, maxBottom };
+    return { centers, maxBottom, horizontalGrowth, verticalGrowth };
+  };
+
+  const refreshRootRect = () => {
+    const rect = root.getBoundingClientRect();
+    const options = getOptions();
+    const { horizontalGrowth, verticalGrowth } = getGeometry(options);
+    const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
+    const verticalGrowthOffset = options.axis === "y" ? verticalGrowth * 0.5 : 0;
+    const horizontalGrowthOffset = centeredWidth ? horizontalGrowth * 0.5 : 0;
+    cachedRootRect = {
+      left: rect.left + horizontalGrowthOffset,
+      top: rect.top + verticalGrowthOffset,
+      width: rect.width - (centeredWidth ? horizontalGrowth : 0),
+      height: rect.height - (options.axis === "y" ? verticalGrowth : 0),
+    };
+  };
+
+  const getRootRect = (options: TopDockOptions) => {
+    if (!cachedRootRect) return null;
+    const { horizontalGrowth, verticalGrowth } = getGeometry(options);
+    const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
+    const left = cachedRootRect.left - (centeredWidth ? horizontalGrowth * 0.5 : 0);
+    const top = cachedRootRect.top - (options.axis === "y" ? verticalGrowth * 0.5 : 0);
+    const width = cachedRootRect.width + (centeredWidth ? horizontalGrowth : 0);
+    const height = cachedRootRect.height + (options.axis === "y" ? verticalGrowth : 0);
+    return { left, top, right: left + width, bottom: top + height };
   };
 
   const measure = () => {
     enabled = canAnimate();
-    cachedRootRect = null;
     /* released first, so the rest width is measured against the track's own
        content rather than against the width the last measurement pinned */
     if (getOptions().lockTrack) root.style.width = "";
@@ -142,6 +177,7 @@ export function createTopDockController(
        — reduced motion, a coarse pointer, or a narrow viewport */
     if (getOptions().distribute) applyLayout();
     if (getOptions().lockTrack) root.style.width = `${root.getBoundingClientRect().width.toFixed(2)}px`;
+    refreshRootRect();
     root.dataset.dockState = enabled ? "idle" : "static";
     root.dataset.dockMax = "0.00";
   };
@@ -159,11 +195,10 @@ export function createTopDockController(
     const vertical = options.axis === "y";
     const pointer = vertical ? clientY : clientX;
 
-    // Cache root bounding rect and compute item centers analytically to prevent
-    // high-frequency DOM layout thrashing during pointer movement.
-    cachedRootRect = root.getBoundingClientRect();
+    const rootRect = getRootRect(options);
+    if (!rootRect) return;
     const { centers } = getGeometry(options);
-    const rootOrigin = vertical ? cachedRootRect.top : cachedRootRect.left;
+    const rootOrigin = vertical ? rootRect.top : rootRect.left;
 
     for (let index = 0; index < items.length; index += 1) {
       const center = rootOrigin + centers[index];
@@ -267,7 +302,8 @@ export function createTopDockController(
   const onWindowPointerMove = (event: PointerEvent) => {
     if (!pointerActive) return;
     const options = getOptions();
-    const rootRect = cachedRootRect || root.getBoundingClientRect();
+    const rootRect = getRootRect(options);
+    if (!rootRect) return;
     const { maxBottom } = getGeometry(options);
     const bottom = Math.max(rootRect.bottom, rootRect.top + maxBottom);
     const outside =
@@ -292,6 +328,7 @@ export function createTopDockController(
     }
   };
   const onClick = () => reset();
+  const onWindowResize = () => measure();
 
   /* the spring writes an explicit pixel width onto every item, so the base
      measurement has to happen after the label font is available — measured
@@ -314,6 +351,8 @@ export function createTopDockController(
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
+  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
   measure();
@@ -331,6 +370,8 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
+    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
   };
