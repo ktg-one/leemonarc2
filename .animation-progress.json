@@ -24,7 +24,8 @@
     "id": "light-sections-brand-grid",
     "component": "src/app/components/home/light-sections.tsx",
     "type": "scroll/fade-slide",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated 1.2s scroll-reveal fade-and-slide transitions (translate3d, scale) for brand grid cards and editorial cascade, staggered grid transitions (0.04s delay per card), hover micro-interactions (translate3d, scale 1.02, 180deg symbol rotation, gold outline glow), and full prefers-reduced-motion compliance."
   },
   {
     "id": "light-sections-feature-scrubber",
