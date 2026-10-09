@@ -94,9 +94,11 @@ export function LightSections() {
   const [activeBelief, setActiveBelief] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
 
+  const brandGridRef = useRef<HTMLElement>(null);
   const featureRef = useRef<HTMLElement>(null);
   const beliefsRef = useRef<HTMLElement>(null);
   const storiesRef = useRef<HTMLElement>(null);
+  const brandGridInView = useSectionInView(brandGridRef);
   const beliefsInView = useSectionInView(beliefsRef);
   const storiesInView = useSectionInView(storiesRef);
   const enhanced = isHydrated && !reducedMotion;
@@ -159,11 +161,20 @@ export function LightSections() {
 
   return (
     <div className="lm-light" data-enhanced={enhanced}>
-      <section className="lm-light-brand-grid section-shell" aria-label="Brand Grid and Strategic Editorial">
+      <section
+        ref={brandGridRef}
+        className="lm-light-brand-grid section-shell"
+        data-inview={brandGridInView ? "true" : "false"}
+        aria-label="Brand Grid and Strategic Editorial"
+      >
         <div className="lm-brand-card-wrap">
           <div className="lm-brand-card-grid" aria-hidden="true">
             {brandGridCards.map((brand, i) => (
-              <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
+              <div
+                key={brand}
+                className="lm-brand-card"
+                style={{ "--card-idx": i } as React.CSSProperties}
+              >
                 <span className="lm-brand-card-symbol">·</span>
                 <span className="lm-brand-card-name">{brand}</span>
               </div>
