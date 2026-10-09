@@ -52,6 +52,7 @@ export function createTopDockController(
   let pointerActive = false;
   let dirty = false;
   let frame = 0;
+  let lastDockMax = "";
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
@@ -103,7 +104,10 @@ export function createTopDockController(
       const proximity = clamp(1 - Math.abs(pointer - center) / Math.max(1, options.proximity), 0, 1);
       const influence = proximity * proximity * (3 - 2 * proximity);
       items[index].target = influence;
-      items[index].element.dataset.dockNear = influence > 0.08 ? "true" : "false";
+      const nearStr = influence > 0.08 ? "true" : "false";
+      if (items[index].element.dataset.dockNear !== nearStr) {
+        items[index].element.dataset.dockNear = nearStr;
+      }
     }
     pointerActive = true;
     scheduleDraw();
@@ -116,7 +120,10 @@ export function createTopDockController(
     if (index < 0) return;
     items.forEach((state, itemIndex) => {
       state.target = itemIndex === index ? 1 : Math.abs(itemIndex - index) === 1 ? 0.24 : 0;
-      state.element.dataset.dockNear = state.target > 0.08 ? "true" : "false";
+      const nearStr = state.target > 0.08 ? "true" : "false";
+      if (state.element.dataset.dockNear !== nearStr) {
+        state.element.dataset.dockNear = nearStr;
+      }
     });
     pointerActive = false;
     scheduleDraw();
@@ -127,7 +134,9 @@ export function createTopDockController(
     pointerActive = false;
     items.forEach((state) => {
       state.target = 0;
-      state.element.dataset.dockNear = "false";
+      if (state.element.dataset.dockNear !== "false") {
+        state.element.dataset.dockNear = "false";
+      }
     });
     scheduleDraw();
   };
@@ -187,7 +196,11 @@ export function createTopDockController(
       maxValue = Math.max(maxValue, clamp(state.value, 0, 1.08));
     }
     applyLayout();
-    root.dataset.dockMax = maxValue.toFixed(2);
+    const formattedMax = maxValue.toFixed(2);
+    if (lastDockMax !== formattedMax) {
+      root.dataset.dockMax = formattedMax;
+      lastDockMax = formattedMax;
+    }
     if (!moving) {
       dirty = false;
       if (items.every((state) => state.target === 0)) root.dataset.dockState = "idle";
@@ -199,10 +212,17 @@ export function createTopDockController(
   const onPointerMove = (event: PointerEvent) => setTargets(event.clientX, event.clientY);
   const onWindowPointerMove = (event: PointerEvent) => {
     if (!pointerActive) return;
+    // Derive padded boundary from rootRect to avoid querying getBoundingClientRect()
+    // on every individual item on every window pointermove event.
     const rootRect = root.getBoundingClientRect();
-    const itemRects = items.map((state) => state.element.getBoundingClientRect());
-    const bottom = Math.max(rootRect.bottom, ...itemRects.map((rect) => rect.bottom));
-    const outside = event.clientX < rootRect.left || event.clientX > rootRect.right || event.clientY < rootRect.top || event.clientY > bottom;
+    const options = getOptions();
+    const extraBottom = options.heightGrowth + options.drop * 1.08 + 12;
+    const extraRight = options.axis === "y" ? options.drop * 1.08 + 12 : 0;
+    const outside =
+      event.clientX < rootRect.left - 12 ||
+      event.clientX > rootRect.right + extraRight ||
+      event.clientY < rootRect.top - 12 ||
+      event.clientY > rootRect.bottom + extraBottom;
     if (outside) reset();
   };
   const onFocusIn = (event: FocusEvent) => {
