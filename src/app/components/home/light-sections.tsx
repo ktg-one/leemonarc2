@@ -24,6 +24,14 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
+// Stable store listeners for page visibility to prevent listener resubscription on every render
+const subscribeVisibility = (notify: () => void) => {
+  document.addEventListener("visibilitychange", notify);
+  return () => document.removeEventListener("visibilitychange", notify);
+};
+const getVisibilitySnapshot = () => !document.hidden;
+const getVisibilityServerSnapshot = () => true;
+
 // Client logos not yet supplied: CANON-BRIEF marks tech logos as template residue.
 const brandGridCards = Array.from({ length: 14 }, (_, i) => `Client logo ${String(i + 1).padStart(2, "0")}`);
 
@@ -101,9 +109,9 @@ export function LightSections() {
   const storiesInView = useSectionInView(storiesRef);
   const enhanced = isHydrated && !reducedMotion;
   const pageVisible = useSyncExternalStore(
-    (notify) => { document.addEventListener("visibilitychange", notify); return () => document.removeEventListener("visibilitychange", notify); },
-    () => !document.hidden,
-    () => true,
+    subscribeVisibility,
+    getVisibilitySnapshot,
+    getVisibilityServerSnapshot,
   );
   const playing = enhanced && !paused && !hovered && !focused && inView;
   const beliefsPlaying = enhanced && !hovered && !focused && beliefsInView && pageVisible;
