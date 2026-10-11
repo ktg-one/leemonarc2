@@ -21,6 +21,16 @@
   max-width: 100%;
   box-sizing: border-box;
 }
+.lm-light[data-enhanced='true'] .lm-brand-card-wrap {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.lm-light[data-enhanced='true'] .lm-light-brand-grid[data-inview='true'] .lm-brand-card-wrap {
+  opacity: 1;
+  transform: translateY(0);
+}
 .lm-brand-card-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -37,12 +47,25 @@
   background: #ffffff;
   border: 1px solid #dce2dd;
   box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
   min-width: 0;
   box-sizing: border-box;
 }
+.lm-light[data-enhanced='true'] .lm-brand-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-idx, 0) * 0.04s),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-idx, 0) * 0.04s),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  will-change: opacity, transform;
+}
+.lm-light[data-enhanced='true'] .lm-light-brand-grid[data-inview='true'] .lm-brand-card {
+  opacity: 1;
+  transform: translateY(0);
+}
 .lm-brand-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px) !important;
   border-color: var(--gold-dark);
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
@@ -83,6 +106,17 @@
   max-width: 820px;
   margin-inline: auto;
   box-sizing: border-box;
+}
+.lm-light[data-enhanced='true'] .lm-editorial-cascade {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s,
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+  will-change: opacity, transform;
+}
+.lm-light[data-enhanced='true'] .lm-light-brand-grid[data-inview='true'] .lm-editorial-cascade {
+  opacity: 1;
+  transform: translateY(0);
 }
 .lm-editorial-badge {
   display: inline-block;
@@ -788,4 +822,11 @@
   .lm-brand-card-name { font-size: 11px; }
 @media (prefers-reduced-motion: reduce) {
   .lm-light-feature .lm-light-mini-card { animation: none !important; }
+  .lm-light-brand-grid .lm-brand-card-wrap,
+  .lm-light-brand-grid .lm-brand-card,
+  .lm-light-brand-grid .lm-editorial-cascade {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
