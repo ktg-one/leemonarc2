@@ -24,7 +24,8 @@
     "id": "light-sections-brand-grid",
     "component": "src/app/components/home/light-sections.tsx",
     "type": "scroll/fade-slide",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated scroll fade-slide animation on .lm-light-brand-grid with IntersectionObserver detection, 1.2s cubic-bezier opacity & transform translateY transitions, staggered delay per brand card, and prefers-reduced-motion support."
   },
   {
     "id": "light-sections-feature-scrubber",
