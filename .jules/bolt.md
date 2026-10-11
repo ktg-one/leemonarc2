@@ -13,3 +13,7 @@
 ## 2026-09-28 - Stable Subscription Functions for useSyncExternalStore
 **Learning:** Passing inline subscription functions to `useSyncExternalStore` causes React to re-subscribe on every render, constantly removing and re-attaching event listeners (e.g., `document.addEventListener('visibilitychange')`), creating listener churn and GC overhead.
 **Action:** Always extract static `subscribe`, `getSnapshot`, and `getServerSnapshot` functions outside the component body when observing browser-global APIs.
+
+## 2026-10-11 - Caching Container-Relative Offsets for Pointer Events in Navigation Controllers
+**Learning:** Querying `getBoundingClientRect()` on every item inside a mouse event listener (`pointermove`) causes forced synchronous layout / reflows on high-frequency pointer movements across navigation docks or menus.
+**Action:** Pre-compute item centers relative to the root container during layout measurement (`measure()`) and compute pointer proximity using a single `getBoundingClientRect()` call on the root element.

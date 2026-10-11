@@ -26,6 +26,8 @@ type DockItemState = {
   element: HTMLElement;
   baseWidth: number;
   baseHeight: number;
+  baseCenterX: number;
+  baseCenterY: number;
   value: number;
   velocity: number;
   target: number;
@@ -43,6 +45,8 @@ export function createTopDockController(
     element,
     baseWidth: 0,
     baseHeight: 0,
+    baseCenterX: 0,
+    baseCenterY: 0,
     value: 0,
     velocity: 0,
     target: 0,
@@ -66,10 +70,15 @@ export function createTopDockController(
       state.element.style.transform = "";
       state.element.dataset.dockNear = "false";
     }
+    const rootRect = root.getBoundingClientRect();
     for (const state of items) {
       const rect = state.element.getBoundingClientRect();
       state.baseWidth = rect.width;
       state.baseHeight = rect.height;
+      // Store item center relative to root element to eliminate per-item getBoundingClientRect
+      // calls on high-frequency pointermove events.
+      state.baseCenterX = rect.left + rect.width * 0.5 - rootRect.left;
+      state.baseCenterY = rect.top + rect.height * 0.5 - rootRect.top;
       state.value = 0;
       state.velocity = 0;
       state.target = 0;
@@ -95,15 +104,17 @@ export function createTopDockController(
     if (!enabled) return;
     const options = getOptions();
     const vertical = options.axis === "y";
+    const rootRect = root.getBoundingClientRect();
     const pointer = vertical ? clientY : clientX;
-    const rects = items.map((state) => state.element.getBoundingClientRect());
+    const rootOffset = vertical ? rootRect.top : rootRect.left;
+
     for (let index = 0; index < items.length; index += 1) {
-      const rect = rects[index];
-      const center = vertical ? rect.top + rect.height * 0.5 : rect.left + rect.width * 0.5;
+      const state = items[index];
+      const center = rootOffset + (vertical ? state.baseCenterY : state.baseCenterX);
       const proximity = clamp(1 - Math.abs(pointer - center) / Math.max(1, options.proximity), 0, 1);
       const influence = proximity * proximity * (3 - 2 * proximity);
-      items[index].target = influence;
-      items[index].element.dataset.dockNear = influence > 0.08 ? "true" : "false";
+      state.target = influence;
+      state.element.dataset.dockNear = influence > 0.08 ? "true" : "false";
     }
     pointerActive = true;
     scheduleDraw();
@@ -199,9 +210,10 @@ export function createTopDockController(
   const onPointerMove = (event: PointerEvent) => setTargets(event.clientX, event.clientY);
   const onWindowPointerMove = (event: PointerEvent) => {
     if (!pointerActive) return;
+    const options = getOptions();
     const rootRect = root.getBoundingClientRect();
-    const itemRects = items.map((state) => state.element.getBoundingClientRect());
-    const bottom = Math.max(rootRect.bottom, ...itemRects.map((rect) => rect.bottom));
+    const extraBottom = options.axis === "y" ? 10 : options.drop + options.heightGrowth + 12;
+    const bottom = rootRect.bottom + extraBottom;
     const outside = event.clientX < rootRect.left || event.clientX > rootRect.right || event.clientY < rootRect.top || event.clientY > bottom;
     if (outside) reset();
   };
