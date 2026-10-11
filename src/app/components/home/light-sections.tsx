@@ -264,7 +264,7 @@ export function LightSections() {
               </div>
             </div>
 
-            {/* Sliding Foreground Cards (GPU translateX) */}
+            {/* Sliding Foreground Cards (GPU translate3d) */}
             {features.map((feature, index) => (
               <article
                 key={feature.label}
@@ -272,7 +272,9 @@ export function LightSections() {
                 data-active={active === index ? "true" : "false"}
                 className={`lm-feature-sliding-card ${active === index ? "lm-card-active" : "lm-card-hidden"}`}
                 style={{
-                  transform: enhanced ? `translateX(${active % 2 === 0 ? "0%" : "10%"})` : undefined,
+                  transform: enhanced
+                    ? `translate3d(${active === index ? "0px" : index > active ? "50px" : "-50px"}, 0, 0)`
+                    : undefined,
                 }}
               >
                 <div className="lm-card-top-row">
