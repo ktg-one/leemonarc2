@@ -384,19 +384,55 @@
   background: var(--card-dark);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  transition: all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 1.2s cubic-bezier(0.16, 1, 0.3, 1), background 1.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 240px;
   box-sizing: border-box;
   max-width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.lm-bento-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius-card) + 2px);
+  padding: 1.5px;
+  background: conic-gradient(from var(--border-angle, 0deg), transparent 70%, rgba(204, 168, 91, 0.8) 85%, transparent 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.25;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: lm-border-trail-rotate 6s linear infinite;
+}
+.lm-bento-card:hover::before, .lm-bento-card.lm-bento-active::before {
+  opacity: 1;
+  animation-duration: 3.5s;
 }
 .lm-bento-card:hover, .lm-bento-card.lm-bento-active {
   border-color: rgba(204, 168, 91, 0.6);
   background: linear-gradient(160deg, rgba(204, 168, 91, 0.08), rgba(20, 26, 24, 0.95));
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 20px rgba(204, 168, 91, 0.1);
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes lm-border-trail-rotate {
+  from {
+    --border-angle: 0deg;
+  }
+  to {
+    --border-angle: 360deg;
+  }
 }
 .lm-bento-badge {
   font: 600 10px var(--font-body);
@@ -540,6 +576,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .lm-dark-float { animation: none; }
+  .lm-bento-card::before { animation: none; }
 }
 
 

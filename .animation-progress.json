@@ -38,7 +38,8 @@
     "id": "dark-sections-matrix-cards",
     "component": "src/app/components/home/dark-sections.tsx",
     "type": "animated-lines/border-trail",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated animated border trail keyframe sweep effect on dark matrix bento cards using CSS conic gradients with smooth 1.2s state transitions and prefers-reduced-motion compliance."
   },
   {
     "id": "3d-team-carousel-depth",
