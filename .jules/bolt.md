@@ -13,3 +13,7 @@
 ## 2026-09-28 - Stable Subscription Functions for useSyncExternalStore
 **Learning:** Passing inline subscription functions to `useSyncExternalStore` causes React to re-subscribe on every render, constantly removing and re-attaching event listeners (e.g., `document.addEventListener('visibilitychange')`), creating listener churn and GC overhead.
 **Action:** Always extract static `subscribe`, `getSnapshot`, and `getServerSnapshot` functions outside the component body when observing browser-global APIs.
+
+## 2026-09-29 - Background Tab Timer Scheduling Isolation via pageVisible Store
+**Learning:** Mixing document `visibilitychange` listeners inside component `useEffect` hooks with `IntersectionObserver` callbacks can cause element intersection state (`inView`) to get corrupted when tabs are backgrounded or re-focused. Furthermore, omitting `pageVisible` from `setInterval` enabling conditions allows auto-rotating carousels to run timers when hidden.
+**Action:** Consistently gate all auto-rotation timers with `pageVisible` from `useSyncExternalStore(subscribeVisibility, ...)` and keep `IntersectionObserver` state strictly dedicated to element viewport intersection.
