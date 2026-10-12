@@ -248,7 +248,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: #cca85b;
+  background: var(--gold);
   transform: scaleY(0);
   transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center;
@@ -831,6 +831,7 @@
   .lm-brand-card-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: 100%; }
   .lm-brand-card { padding: 8px 10px; font-size: 11px; min-width: 0; }
   .lm-brand-card-name { font-size: 11px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .lm-light-feature .lm-light-mini-card { animation: none !important; }
   .lm-feature-sliding-card {
