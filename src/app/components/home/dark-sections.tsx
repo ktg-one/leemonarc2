@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { services, business } from "@/content/site";
 import { Infinite3DCarousel } from "./infinite-3d-carousel";
 import "./dark-sections.css";

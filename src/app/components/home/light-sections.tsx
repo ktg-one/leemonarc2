@@ -115,23 +115,19 @@ export function LightSections() {
     getVisibilitySnapshot,
     getVisibilityServerSnapshot,
   );
-  const playing = enhanced && !paused && !hovered && !focused && inView;
+  const playing = enhanced && !paused && !hovered && !focused && inView && pageVisible;
   const beliefsPlaying = enhanced && !hovered && !focused && beliefsInView && pageVisible;
   const storiesPlaying = enhanced && !hovered && !focused && storiesInView && pageVisible;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateCapability = () => setReducedMotion(query.matches);
-    const updateVisibility = () => setInView(!document.hidden);
     updateCapability();
-    updateVisibility();
     query.addEventListener("change", updateCapability);
-    document.addEventListener("visibilitychange", updateVisibility);
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.15 });
     if (featureRef.current) observer.observe(featureRef.current);
     return () => {
       query.removeEventListener("change", updateCapability);
-      document.removeEventListener("visibilitychange", updateVisibility);
       observer.disconnect();
     };
   }, []);
