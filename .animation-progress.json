@@ -31,7 +31,8 @@
     "id": "light-sections-feature-scrubber",
     "component": "src/app/components/home/light-sections.tsx",
     "type": "hover/scrubber-slider",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated translate3d 1.2s cubic-bezier card sliding and cross-fading, active tab scrubber accent bar indicator scaleY transitions, hover micro-transformations, and full prefers-reduced-motion compliance."
   },
   {
     "id": "dark-sections-matrix-cards",

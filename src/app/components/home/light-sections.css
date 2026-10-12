@@ -235,19 +235,40 @@
   background: #f8faf8;
   cursor: pointer;
   text-align: left;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.lm-feature-tab-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #cca85b;
+  transform: scaleY(0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
+}
+
+.lm-feature-tab-btn.lm-tab-active::before {
+  transform: scaleY(1);
 }
 
 .lm-feature-tab-btn:hover {
   border-color: #cca85b;
   background: #ffffff;
-  transform: translateX(4px);
+  transform: translate3d(6px, 0, 0);
 }
 
 .lm-feature-tab-btn.lm-tab-active {
   border-color: #cca85b;
   background: #ffffff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  transform: translate3d(8px, 0, 0);
 }
 
 .lm-feature-tab-num {
@@ -341,7 +362,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.0s;
   will-change: transform, opacity;
 }
 
@@ -812,4 +833,15 @@
   .lm-brand-card-name { font-size: 11px; }
 @media (prefers-reduced-motion: reduce) {
   .lm-light-feature .lm-light-mini-card { animation: none !important; }
+  .lm-feature-sliding-card {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+  }
+  .lm-feature-tab-btn {
+    transition: border-color 0.2s ease, background-color 0.2s ease !important;
+    transform: none !important;
+  }
+  .lm-feature-tab-btn::before {
+    transition: none !important;
+  }
 }
