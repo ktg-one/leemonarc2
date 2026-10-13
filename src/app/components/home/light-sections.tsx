@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type React from "react";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { memo, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { services } from "@/content/site";
 import { heroMedia } from "@/content/hero-media";
 import "./light-sections.css";
@@ -20,6 +20,7 @@ function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
   }, [ref]);
   return inView;
 }
+
 const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
@@ -89,48 +90,68 @@ const beliefs = [
   },
 ];
 
-export function LightSections() {
-  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
+const BrandGridSection = memo(function BrandGridSection() {
+  const brandGridRef = useRef<HTMLElement>(null);
+  const brandGridInView = useSectionInView(brandGridRef);
+
+  return (
+    <section ref={brandGridRef} className="lm-light-brand-grid section-shell" data-in-view={brandGridInView} aria-label="Brand Grid and Strategic Editorial">
+      <div className="lm-brand-card-wrap">
+        <div className="lm-brand-card-grid" aria-hidden="true">
+          {brandGridCards.map((brand, i) => (
+            <div key={brand} className="lm-brand-card" style={{ transitionDelay: `${i * 0.04}s` }}>
+              <span className="lm-brand-card-symbol">·</span>
+              <span className="lm-brand-card-name">{brand}</span>
+            </div>
+          ))}
+        </div>
+        <div className="lm-brand-fade-overlay" aria-hidden="true" />
+        <span className="review-placeholder">Client logos · client to supply</span>
+      </div>
+
+      <div className="lm-editorial-cascade">
+        <div className="lm-editorial-badge">• CHARTERED ACCOUNTANT · PERTH AND AUSTRALIA WIDE</div>
+        <h2 className="lm-editorial-title">An advisory partner that understands exactly what you’re building.</h2>
+        <p className="lm-editorial-body">
+          Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
+        </p>
+        <div className="lm-trust-metrics">
+          <div className="lm-trust-metric">
+            <b>13 years</b>
+            <span>Accounting and advisory</span>
+          </div>
+          <div className="lm-trust-metric-divider" aria-hidden="true" />
+          <div className="lm-trust-metric">
+            <b>Chartered Accountant</b>
+            <span>Vivienne Lee</span>
+          </div>
+          <div className="lm-trust-metric-divider" aria-hidden="true" />
+          <div className="lm-trust-metric">
+            <b>Perth</b>
+            <span>Australia-wide</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const FeatureSliderSection = memo(function FeatureSliderSection({ enhanced }: { enhanced: boolean }) {
   const [active, setActive] = useState(0);
   const [revision, setRevision] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(true);
-
-  const [story, setStory] = useState(0);
-  const [activeBelief, setActiveBelief] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  const brandGridRef = useRef<HTMLElement>(null);
   const featureRef = useRef<HTMLElement>(null);
-  const beliefsRef = useRef<HTMLElement>(null);
-  const storiesRef = useRef<HTMLElement>(null);
-  const brandGridInView = useSectionInView(brandGridRef);
-  const beliefsInView = useSectionInView(beliefsRef);
-  const storiesInView = useSectionInView(storiesRef);
-  const enhanced = isHydrated && !reducedMotion;
-  const pageVisible = useSyncExternalStore(
-    subscribeVisibility,
-    getVisibilitySnapshot,
-    getVisibilityServerSnapshot,
-  );
-  const playing = enhanced && !paused && !hovered && !focused && inView;
-  const beliefsPlaying = enhanced && !hovered && !focused && beliefsInView && pageVisible;
-  const storiesPlaying = enhanced && !hovered && !focused && storiesInView && pageVisible;
+
+  const playing = enhanced && !paused && inView;
 
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateCapability = () => setReducedMotion(query.matches);
     const updateVisibility = () => setInView(!document.hidden);
-    updateCapability();
     updateVisibility();
-    query.addEventListener("change", updateCapability);
     document.addEventListener("visibilitychange", updateVisibility);
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.15 });
     if (featureRef.current) observer.observe(featureRef.current);
     return () => {
-      query.removeEventListener("change", updateCapability);
       document.removeEventListener("visibilitychange", updateVisibility);
       observer.disconnect();
     };
@@ -142,11 +163,185 @@ export function LightSections() {
     return () => window.clearInterval(timer);
   }, [playing, revision]);
 
-  useEffect(() => {
-    if (!storiesPlaying) return;
-    const timer = window.setInterval(() => setStory((index) => (index + 1) % stories.length), 5500);
-    return () => window.clearInterval(timer);
-  }, [storiesPlaying]);
+  const selectFeature = (index: number) => {
+    setActive(index);
+    setRevision((value) => value + 1);
+  };
+
+  const featureControls = (
+    <div className="lm-light-controls" aria-label="Service feature controls">
+      <div className="lm-light-dots">
+        {features.map((feature, index) => (
+          <button
+            key={feature.label}
+            type="button"
+            onClick={() => selectFeature(index)}
+            aria-label={`Show ${feature.label}`}
+            aria-current={active === index ? "true" : undefined}
+            aria-controls={`lm-light-feature-${index}`}
+          >
+            <span />
+          </button>
+        ))}
+      </div>
+      <button
+        className="lm-light-pause"
+        type="button"
+        onClick={() => setPaused(!paused)}
+        aria-label={paused ? "Resume service rotation" : "Pause service rotation"}
+        aria-pressed={paused}
+      >
+        <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+      </button>
+    </div>
+  );
+
+  return (
+    <section ref={featureRef} className="lm-light-features section-shell" aria-label="Explore four ways we can help">
+      <div className="lm-feature-slider-layout">
+        {/* Left Column (1/3): Strategic Stage Selector */}
+        <div className="lm-feature-nav-col">
+          <span className="home-kicker">02 · Strategic Capabilities</span>
+          <h2 className="lm-feature-heading">Keep essentials in order. Get help with the bigger calls.</h2>
+          <p className="lm-feature-subhead">Explore our core advisory pillars designed for growing private enterprises.</p>
+          <div className="lm-feature-stage-list" role="tablist" aria-label="Service capabilities">
+            {features.map((feature, idx) => (
+              <button
+                key={feature.label}
+                type="button"
+                role="tab"
+                aria-selected={active === idx}
+                className={`lm-feature-tab-btn ${active === idx ? "lm-tab-active" : ""}`}
+                onClick={() => selectFeature(idx)}
+              >
+                <span className="lm-feature-tab-num">0{idx + 1}</span>
+                <div className="lm-feature-tab-info">
+                  <span className="lm-feature-tab-title">{feature.label}</span>
+                  <span className="lm-feature-tab-sub">{feature.caption}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          <div className="lm-feature-controls-wrap">
+            {featureControls}
+          </div>
+        </div>
+
+        {/* Right Column (2/3): Animated Slider with Video Media Underneath */}
+        <div className="lm-feature-stage-container">
+          {/* Background Video Media (Revealed Under Card) */}
+          <div className="lm-feature-video-underlay" aria-hidden="true">
+            <video
+              src={heroMedia.source || undefined}
+              poster="/images/perspective.webp"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="lm-feature-underlay-video"
+            />
+            <div className="lm-feature-video-badge">
+              <span className="lm-video-dot" aria-hidden="true" />
+              <span>Advisory Media · Perth WA</span>
+            </div>
+          </div>
+
+          {/* Sliding Foreground Cards (GPU translate3d) */}
+          {features.map((feature, index) => (
+            <article
+              key={feature.label}
+              id={`lm-light-feature-${index}`}
+              data-active={active === index ? "true" : "false"}
+              className={`lm-feature-sliding-card ${active === index ? "lm-card-active" : "lm-card-hidden"}`}
+              style={{
+                transform: enhanced
+                  ? `translate3d(${active === index ? "0px" : index > active ? "50px" : "-50px"}, 0, 0)`
+                  : undefined,
+              }}
+            >
+              <div className="lm-card-top-row">
+                <span className="lm-feature-badge">{feature.label}</span>
+                <span className="lm-feature-step">0{index + 1} / 04</span>
+              </div>
+
+              <h3>{feature.title}</h3>
+              <p className="lm-feature-body">{feature.text}</p>
+
+              <div className="lm-feature-card-pills">
+                {feature.cards.map((c) => (
+                  <span key={c} className="lm-card-pill">
+                    <span className="lm-pill-check" aria-hidden="true">✓</span> {c}
+                  </span>
+                ))}
+              </div>
+
+              <div className="lm-feature-card-footer">
+                <div className="lm-feature-service-links">
+                  {feature.serviceIndexes.map((serviceIndex) => (
+                    <Link href={services[serviceIndex].href} key={serviceIndex} className="lm-feature-link">
+                      {services[serviceIndex].title} <span aria-hidden="true">↗</span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="lm-slider-nav-arrows">
+                  <button
+                    type="button"
+                    className="lm-arrow-btn"
+                    aria-label="Previous capability"
+                    onClick={() => selectFeature((active - 1 + features.length) % features.length)}
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    className="lm-arrow-btn"
+                    aria-label="Next capability"
+                    onClick={() => selectFeature((active + 1) % features.length)}
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const QuestionsSection = memo(function QuestionsSection() {
+  return (
+    <section id="owner-questions" className="lm-light-questions section-shell" aria-labelledby="lm-light-questions-heading">
+      <h2 id="lm-light-questions-heading">Three questions worth asking about your business.</h2>
+      <div className="lm-light-question-grid">
+        {questions.map((question, index) => (
+          <details key={question.title}>
+            <summary>
+              <span>0{index + 1}</span>
+              {question.title}
+              <b aria-hidden="true">+</b>
+            </summary>
+            <p>{question.text}</p>
+          </details>
+        ))}
+      </div>
+      <Link href="/services/fractional-cfo-advisory">
+        See how financial advisory can help <span aria-hidden="true">↗</span>
+      </Link>
+    </section>
+  );
+});
+
+const BeliefsSection = memo(function BeliefsSection({ enhanced, pageVisible }: { enhanced: boolean; pageVisible: boolean }) {
+  const [activeBelief, setActiveBelief] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const beliefsRef = useRef<HTMLElement>(null);
+  const beliefsInView = useSectionInView(beliefsRef);
+
+  const beliefsPlaying = enhanced && !hovered && !focused && beliefsInView && pageVisible;
 
   useEffect(() => {
     if (!beliefsPlaying) return;
@@ -154,59 +349,183 @@ export function LightSections() {
     return () => window.clearInterval(timer);
   }, [beliefsPlaying]);
 
+  return (
+    <section
+      ref={beliefsRef}
+      className="lm-light-beliefs section-shell home-section"
+      aria-labelledby="lm-light-beliefs-heading"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}
+    >
+      <div className="lm-beliefs-header">
+        <p className="home-kicker">Core Principles</p>
+        <h2 className="home-heading" id="lm-light-beliefs-heading">Four perspectives on building a business that gives you options.</h2>
+      </div>
+      <div className="lm-beliefs-carousel">
+        <div
+          className="lm-beliefs-track"
+          style={
+            enhanced
+              ? {
+                  transform: `translateX(calc(50% - var(--lm-belief-width) / 2 - ${activeBelief} * (var(--lm-belief-width) + var(--lm-belief-gap))))`,
+                }
+              : undefined
+          }
+        >
+          {beliefs.map((b, i) => (
+            <button
+              key={b.title}
+              type="button"
+              className="lm-belief-card"
+              data-active={activeBelief === i}
+              onClick={() => setActiveBelief(i)}
+              aria-pressed={activeBelief === i}
+              aria-label={`Principle ${i + 1}: ${b.title}`}
+            >
+              <span className="lm-belief-num">0{i + 1}</span>
+              <span className="lm-belief-title">{b.title}</span>
+              <p>{b.description}</p>
+            </button>
+          ))}
+        </div>
+        <div className="lm-beliefs-controls" aria-label="Belief statements controls">
+          <button
+            type="button"
+            className="lm-beliefs-arrow"
+            aria-label="Previous principle"
+            onClick={() => setActiveBelief((i) => (i - 1 + beliefs.length) % beliefs.length)}
+          >
+            <span aria-hidden="true">←</span>
+          </button>
+          <div className="lm-beliefs-dots">
+            {beliefs.map((b, i) => (
+              <button
+                key={b.title}
+                type="button"
+                aria-label={`View principle ${i + 1}: ${b.title}`}
+                aria-current={activeBelief === i ? "true" : undefined}
+                onClick={() => setActiveBelief(i)}
+              >
+                <span />
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="lm-beliefs-arrow"
+            aria-label="Next principle"
+            onClick={() => setActiveBelief((i) => (i + 1) % beliefs.length)}
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+});
 
-  const selectFeature = (index: number) => {
-    setActive(index);
-    setRevision((value) => value + 1);
-  };
+const StoriesSection = memo(function StoriesSection({ enhanced, pageVisible }: { enhanced: boolean; pageVisible: boolean }) {
+  const [story, setStory] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const storiesRef = useRef<HTMLElement>(null);
+  const storiesInView = useSectionInView(storiesRef);
 
-  const featureControls = <div className="lm-light-controls" aria-label="Service feature controls">
-    <div className="lm-light-dots">
-      {features.map((feature, index) => <button key={feature.label} type="button" onClick={() => selectFeature(index)} aria-label={`Show ${feature.label}`} aria-current={active === index ? "true" : undefined} aria-controls={`lm-light-feature-${index}`}><span /></button>)}
-    </div>
-    <button className="lm-light-pause" type="button" onClick={() => setPaused(!paused)} aria-label={paused ? "Resume service rotation" : "Pause service rotation"} aria-pressed={paused}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span></button>
-  </div>;
+  const storiesPlaying = enhanced && !hovered && !focused && storiesInView && pageVisible;
+
+  useEffect(() => {
+    if (!storiesPlaying) return;
+    const timer = window.setInterval(() => setStory((index) => (index + 1) % stories.length), 5500);
+    return () => window.clearInterval(timer);
+  }, [storiesPlaying]);
+
+  return (
+    <section
+      ref={storiesRef}
+      className="lm-light-stories section-shell"
+      aria-labelledby="lm-light-stories-heading"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}
+    >
+      <div className="lm-light-stories-heading">
+        <div>
+          <p className="home-kicker">The work, in perspective</p>
+          <h2 className="home-heading" id="lm-light-stories-heading">Every business has a story.</h2>
+        </div>
+        <span className="review-placeholder">Client stories awaiting approval</span>
+      </div>
+      <div className="lm-light-story-grid">
+        {stories.map((title, index) => (
+          <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index}>
+            <div className="lm-light-story-art" aria-hidden="true">
+              <span>0{index + 1}</span>
+              <div />
+              <i />
+            </div>
+            <div className="lm-light-story-content">
+              <span className="review-placeholder">Story & media placeholder</span>
+              <h3>{title}</h3>
+              <p>
+                {story === index || !enhanced
+                  ? "Approved client words, imagery and outcomes will appear here."
+                  : "Awaiting an approved client story."}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="lm-light-story-controls" aria-label="Client story selectors">
+        {stories.map((title, index) => (
+          <button
+            type="button"
+            key={title}
+            aria-label={`Select story placeholder ${index + 1}: ${title}`}
+            aria-current={story === index ? "true" : undefined}
+            aria-controls={`lm-light-story-${index}`}
+            onClick={() => setStory(index)}
+          >
+            <span aria-hidden="true">0{index + 1}</span>
+            <span className="sr-only">{title}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+});
+
+export function LightSections() {
+  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  const pageVisible = useSyncExternalStore(
+    subscribeVisibility,
+    getVisibilitySnapshot,
+    getVisibilityServerSnapshot,
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateCapability = () => setReducedMotion(query.matches);
+    updateCapability();
+    query.addEventListener("change", updateCapability);
+    return () => {
+      query.removeEventListener("change", updateCapability);
+    };
+  }, []);
+
+  const enhanced = isHydrated && !reducedMotion;
 
   return (
     <div className="lm-light" data-enhanced={enhanced}>
-      <section ref={brandGridRef} className="lm-light-brand-grid section-shell" data-in-view={brandGridInView} aria-label="Brand Grid and Strategic Editorial">
-        <div className="lm-brand-card-wrap">
-          <div className="lm-brand-card-grid" aria-hidden="true">
-            {brandGridCards.map((brand, i) => (
-              <div key={brand} className="lm-brand-card" style={{ transitionDelay: `${i * 0.04}s` }}>
-                <span className="lm-brand-card-symbol">·</span>
-                <span className="lm-brand-card-name">{brand}</span>
-              </div>
-            ))}
-          </div>
-          <div className="lm-brand-fade-overlay" aria-hidden="true" />
-          <span className="review-placeholder">Client logos · client to supply</span>
-        </div>
-
-        <div className="lm-editorial-cascade">
-          <div className="lm-editorial-badge">• CHARTERED ACCOUNTANT · PERTH AND AUSTRALIA WIDE</div>
-          <h2 className="lm-editorial-title">An advisory partner that understands exactly what you’re building.</h2>
-          <p className="lm-editorial-body">
-            Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
-          </p>
-          <div className="lm-trust-metrics">
-            <div className="lm-trust-metric">
-              <b>13 years</b>
-              <span>Accounting and advisory</span>
-            </div>
-            <div className="lm-trust-metric-divider" aria-hidden="true" />
-            <div className="lm-trust-metric">
-              <b>Chartered Accountant</b>
-              <span>Vivienne Lee</span>
-            </div>
-            <div className="lm-trust-metric-divider" aria-hidden="true" />
-            <div className="lm-trust-metric">
-              <b>Perth</b>
-              <span>Australia-wide</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BrandGridSection />
 
       <section className="lm-light-intro section-shell home-section" aria-labelledby="lm-light-services-heading">
         <p className="home-kicker">Accounting & Advisory</p>
@@ -214,202 +533,18 @@ export function LightSections() {
         <p>Your tax return matters. So does the decision you need to make next month.<br className="lm-light-desktop-break" /> Find support for both.</p>
       </section>
 
-      {/* 1/3 (stages nav) + 2/3 (animated slider with video media revealed under card) */}
-      <section ref={featureRef} className="lm-light-features section-shell" aria-label="Explore four ways we can help">
-        <div className="lm-feature-slider-layout">
-          {/* Left Column (1/3): Strategic Stage Selector */}
-          <div className="lm-feature-nav-col">
-            <span className="home-kicker">02 · Strategic Capabilities</span>
-            <h2 className="lm-feature-heading">Keep essentials in order. Get help with the bigger calls.</h2>
-            <p className="lm-feature-subhead">Explore our core advisory pillars designed for growing private enterprises.</p>
-            <div className="lm-feature-stage-list" role="tablist" aria-label="Service capabilities">
-              {features.map((feature, idx) => (
-                <button
-                  key={feature.label}
-                  type="button"
-                  role="tab"
-                  aria-selected={active === idx}
-                  className={`lm-feature-tab-btn ${active === idx ? "lm-tab-active" : ""}`}
-                  onClick={() => selectFeature(idx)}
-                >
-                  <span className="lm-feature-tab-num">0{idx + 1}</span>
-                  <div className="lm-feature-tab-info">
-                    <span className="lm-feature-tab-title">{feature.label}</span>
-                    <span className="lm-feature-tab-sub">{feature.caption}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-            <div className="lm-feature-controls-wrap">
-              {featureControls}
-            </div>
-          </div>
+      <FeatureSliderSection enhanced={enhanced} />
 
-          {/* Right Column (2/3): Animated Slider with Video Media Underneath */}
-          <div className="lm-feature-stage-container">
-            {/* Background Video Media (Revealed Under Card) */}
-            <div className="lm-feature-video-underlay" aria-hidden="true">
-              <video
-                src={heroMedia.source || undefined}
-                poster="/images/perspective.webp"
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="lm-feature-underlay-video"
-              />
-              <div className="lm-feature-video-badge">
-                <span className="lm-video-dot" aria-hidden="true" />
-                <span>Advisory Media · Perth WA</span>
-              </div>
-            </div>
+      <QuestionsSection />
 
-            {/* Sliding Foreground Cards (GPU translate3d) */}
-            {features.map((feature, index) => (
-              <article
-                key={feature.label}
-                id={`lm-light-feature-${index}`}
-                data-active={active === index ? "true" : "false"}
-                className={`lm-feature-sliding-card ${active === index ? "lm-card-active" : "lm-card-hidden"}`}
-                style={{
-                  transform: enhanced
-                    ? `translate3d(${active === index ? "0px" : index > active ? "50px" : "-50px"}, 0, 0)`
-                    : undefined,
-                }}
-              >
-                <div className="lm-card-top-row">
-                  <span className="lm-feature-badge">{feature.label}</span>
-                  <span className="lm-feature-step">0{index + 1} / 04</span>
-                </div>
+      <BeliefsSection enhanced={enhanced} pageVisible={pageVisible} />
 
-                <h3>{feature.title}</h3>
-                <p className="lm-feature-body">{feature.text}</p>
-
-                <div className="lm-feature-card-pills">
-                  {feature.cards.map((c) => (
-                    <span key={c} className="lm-card-pill">
-                      <span className="lm-pill-check" aria-hidden="true">✓</span> {c}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="lm-feature-card-footer">
-                  <div className="lm-feature-service-links">
-                    {feature.serviceIndexes.map((serviceIndex) => (
-                      <Link href={services[serviceIndex].href} key={serviceIndex} className="lm-feature-link">
-                        {services[serviceIndex].title} <span aria-hidden="true">↗</span>
-                      </Link>
-                    ))}
-                  </div>
-
-                  <div className="lm-slider-nav-arrows">
-                    <button
-                      type="button"
-                      className="lm-arrow-btn"
-                      aria-label="Previous capability"
-                      onClick={() => selectFeature((active - 1 + features.length) % features.length)}
-                    >
-                      ←
-                    </button>
-                    <button
-                      type="button"
-                      className="lm-arrow-btn"
-                      aria-label="Next capability"
-                      onClick={() => selectFeature((active + 1) % features.length)}
-                    >
-                      →
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
+      <section className="lm-light-cta section-shell home-section" aria-labelledby="lm-light-cta-heading">
+        <h2 id="lm-light-cta-heading" className="home-heading">Start with the question<br />you can’t answer yet.</h2>
+        <Link className="pill-link" href="/contact">Let’s start a conversation <span aria-hidden="true">↗</span></Link>
       </section>
 
-      <section id="owner-questions" className="lm-light-questions section-shell" aria-labelledby="lm-light-questions-heading">
-        <h2 id="lm-light-questions-heading">Three questions worth asking about your business.</h2>
-        <div className="lm-light-question-grid">{questions.map((question, index) => <details key={question.title}><summary><span>0{index + 1}</span>{question.title}<b aria-hidden="true">+</b></summary><p>{question.text}</p></details>)}</div>
-        <Link href="/services/fractional-cfo-advisory">See how financial advisory can help <span aria-hidden="true">↗</span></Link>
-      </section>
-
-      <section ref={beliefsRef} className="lm-light-beliefs section-shell home-section" aria-labelledby="lm-light-beliefs-heading"
-        onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-        onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-        <div className="lm-beliefs-header">
-          <p className="home-kicker">Core Principles</p>
-          <h2 className="home-heading" id="lm-light-beliefs-heading">Four perspectives on building a business that gives you options.</h2>
-        </div>
-        <div className="lm-beliefs-carousel">
-          <div
-            className="lm-beliefs-track"
-            style={
-              enhanced
-                ? {
-                    transform: `translateX(calc(50% - var(--lm-belief-width) / 2 - ${activeBelief} * (var(--lm-belief-width) + var(--lm-belief-gap))))`,
-                  }
-                : undefined
-            }
-          >
-            {beliefs.map((b, i) => (
-              <button
-                key={b.title}
-                type="button"
-                className="lm-belief-card"
-                data-active={activeBelief === i}
-                onClick={() => setActiveBelief(i)}
-                aria-pressed={activeBelief === i}
-                aria-label={`Principle ${i + 1}: ${b.title}`}
-              >
-                <span className="lm-belief-num">0{i + 1}</span>
-                <span className="lm-belief-title">{b.title}</span>
-                <p>{b.description}</p>
-              </button>
-            ))}
-          </div>
-          <div className="lm-beliefs-controls" aria-label="Belief statements controls">
-            <button
-              type="button"
-              className="lm-beliefs-arrow"
-              aria-label="Previous principle"
-              onClick={() => setActiveBelief((i) => (i - 1 + beliefs.length) % beliefs.length)}
-            >
-              <span aria-hidden="true">←</span>
-            </button>
-            <div className="lm-beliefs-dots">
-              {beliefs.map((b, i) => (
-                <button
-                  key={b.title}
-                  type="button"
-                  aria-label={`View principle ${i + 1}: ${b.title}`}
-                  aria-current={activeBelief === i ? "true" : undefined}
-                  onClick={() => setActiveBelief(i)}
-                >
-                  <span />
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="lm-beliefs-arrow"
-              aria-label="Next principle"
-              onClick={() => setActiveBelief((i) => (i + 1) % beliefs.length)}
-            >
-              <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="lm-light-cta section-shell home-section" aria-labelledby="lm-light-cta-heading"><h2 id="lm-light-cta-heading" className="home-heading">Start with the question<br />you can’t answer yet.</h2><Link className="pill-link" href="/contact">Let’s start a conversation <span aria-hidden="true">↗</span></Link></section>
-
-      <section ref={storiesRef} className="lm-light-stories section-shell" aria-labelledby="lm-light-stories-heading"
-        onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-        onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
-        <div className="lm-light-stories-heading"><div><p className="home-kicker">The work, in perspective</p><h2 className="home-heading" id="lm-light-stories-heading">Every business has a story.</h2></div><span className="review-placeholder">Client stories awaiting approval</span></div>
-        <div className="lm-light-story-grid">{stories.map((title, index) => <article className="lm-light-story" key={title} id={`lm-light-story-${index}`} data-selected={story === index}><div className="lm-light-story-art" aria-hidden="true"><span>0{index + 1}</span><div /><i /></div><div className="lm-light-story-content"><span className="review-placeholder">Story & media placeholder</span><h3>{title}</h3><p>{story === index || !enhanced ? "Approved client words, imagery and outcomes will appear here." : "Awaiting an approved client story."}</p></div></article>)}</div>
-        <div className="lm-light-story-controls" aria-label="Client story selectors">{stories.map((title, index) => <button type="button" key={title} aria-label={`Select story placeholder ${index + 1}: ${title}`} aria-current={story === index ? "true" : undefined} aria-controls={`lm-light-story-${index}`} onClick={() => setStory(index)}><span aria-hidden="true">0{index + 1}</span><span className="sr-only">{title}</span></button>)}</div>
-      </section>
+      <StoriesSection enhanced={enhanced} pageVisible={pageVisible} />
     </div>
   );
 }

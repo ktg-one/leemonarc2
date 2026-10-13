@@ -13,3 +13,7 @@
 ## 2026-09-28 - Stable Subscription Functions for useSyncExternalStore
 **Learning:** Passing inline subscription functions to `useSyncExternalStore` causes React to re-subscribe on every render, constantly removing and re-attaching event listeners (e.g., `document.addEventListener('visibilitychange')`), creating listener churn and GC overhead.
 **Action:** Always extract static `subscribe`, `getSnapshot`, and `getServerSnapshot` functions outside the component body when observing browser-global APIs.
+
+## 2026-09-28 - Isolating Multiple Carousel Interval Timers into Memoized Sub-components
+**Learning:** Hoisting state for multiple automatic interval timers (e.g. 5s, 5.5s, 6s carousels) into a single parent component causes every timer tick and hover event to re-render the entire parent DOM tree and all neighboring static or animated sections.
+**Action:** Decompose monolithic section components into memoized sub-components (`React.memo`), placing timer and hover/focus state strictly within the sub-component that uses it.
