@@ -173,7 +173,7 @@ export function LightSections() {
         <div className="lm-brand-card-wrap">
           <div className="lm-brand-card-grid" aria-hidden="true">
             {brandGridCards.map((brand, i) => (
-              <div key={brand} className="lm-brand-card" style={{ transitionDelay: `${i * 0.04}s` }}>
+              <div key={brand} className="lm-brand-card" style={{ animationDelay: `${i * 0.04}s` }}>
                 <span className="lm-brand-card-symbol">·</span>
                 <span className="lm-brand-card-name">{brand}</span>
               </div>

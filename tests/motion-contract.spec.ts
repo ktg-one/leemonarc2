@@ -74,6 +74,25 @@ test.describe("motion contract", () => {
     expect(animated, "buttons/links lost their transitions").toBeGreaterThanOrEqual(20);
   });
 
+  test("brand card stagger does not delay hover transitions or retain compositor hints", async ({ page }) => {
+    await load(page);
+    const lastCard = page.locator(".lm-brand-card").last();
+    await lastCard.scrollIntoViewIfNeeded();
+    const styles = await lastCard.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        animationDelay: style.animationDelay,
+        transitionDelay: style.transitionDelay,
+        transitionDuration: style.transitionDuration,
+        willChange: style.willChange,
+      };
+    });
+    expect(styles.animationDelay).toBe("0.52s");
+    expect(styles.transitionDelay.split(",").every((delay) => parseFloat(delay) === 0)).toBe(true);
+    expect(styles.transitionDuration.split(",").every((duration) => parseFloat(duration) <= 0.25)).toBe(true);
+    expect(styles.willChange).toBe("auto");
+  });
+
   test("feature carousel auto-advances on its 6s cadence", async ({ page }) => {
     await load(page);
     const features = page.locator(".lm-light-features");
