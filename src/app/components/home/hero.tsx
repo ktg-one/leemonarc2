@@ -39,24 +39,37 @@ export function Hero() {
     if (preference.matches) return;
 
     let rafId = 0;
-    const handleScroll = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const rect = sec.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        if (rect.bottom > 0 && rect.top < viewportHeight) {
-          const scrollProgress = -rect.top;
-          const parallaxY = Math.min(Math.max(scrollProgress * 0.14, -60), 120);
-          card.style.setProperty("--lm-hero-parallax-y", `${parallaxY.toFixed(1)}px`);
+    let ticking = false;
+    // Cache last applied CSS variable value string to eliminate redundant DOM property updates
+    let lastParallaxStr = "";
+
+    const updateParallax = () => {
+      ticking = false;
+      const rect = sec.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      if (rect.bottom > 0 && rect.top < viewportHeight) {
+        const scrollProgress = -rect.top;
+        const parallaxY = Math.min(Math.max(scrollProgress * 0.14, -60), 120);
+        const nextParallaxStr = `${parallaxY.toFixed(1)}px`;
+        if (nextParallaxStr !== lastParallaxStr) {
+          card.style.setProperty("--lm-hero-parallax-y", nextParallaxStr);
+          lastParallaxStr = nextParallaxStr;
         }
-      });
+      }
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(updateParallax);
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    updateParallax();
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
