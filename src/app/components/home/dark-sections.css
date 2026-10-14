@@ -379,24 +379,79 @@
   margin-bottom: 48px;
 }
 .lm-bento-card {
+  position: relative;
   padding: 32px;
   border-radius: var(--radius-card);
   background: var(--card-dark);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  transition: all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 1.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 1.2s cubic-bezier(0.16, 1, 0.3, 1), background 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 240px;
   box-sizing: border-box;
   max-width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+.lm-bento-card > :not(.lm-bento-border-trail) {
+  position: relative;
+  z-index: 1;
 }
 .lm-bento-card:hover, .lm-bento-card.lm-bento-active {
   border-color: rgba(204, 168, 91, 0.6);
   background: linear-gradient(160deg, rgba(204, 168, 91, 0.08), rgba(20, 26, 24, 0.95));
   transform: translateY(-4px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 20px rgba(204, 168, 91, 0.1);
+}
+
+.lm-bento-border-trail {
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-card);
+  padding: 1px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+  overflow: hidden;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+}
+.lm-bento-border-trail::before {
+  content: "";
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 400%;
+  height: 400%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 65%,
+    rgba(204, 168, 91, 0.6) 82%,
+    rgba(247, 238, 219, 0.95) 90%,
+    rgba(204, 168, 91, 0.6) 96%,
+    transparent 100%
+  );
+  animation: lm-border-trail-rotate 4s linear infinite;
+  will-change: transform;
+}
+
+.lm-bento-card:hover .lm-bento-border-trail,
+.lm-bento-card.lm-bento-active .lm-bento-border-trail {
+  opacity: 1;
+}
+
+@keyframes lm-border-trail-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 .lm-bento-badge {
   font: 600 10px var(--font-body);
@@ -540,6 +595,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .lm-dark-float { animation: none; }
+  .lm-bento-border-trail::before { animation: none; }
+  .lm-bento-card, .lm-bento-border-trail { transition-duration: 0.01s; }
 }
 
 

@@ -38,7 +38,8 @@
     "id": "dark-sections-matrix-cards",
     "component": "src/app/components/home/dark-sections.tsx",
     "type": "animated-lines/border-trail",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated animated border trail on .lm-bento-card using a 4s conic-gradient rotation mask effect, 1.2s smooth opacity transitions on active/hover states, and full prefers-reduced-motion compliance."
   },
   {
     "id": "3d-team-carousel-depth",

@@ -143,6 +143,7 @@ export function DarkSections() {
                 onClick={() => setActiveBentoTab(idx)}
                 onMouseEnter={() => setActiveBentoTab(idx)}
               >
+                <div className="lm-bento-border-trail" aria-hidden="true" />
                 <div className="lm-bento-badge">{card.badge}</div>
                 <h3>{card.title}</h3>
                 <p>{card.body}</p>
