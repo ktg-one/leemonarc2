@@ -36,6 +36,7 @@
   inset: 0;
   z-index: 10;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .lm-carousel-card {
