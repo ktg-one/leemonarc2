@@ -40,11 +40,23 @@ export function Hero() {
 
     let rafId = 0;
     let ticking = false;
+    let inView = false;
     // Cache last applied CSS variable value string to eliminate redundant DOM property updates
     let lastParallaxStr = "";
 
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (inView && !ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(updateParallax);
+      }
+    }, { threshold: 0 });
+
+    observer.observe(sec);
+
     const updateParallax = () => {
       ticking = false;
+      if (!inView) return;
       const rect = sec.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
       if (rect.bottom > 0 && rect.top < viewportHeight) {
@@ -59,6 +71,8 @@ export function Hero() {
     };
 
     const handleScroll = () => {
+      // Skip scheduling rAF and querying getBoundingClientRect if section is off-screen
+      if (!inView) return;
       if (!ticking) {
         ticking = true;
         rafId = requestAnimationFrame(updateParallax);
@@ -69,6 +83,7 @@ export function Hero() {
     updateParallax();
 
     return () => {
+      observer.disconnect();
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", handleScroll);
     };
