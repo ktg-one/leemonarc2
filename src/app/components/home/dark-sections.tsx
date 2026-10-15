@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { memo, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { services, business } from "@/content/site";
 import { Infinite3DCarousel } from "./infinite-3d-carousel";
 import "./dark-sections.css";
@@ -116,26 +116,333 @@ const engagementStages = [
   },
 ];
 
-/** Renders the homepage's dark chapters and closing sections with interactive panels and motion preferences. */
-export function DarkSections() {
-  const [activeStage, setActiveStage] = useState(0);
-  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [proof, setProof] = useState(0);
+const FounderTeamSection = memo(function FounderTeamSection({ enhanced }: { enhanced: boolean }) {
+  return (
+    <section
+      className="section-shell lm-dark-team"
+      aria-labelledby="lm-dark-team-heading"
+      data-enhanced={enhanced}
+    >
+      <div className="lm-dark-team-header">
+        <p className="home-kicker">04 · About Us</p>
+        <h2 className="home-heading" id="lm-dark-team-heading">
+          An accountant who wants to know what you’re building.
+        </h2>
+        <p className="lm-team-subhead">
+          Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
+        </p>
+      </div>
+
+      <Infinite3DCarousel />
+    </section>
+  );
+});
+
+const BentoPhilosophySection = memo(function BentoPhilosophySection() {
   const [activeBentoTab, setActiveBentoTab] = useState(0);
   const bentoRef = useRef<HTMLElement>(null);
   const bentoInView = useSectionInView(bentoRef);
+
+  return (
+    <section
+      ref={bentoRef}
+      className="section-shell lm-bento-section"
+      aria-labelledby="lm-bento-heading"
+      data-reveal="dark-rise"
+      data-in-view={bentoInView}
+    >
+      <div className="lm-bento-header">
+        <p className="home-kicker">Core Philosophy</p>
+        <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
+      </div>
+
+      <div className="lm-bento-grid-4">
+        {beliefsContent.map((card, idx) => (
+          <article
+            key={card.id}
+            className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
+            onClick={() => setActiveBentoTab(idx)}
+            onMouseEnter={() => setActiveBentoTab(idx)}
+          >
+            <div className="lm-bento-border-trail" aria-hidden="true" />
+            <div className="lm-bento-badge">{card.badge}</div>
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+            <div className="lm-bento-footer">
+              <span className="lm-bento-highlight">✓ {card.highlight}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="lm-working-together-card">
+        <div className="lm-wt-left">
+          <span className="home-kicker">Working Together</span>
+          <h3>What working together should feel like</h3>
+          <p className="lm-wt-lead">
+            <strong>You can ask the question you think you should already know the answer to.</strong>
+          </p>
+          <p>
+            You don’t need to speak accounting language. Tell me what’s happening in the business and what you’re trying to decide. We can work from there.
+          </p>
+          <p>
+            I’ll explain the reasoning behind my advice, raise questions that need attention and tell you when we need more information or another specialist’s input.
+          </p>
+        </div>
+        <div className="lm-wt-right">
+          <div className="lm-closing-invitation-box">
+            <span className="home-kicker">Closing Invitation</span>
+            <h3>What are you building towards?</h3>
+            <p>I’d like to hear about your business and the decisions ahead.</p>
+            <Link href="/contact" className="lm-dark-pill">
+              Start a conversation with Vivienne <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const DarkGridSection = memo(function DarkGridSection() {
+  const [paused, setPaused] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const gridInView = useSectionInView(gridRef);
+
+  return (
+    <div ref={gridRef} className="section-shell lm-dark-grid" data-in-view={gridInView}>
+      <article className="lm-dark-tile lm-dark-story-tile" data-reveal-item data-reveal-delay="0">
+        <div className="lm-dark-copy">
+          <h2>Profit on paper won’t pay next month’s wages.</h2>
+          <p>
+            Sales can grow while cash gets tighter. Money may be tied up in unpaid invoices, stock or the costs of expansion. We help you find what’s driving the gap and assess what your next commitment would mean.
+          </p>
+          <Link href={services[3].href}>
+            Explore business advisory <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+      </article>
+      <article className="lm-dark-tile lm-dark-visual-tile" data-reveal-item data-reveal-delay="1">
+        <div className="lm-dark-visual" data-paused={paused || undefined}>
+          <span className="review-placeholder">Illustrative view · not a client report</span>
+          <div className="lm-dark-layers" aria-hidden="true">
+            <div className="lm-dark-float lm-dark-float-a"><b>Cash timing</b><span>Receipts and payments</span></div>
+            <div className="lm-dark-float lm-dark-float-b"><b>Next commitment</b><span>What it would change</span></div>
+            <div className="lm-dark-float lm-dark-float-c"><b>The gap</b><span>Profit is not cash</span></div>
+          </div>
+          <button type="button" onClick={() => setPaused((value) => !value)} aria-pressed={paused}>
+            {paused ? "Resume illustration" : "Pause illustration"}
+          </button>
+        </div>
+      </article>
+
+      <article className="lm-dark-tile lm-dark-video-tile" data-reveal-item data-reveal-delay="2">
+        <div className="lm-dark-video-wrap">
+          <span className="review-placeholder">Video module · intro pending</span>
+          <div className="lm-video-mockup">
+            <button type="button" className="lm-video-play-btn" aria-label="Play introductory advisory video">
+              <span aria-hidden="true">▶</span>
+            </button>
+          </div>
+        </div>
+        <div className="lm-dark-video-copy">
+          <h2>Your business deserves more than a once-a-year conversation.</h2>
+          <p>Lee Monarc Accounting &amp; Advisory connects your accounts and tax with the decisions you make as an owner: where to invest, what you can afford and how to build a business that gives you options.</p>
+          <Link href="/about">About us <span aria-hidden="true">↗</span></Link>
+        </div>
+      </article>
+      <article className="lm-dark-decisions" data-reveal-item data-reveal-delay="3">
+        <div>
+          <h2>Ask the questions before you sign.</h2>
+          <p>Buying a business, changing your structure or preparing to sell can shape your future for years to come. We help you consider the financial implications before you decide.</p>
+        </div>
+        <div className="lm-dark-decision-links">
+          {[services[2], services[4], services[5]].map((service) => (
+            <Link key={service.href} href={service.href}>{service.title} <span aria-hidden="true">↗</span></Link>
+          ))}
+        </div>
+      </article>
+    </div>
+  );
+});
+
+const DarkInviteSection = memo(function DarkInviteSection() {
+  return (
+    <section className="section-shell lm-dark-invite" aria-labelledby="lm-dark-invite-heading">
+      <span className="home-kicker">Start the Conversation</span>
+      <h2 id="lm-dark-invite-heading">Bring the question.</h2>
+      <p>Share where your business stands, what you want to achieve and the questions on your mind.</p>
+      <div className="lm-dark-invite-ctas">
+        <Link className="lm-dark-pill" href="/contact">
+          Tell us what’s on your mind <span aria-hidden="true">↗</span>
+        </Link>
+        <a href={`mailto:${business.email}`} className="lm-email-cta-link">
+          Email Vivienne Direct → <span className="lm-email-addr">{business.email}</span>
+        </a>
+      </div>
+    </section>
+  );
+});
+
+const TimelineSection = memo(function TimelineSection() {
+  const [activeStage, setActiveStage] = useState(0);
   const timelineRef = useRef<HTMLElement>(null);
   const timelineInView = useSectionInView(timelineRef);
+
+  return (
+    <section
+      ref={timelineRef}
+      className="section-shell lm-timeline-section"
+      aria-labelledby="lm-timeline-heading"
+      data-reveal="dark-rise"
+      data-reveal-delay="1"
+      data-in-view={timelineInView}
+    >
+      <div className="lm-timeline-header">
+        <span className="home-kicker">Engagement Journey</span>
+        <h2 className="home-heading" id="lm-timeline-heading">How Lee Monarc puts your numbers to work.</h2>
+        <p className="lm-timeline-subhead">Explore the 4 stages from initial diagnostic conversation to decisive financial strategy.</p>
+      </div>
+
+      <div className="lm-timeline-tabs" role="tablist" aria-label="Engagement stages timeline">
+        {engagementStages.map((stage, index) => (
+          <button
+            key={stage.id}
+            type="button"
+            role="tab"
+            id={`lm-stage-tab-${index}`}
+            aria-selected={activeStage === index}
+            aria-controls="lm-stage-panel"
+            onClick={() => setActiveStage(index)}
+            className={`lm-timeline-tab-btn ${activeStage === index ? "lm-tab-active" : ""}`}
+          >
+            {stage.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="lm-timeline-card" id="lm-stage-panel" role="tabpanel" aria-labelledby={`lm-stage-tab-${activeStage}`} data-stage={activeStage}>
+        <span className="review-placeholder">Client engagement quote &amp; metrics · Illustrative preview</span>
+        <div className="lm-stage-badge">{engagementStages[activeStage].stageName}</div>
+        <blockquote className="lm-stage-quote">
+          <p>{engagementStages[activeStage].quote}</p>
+        </blockquote>
+        <div className="lm-stage-author">
+          <div className="lm-author-avatar">{engagementStages[activeStage].client.charAt(0)}</div>
+          <div>
+            <strong>{engagementStages[activeStage].client}</strong>
+            <span>{engagementStages[activeStage].role}</span>
+          </div>
+        </div>
+
+        <div className="lm-stage-metrics-strip">
+          {engagementStages[activeStage].metrics.map((m, idx) => (
+            <div key={idx} className="lm-metric-cell">
+              <div className="lm-metric-val">{m.value}</div>
+              <div className="lm-metric-lbl">{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+// ProofSection uses JS hydration state (isHydrated) for data-enhanced so tab controls remain accessible
+// for keyboard/interactive users regardless of motion preferences, while CSS handles reduced motion.
+const ProofSection = memo(function ProofSection({ isHydrated }: { isHydrated: boolean }) {
+  const [proof, setProof] = useState(0);
   const proofRef = useRef<HTMLElement>(null);
   const proofInView = useSectionInView(proofRef);
+  const selected = services[proof];
+
+  return (
+    <section
+      ref={proofRef}
+      className="lm-proof section-shell"
+      aria-labelledby="lm-proof-heading"
+      data-enhanced={isHydrated}
+      data-reveal="dark-rise"
+      data-reveal-delay="2"
+      data-in-view={proofInView}
+    >
+      <p className="home-kicker">Services</p>
+      <h2 className="home-heading" id="lm-proof-heading">Six ways to start. Proof comes later.</h2>
+      <div className="lm-proof-layout">
+        <div className="lm-proof-selectors" role="tablist" aria-label="Service areas">
+          {services.map((service, index) => (
+            <button
+              key={service.href}
+              type="button"
+              role="tab"
+              id={`lm-proof-tab-${index}`}
+              aria-selected={proof === index}
+              aria-controls="lm-proof-panel"
+              onClick={() => setProof(index)}
+            >
+              <span>{service.number}</span> {service.title}
+            </button>
+          ))}
+        </div>
+        <div className="lm-proof-panel" id="lm-proof-panel" role="tabpanel" aria-labelledby={`lm-proof-tab-${proof}`}>
+          <span className="review-placeholder">Client proof placeholder</span>
+          <h3>{selected.title}</h3>
+          <p>{selected.description}</p>
+          <p className="lm-proof-note">Approved client stories are not on this review build.</p>
+          <Link href={selected.href}>Explore this service <span aria-hidden="true">↗</span></Link>
+        </div>
+        <div className="lm-proof-static">
+          {services.map((service) => (
+            <article key={service.href}>
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <Link href={service.href}>Explore this service <span aria-hidden="true">↗</span></Link>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+});
+
+const ClosingSection = memo(function ClosingSection() {
   const closingRef = useRef<HTMLDivElement>(null);
   const closingInView = useSectionInView(closingRef);
-  const selected = services[proof];
-  const enhanced = isHydrated && !reducedMotion;
+
+  return (
+    <section className="lm-closing" aria-labelledby="lm-closing-heading">
+      <div
+        ref={closingRef}
+        className="section-shell lm-closing-inner"
+        data-reveal="dark-rise"
+        data-reveal-delay="2"
+        data-in-view={closingInView}
+      >
+        <span className="review-placeholder">Panoramic Banner · Strategic Horizon</span>
+        <h2 className="home-heading" id="lm-closing-heading">What’s the decision on your mind?</h2>
+        <p>Tell us what’s happening. You don’t need to know which service to ask for.</p>
+        <div className="lm-closing-ctas">
+          <Link className="lm-dark-pill" href="/contact">
+            Tell us what’s on your mind <span aria-hidden="true">↗</span>
+          </Link>
+          <a href={`mailto:${business.email}`} className="lm-closing-email-pill">
+            {business.email} <span aria-hidden="true">✉</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+/**
+ * Renders the homepage's dark chapters and closing sections.
+ * Decomposed into memoized sub-components to prevent state updates (bento tab hovers,
+ * timeline clicks, illustration toggles) or scroll-threshold visibility changes
+ * from re-rendering the entire dark chapter tree and 3D carousel.
+ */
+export function DarkSections() {
+  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -145,288 +452,19 @@ export function DarkSections() {
     return () => query.removeEventListener("change", updatePreference);
   }, []);
 
+  const enhanced = isHydrated && !reducedMotion;
 
   return (
     <>
       <div className="lm-dark" data-enhanced={enhanced}>
-        {/* PAGE 5: MEET THE TEAM / FOUNDER 3D SHOWCASE CAROUSEL */}
-        <section
-          className="section-shell lm-dark-team"
-          aria-labelledby="lm-dark-team-heading"
-          data-enhanced={enhanced}
-        >
-          <div className="lm-dark-team-header">
-            <p className="home-kicker">04 · About Us</p>
-            <h2 className="home-heading" id="lm-dark-team-heading">
-              An accountant who wants to know what you’re building.
-            </h2>
-            <p className="lm-team-subhead">
-              Your accounts tell part of the story. Your plans, responsibilities and reasons for running a business tell the rest. At Lee Monarc, we bring those conversations together.
-            </p>
-          </div>
-
-          <Infinite3DCarousel />
-        </section>
-
-        {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO (ANIMATED WITH VIVIENNE'S CONTEXT) */}
-        <section
-          ref={bentoRef}
-          className="section-shell lm-bento-section"
-          aria-labelledby="lm-bento-heading"
-          data-reveal="dark-rise"
-          data-in-view={bentoInView}
-        >
-          <div className="lm-bento-header">
-            <p className="home-kicker">Core Philosophy</p>
-            <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
-          </div>
-
-          <div className="lm-bento-grid-4">
-            {beliefsContent.map((card, idx) => (
-              <article
-                key={card.id}
-                className={`lm-bento-card ${activeBentoTab === idx ? "lm-bento-active" : ""}`}
-                onClick={() => setActiveBentoTab(idx)}
-                onMouseEnter={() => setActiveBentoTab(idx)}
-              >
-                <div className="lm-bento-border-trail" aria-hidden="true" />
-                <div className="lm-bento-badge">{card.badge}</div>
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-                <div className="lm-bento-footer">
-                  <span className="lm-bento-highlight">✓ {card.highlight}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* WORKING TOGETHER & CLOSING INVITATION MODULE */}
-          <div className="lm-working-together-card">
-            <div className="lm-wt-left">
-              <span className="home-kicker">Working Together</span>
-              <h3>What working together should feel like</h3>
-              <p className="lm-wt-lead">
-                <strong>You can ask the question you think you should already know the answer to.</strong>
-              </p>
-              <p>
-                You don’t need to speak accounting language. Tell me what’s happening in the business and what you’re trying to decide. We can work from there.
-              </p>
-              <p>
-                I’ll explain the reasoning behind my advice, raise questions that need attention and tell you when we need more information or another specialist’s input.
-              </p>
-            </div>
-            <div className="lm-wt-right">
-              <div className="lm-closing-invitation-box">
-                <span className="home-kicker">Closing Invitation</span>
-                <h3>What are you building towards?</h3>
-                <p>I’d like to hear about your business and the decisions ahead.</p>
-                <Link href="/contact" className="lm-dark-pill">
-                  Start a conversation with Vivienne <span aria-hidden="true">↗</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div ref={gridRef} className="section-shell lm-dark-grid" data-in-view={gridInView}>
-          <article className="lm-dark-tile lm-dark-story-tile" data-reveal-item data-reveal-delay="0">
-            <div className="lm-dark-copy">
-              <h2>Profit on paper won’t pay next month’s wages.</h2>
-              <p>
-                Sales can grow while cash gets tighter. Money may be tied up in unpaid invoices, stock or the costs of expansion. We help you find what’s driving the gap and assess what your next commitment would mean.
-              </p>
-              <Link href={services[3].href}>
-                Explore business advisory <span aria-hidden="true">↗</span>
-              </Link>
-            </div>
-          </article>
-          <article className="lm-dark-tile lm-dark-visual-tile" data-reveal-item data-reveal-delay="1">
-            <div className="lm-dark-visual" data-paused={paused || undefined}>
-              <span className="review-placeholder">Illustrative view · not a client report</span>
-              <div className="lm-dark-layers" aria-hidden="true">
-                <div className="lm-dark-float lm-dark-float-a"><b>Cash timing</b><span>Receipts and payments</span></div>
-                <div className="lm-dark-float lm-dark-float-b"><b>Next commitment</b><span>What it would change</span></div>
-                <div className="lm-dark-float lm-dark-float-c"><b>The gap</b><span>Profit is not cash</span></div>
-              </div>
-              <button type="button" onClick={() => setPaused((value) => !value)} aria-pressed={paused}>
-                {paused ? "Resume illustration" : "Pause illustration"}
-              </button>
-            </div>
-          </article>
-
-          <article className="lm-dark-tile lm-dark-video-tile" data-reveal-item data-reveal-delay="2">
-            <div className="lm-dark-video-wrap">
-              <span className="review-placeholder">Video module · intro pending</span>
-              <div className="lm-video-mockup">
-                <button type="button" className="lm-video-play-btn" aria-label="Play introductory advisory video">
-                  <span aria-hidden="true">▶</span>
-                </button>
-              </div>
-            </div>
-            <div className="lm-dark-video-copy">
-              <h2>Your business deserves more than a once-a-year conversation.</h2>
-              <p>Lee Monarc Accounting &amp; Advisory connects your accounts and tax with the decisions you make as an owner: where to invest, what you can afford and how to build a business that gives you options.</p>
-              <Link href="/about">About us <span aria-hidden="true">↗</span></Link>
-            </div>
-          </article>
-          <article className="lm-dark-decisions" data-reveal-item data-reveal-delay="3">
-            <div>
-              <h2>Ask the questions before you sign.</h2>
-              <p>Buying a business, changing your structure or preparing to sell can shape your future for years to come. We help you consider the financial implications before you decide.</p>
-            </div>
-            <div className="lm-dark-decision-links">
-              {[services[2], services[4], services[5]].map((service) => (
-                <Link key={service.href} href={service.href}>{service.title} <span aria-hidden="true">↗</span></Link>
-              ))}
-            </div>
-          </article>
-        </div>
-
-
-        {/* PAGE 6.5: DARK BANNER BREAK & EMAIL CTA */}
-        <section className="section-shell lm-dark-invite" aria-labelledby="lm-dark-invite-heading">
-          <span className="home-kicker">Start the Conversation</span>
-          <h2 id="lm-dark-invite-heading">Bring the question.</h2>
-          <p>Share where your business stands, what you want to achieve and the questions on your mind.</p>
-          <div className="lm-dark-invite-ctas">
-            <Link className="lm-dark-pill" href="/contact">
-              Tell us what’s on your mind <span aria-hidden="true">↗</span>
-            </Link>
-            <a href={`mailto:${business.email}`} className="lm-email-cta-link">
-              Email Vivienne Direct → <span className="lm-email-addr">{business.email}</span>
-            </a>
-          </div>
-        </section>
-
-        {/* PAGE 7: PANORAMIC BACKDROP & INTERACTIVE TIMELINE QUOTES */}
-        <section
-          ref={timelineRef}
-          className="section-shell lm-timeline-section"
-          aria-labelledby="lm-timeline-heading"
-          data-reveal="dark-rise"
-          data-reveal-delay="1"
-          data-in-view={timelineInView}
-        >
-          <div className="lm-timeline-header">
-            <span className="home-kicker">Engagement Journey</span>
-            <h2 className="home-heading" id="lm-timeline-heading">How Lee Monarc puts your numbers to work.</h2>
-            <p className="lm-timeline-subhead">Explore the 4 stages from initial diagnostic conversation to decisive financial strategy.</p>
-          </div>
-
-          <div className="lm-timeline-tabs" role="tablist" aria-label="Engagement stages timeline">
-            {engagementStages.map((stage, index) => (
-              <button
-                key={stage.id}
-                type="button"
-                role="tab"
-                id={`lm-stage-tab-${index}`}
-                aria-selected={activeStage === index}
-                aria-controls="lm-stage-panel"
-                onClick={() => setActiveStage(index)}
-                className={`lm-timeline-tab-btn ${activeStage === index ? "lm-tab-active" : ""}`}
-              >
-                {stage.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="lm-timeline-card" id="lm-stage-panel" role="tabpanel" aria-labelledby={`lm-stage-tab-${activeStage}`} data-stage={activeStage}>
-            <span className="review-placeholder">Client engagement quote &amp; metrics · Illustrative preview</span>
-            <div className="lm-stage-badge">{engagementStages[activeStage].stageName}</div>
-            <blockquote className="lm-stage-quote">
-              <p>{engagementStages[activeStage].quote}</p>
-            </blockquote>
-            <div className="lm-stage-author">
-              <div className="lm-author-avatar">{engagementStages[activeStage].client.charAt(0)}</div>
-              <div>
-                <strong>{engagementStages[activeStage].client}</strong>
-                <span>{engagementStages[activeStage].role}</span>
-              </div>
-            </div>
-
-            <div className="lm-stage-metrics-strip">
-              {engagementStages[activeStage].metrics.map((m, idx) => (
-                <div key={idx} className="lm-metric-cell">
-                  <div className="lm-metric-val">{m.value}</div>
-                  <div className="lm-metric-lbl">{m.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
+        <FounderTeamSection enhanced={enhanced} />
+        <BentoPhilosophySection />
+        <DarkGridSection />
+        <DarkInviteSection />
+        <TimelineSection />
       </div>
-
-      <section
-        ref={proofRef}
-        className="lm-proof section-shell"
-        aria-labelledby="lm-proof-heading"
-        data-enhanced={enhanced}
-        data-reveal="dark-rise"
-        data-reveal-delay="2"
-        data-in-view={proofInView}
-      >
-        <p className="home-kicker">Services</p>
-        <h2 className="home-heading" id="lm-proof-heading">Six ways to start. Proof comes later.</h2>
-        <div className="lm-proof-layout">
-          <div className="lm-proof-selectors" role="tablist" aria-label="Service areas">
-            {services.map((service, index) => (
-              <button
-                key={service.href}
-                type="button"
-                role="tab"
-                id={`lm-proof-tab-${index}`}
-                aria-selected={proof === index}
-                aria-controls="lm-proof-panel"
-                onClick={() => setProof(index)}
-              >
-                <span>{service.number}</span> {service.title}
-              </button>
-            ))}
-          </div>
-          <div className="lm-proof-panel" id="lm-proof-panel" role="tabpanel" aria-labelledby={`lm-proof-tab-${proof}`}>
-            <span className="review-placeholder">Client proof placeholder</span>
-            <h3>{selected.title}</h3>
-            <p>{selected.description}</p>
-            <p className="lm-proof-note">Approved client stories are not on this review build.</p>
-            <Link href={selected.href}>Explore this service <span aria-hidden="true">↗</span></Link>
-          </div>
-          <div className="lm-proof-static">
-            {services.map((service) => (
-              <article key={service.href}>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-                <Link href={service.href}>Explore this service <span aria-hidden="true">↗</span></Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* PAGE 8: PANORAMIC CASTLE LANDSCAPE & CINEMATIC CLOSE HERO */}
-      <section className="lm-closing" aria-labelledby="lm-closing-heading">
-        <div
-          ref={closingRef}
-          className="section-shell lm-closing-inner"
-          data-reveal="dark-rise"
-          data-reveal-delay="2"
-          data-in-view={closingInView}
-        >
-          <span className="review-placeholder">Panoramic Banner · Strategic Horizon</span>
-          <h2 className="home-heading" id="lm-closing-heading">What’s the decision on your mind?</h2>
-          <p>Tell us what’s happening. You don’t need to know which service to ask for.</p>
-          <div className="lm-closing-ctas">
-            <Link className="lm-dark-pill" href="/contact">
-              Tell us what’s on your mind <span aria-hidden="true">↗</span>
-            </Link>
-            <a href={`mailto:${business.email}`} className="lm-closing-email-pill">
-              {business.email} <span aria-hidden="true">✉</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
+      <ProofSection isHydrated={isHydrated} />
+      <ClosingSection />
     </>
   );
 }
