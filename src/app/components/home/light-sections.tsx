@@ -10,8 +10,12 @@ import "./light-sections.css";
 const CADENCE = 6000;
 
 function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
-  const [inView, setInView] = useState(true);
+  const [inView, setInView] = useState(false);
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
     const node = ref.current;
     if (!node) return;
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.15 });
