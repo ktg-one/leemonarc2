@@ -124,6 +124,8 @@ export function Infinite3DCarousel() {
     activeIndex: 0,
     targetScrollX: 0,
     isSnapping: false,
+    scrollParallaxY: 0,
+    targetParallaxY: 0,
   });
 
   const updateCardTransforms = useCallback(() => {
@@ -136,6 +138,10 @@ export function Infinite3DCarousel() {
     const half = s.track / 2;
     let closestIdx = -1;
     let closestDist = Infinity;
+
+    // Smooth scroll parallax tilt and vertical depth shift (1.2s smooth decay)
+    const parallaxY = (s.scrollParallaxY * 28).toFixed(1);
+    const parallaxRotateX = (s.scrollParallaxY * 6).toFixed(2);
 
     for (let i = 0; i < count; i++) {
       const el = cards[i];
@@ -164,7 +170,7 @@ export function Infinite3DCarousel() {
       const tz = invNorm * MAX_DEPTH;
       const scale = MIN_SCALE + invNorm * SCALE_RANGE;
 
-      const newTransform = `translate3d(${pos.toFixed(1)}px, -50%, ${tz.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      const newTransform = `translate3d(${pos.toFixed(1)}px, calc(-50% + ${parallaxY}px), ${tz.toFixed(1)}px) rotateX(${parallaxRotateX}deg) rotateY(${ry.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       if (c.transform !== newTransform) {
         el.style.transform = newTransform;
         c.transform = newTransform;
@@ -250,6 +256,18 @@ export function Infinite3DCarousel() {
 
       const dt = lastTime ? Math.min((now - lastTime) / 1000, 0.1) : 0;
       lastTime = now;
+
+      // Scroll position parallax calculation relative to viewport center
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        const centerPos = (vh * 0.5 - rect.top - rect.height * 0.5) / vh;
+        s.targetParallaxY = Math.max(-1, Math.min(1, centerPos));
+      }
+
+      // Smooth lerp for scroll parallax (slow decay over > 1.2s transition rate)
+      const lerpFactor = 1 - Math.pow(0.02, dt);
+      s.scrollParallaxY += (s.targetParallaxY - s.scrollParallaxY) * lerpFactor;
 
       if (!s.dragging) {
         // Slow auto rotation if not paused and not hovered
