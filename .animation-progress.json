@@ -45,7 +45,8 @@
     "id": "3d-team-carousel-depth",
     "component": "src/app/components/home/infinite-3d-carousel.tsx",
     "type": "scroll/3d-parallax",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated scroll-driven 3D parallax depth tilt (rotateX and translate3d lerped over ~1.2s time constant) on Infinite3DCarousel in src/app/components/home/infinite-3d-carousel.tsx and infinite-3d-carousel.css with full prefers-reduced-motion compliance and preserve-3d depth."
   },
   {
     "id": "custom-cursor-magnetic",

@@ -124,6 +124,10 @@ export function Infinite3DCarousel() {
     activeIndex: 0,
     targetScrollX: 0,
     isSnapping: false,
+    tiltX: 0,
+    targetTiltX: 0,
+    depthZ: 0,
+    targetDepthZ: 0,
   });
 
   const updateCardTransforms = useCallback(() => {
@@ -262,6 +266,28 @@ export function Infinite3DCarousel() {
         const decay = Math.pow(FRICTION, dt * 60);
         s.vx *= decay;
         if (Math.abs(s.vx) < 0.1) s.vx = 0;
+      }
+
+      if (container && cardsRef.current) {
+        const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!isReduced) {
+          const rect = container.getBoundingClientRect();
+          const vh = window.innerHeight || 800;
+          const progress = (rect.top + rect.height / 2 - vh / 2) / (vh * 0.75);
+          const clampedProgress = Math.max(-1, Math.min(1, progress));
+
+          s.targetTiltX = clampedProgress * -8;
+          s.targetDepthZ = Math.abs(clampedProgress) * -30;
+
+          // Smooth interpolation over ~1.2s time constant
+          const lerpFactor = 1 - Math.exp(-dt / 1.2);
+          s.tiltX += (s.targetTiltX - s.tiltX) * lerpFactor;
+          s.depthZ += (s.targetDepthZ - s.depthZ) * lerpFactor;
+
+          cardsRef.current.style.transform = `rotateX(${s.tiltX.toFixed(2)}deg) translate3d(0, 0, ${s.depthZ.toFixed(1)}px)`;
+        } else {
+          cardsRef.current.style.transform = "none";
+        }
       }
 
       updateCardTransforms();
