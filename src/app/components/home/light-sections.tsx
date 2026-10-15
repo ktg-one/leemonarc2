@@ -10,10 +10,13 @@ import "./light-sections.css";
 const CADENCE = 6000;
 
 function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
-  const [inView, setInView] = useState(true);
+  const [inView, setInView] = useState(
+    () => typeof window !== "undefined" && typeof IntersectionObserver === "undefined",
+  );
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
+    if (typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.15 });
     observer.observe(node);
     return () => observer.disconnect();
@@ -312,8 +315,19 @@ const FeatureSliderSection = memo(function FeatureSliderSection({ enhanced }: { 
 });
 
 const QuestionsSection = memo(function QuestionsSection() {
+  const questionsRef = useRef<HTMLElement>(null);
+  const questionsInView = useSectionInView(questionsRef);
+
   return (
-    <section id="owner-questions" className="lm-light-questions section-shell" aria-labelledby="lm-light-questions-heading">
+    <section
+      id="owner-questions"
+      ref={questionsRef}
+      className="lm-light-questions section-shell"
+      aria-labelledby="lm-light-questions-heading"
+      data-reveal="rise"
+      data-reveal-delay="1"
+      data-in-view={questionsInView}
+    >
       <h2 id="lm-light-questions-heading">Three questions worth asking about your business.</h2>
       <div className="lm-light-question-grid">
         {questions.map((question, index) => (
@@ -448,6 +462,9 @@ const StoriesSection = memo(function StoriesSection({ enhanced, pageVisible }: {
       ref={storiesRef}
       className="lm-light-stories section-shell"
       aria-labelledby="lm-light-stories-heading"
+      data-reveal="rise"
+      data-reveal-delay="2"
+      data-in-view={storiesInView}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setFocused(true)}
@@ -504,6 +521,10 @@ const StoriesSection = memo(function StoriesSection({ enhanced, pageVisible }: {
 export function LightSections() {
   const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const introRef = useRef<HTMLElement>(null);
+  const introInView = useSectionInView(introRef);
+  const ctaRef = useRef<HTMLElement>(null);
+  const ctaInView = useSectionInView(ctaRef);
 
   const pageVisible = useSyncExternalStore(
     subscribeVisibility,
@@ -527,7 +548,13 @@ export function LightSections() {
     <div className="lm-light" data-enhanced={enhanced}>
       <BrandGridSection />
 
-      <section className="lm-light-intro section-shell home-section" aria-labelledby="lm-light-services-heading">
+      <section
+        ref={introRef}
+        className="lm-light-intro section-shell home-section"
+        aria-labelledby="lm-light-services-heading"
+        data-reveal="rise"
+        data-in-view={introInView}
+      >
         <p className="home-kicker">Accounting & Advisory</p>
         <h2 className="home-heading" id="lm-light-services-heading">Keep the essentials in order.<br />Get help with the bigger calls.</h2>
         <p>Your tax return matters. So does the decision you need to make next month.<br className="lm-light-desktop-break" /> Find support for both.</p>
@@ -539,7 +566,14 @@ export function LightSections() {
 
       <BeliefsSection enhanced={enhanced} pageVisible={pageVisible} />
 
-      <section className="lm-light-cta section-shell home-section" aria-labelledby="lm-light-cta-heading">
+      <section
+        ref={ctaRef}
+        className="lm-light-cta section-shell home-section"
+        aria-labelledby="lm-light-cta-heading"
+        data-reveal="rise"
+        data-reveal-delay="1"
+        data-in-view={ctaInView}
+      >
         <h2 id="lm-light-cta-heading" className="home-heading">Start with the question<br />you can’t answer yet.</h2>
         <Link className="pill-link" href="/contact">Let’s start a conversation <span aria-hidden="true">↗</span></Link>
       </section>

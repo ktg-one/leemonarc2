@@ -11,6 +11,23 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
+function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
+  const [inView, setInView] = useState(
+    () => typeof window !== "undefined" && typeof IntersectionObserver === "undefined",
+  );
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    if (typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return inView;
+}
+
 const beliefsContent = [
   {
     id: "decision",
@@ -100,20 +117,41 @@ const engagementStages = [
 
 export function DarkSections() {
   const [activeStage, setActiveStage] = useState(0);
-  const enhanced = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
+  const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [paused, setPaused] = useState(false);
   const [proof, setProof] = useState(0);
   const [activeBentoTab, setActiveBentoTab] = useState(0);
+  const bentoRef = useRef<HTMLElement>(null);
+  const bentoInView = useSectionInView(bentoRef);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useSectionInView(gridRef);
+  const timelineRef = useRef<HTMLElement>(null);
+  const timelineInView = useSectionInView(timelineRef);
+  const proofRef = useRef<HTMLElement>(null);
+  const proofInView = useSectionInView(proofRef);
+  const closingRef = useRef<HTMLDivElement>(null);
+  const closingInView = useSectionInView(closingRef);
   const selected = services[proof];
+  const enhanced = isHydrated && !reducedMotion;
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReducedMotion(query.matches);
+    updatePreference();
+    query.addEventListener("change", updatePreference);
+    return () => query.removeEventListener("change", updatePreference);
+  }, []);
 
 
   return (
     <>
-      <div className="lm-dark">
+      <div className="lm-dark" data-enhanced={enhanced}>
         {/* PAGE 5: MEET THE TEAM / FOUNDER 3D SHOWCASE CAROUSEL */}
         <section
           className="section-shell lm-dark-team"
           aria-labelledby="lm-dark-team-heading"
+          data-enhanced={enhanced}
         >
           <div className="lm-dark-team-header">
             <p className="home-kicker">04 · About Us</p>
@@ -129,7 +167,13 @@ export function DarkSections() {
         </section>
 
         {/* PAGE 6: DARKMODE 4-CARD MATRIX BENTO (ANIMATED WITH VIVIENNE'S CONTEXT) */}
-        <section className="section-shell lm-bento-section" aria-labelledby="lm-bento-heading">
+        <section
+          ref={bentoRef}
+          className="section-shell lm-bento-section"
+          aria-labelledby="lm-bento-heading"
+          data-reveal="dark-rise"
+          data-in-view={bentoInView}
+        >
           <div className="lm-bento-header">
             <p className="home-kicker">Core Philosophy</p>
             <h2 className="home-heading" id="lm-bento-heading">What I believe about your business &amp; money.</h2>
@@ -182,8 +226,8 @@ export function DarkSections() {
           </div>
         </section>
 
-        <div className="section-shell lm-dark-grid">
-          <article className="lm-dark-tile lm-dark-story-tile">
+        <div ref={gridRef} className="section-shell lm-dark-grid" data-in-view={gridInView}>
+          <article className="lm-dark-tile lm-dark-story-tile" data-reveal-item data-reveal-delay="0">
             <div className="lm-dark-copy">
               <h2>Profit on paper won’t pay next month’s wages.</h2>
               <p>
@@ -194,7 +238,7 @@ export function DarkSections() {
               </Link>
             </div>
           </article>
-          <article className="lm-dark-tile lm-dark-visual-tile">
+          <article className="lm-dark-tile lm-dark-visual-tile" data-reveal-item data-reveal-delay="1">
             <div className="lm-dark-visual" data-paused={paused || undefined}>
               <span className="review-placeholder">Illustrative view · not a client report</span>
               <div className="lm-dark-layers" aria-hidden="true">
@@ -208,7 +252,7 @@ export function DarkSections() {
             </div>
           </article>
 
-          <article className="lm-dark-tile lm-dark-video-tile">
+          <article className="lm-dark-tile lm-dark-video-tile" data-reveal-item data-reveal-delay="2">
             <div className="lm-dark-video-wrap">
               <span className="review-placeholder">Video module · intro pending</span>
               <div className="lm-video-mockup">
@@ -223,7 +267,7 @@ export function DarkSections() {
               <Link href="/about">About us <span aria-hidden="true">↗</span></Link>
             </div>
           </article>
-          <article className="lm-dark-decisions">
+          <article className="lm-dark-decisions" data-reveal-item data-reveal-delay="3">
             <div>
               <h2>Ask the questions before you sign.</h2>
               <p>Buying a business, changing your structure or preparing to sell can shape your future for years to come. We help you consider the financial implications before you decide.</p>
@@ -253,7 +297,14 @@ export function DarkSections() {
         </section>
 
         {/* PAGE 7: PANORAMIC BACKDROP & INTERACTIVE TIMELINE QUOTES */}
-        <section className="section-shell lm-timeline-section" aria-labelledby="lm-timeline-heading">
+        <section
+          ref={timelineRef}
+          className="section-shell lm-timeline-section"
+          aria-labelledby="lm-timeline-heading"
+          data-reveal="dark-rise"
+          data-reveal-delay="1"
+          data-in-view={timelineInView}
+        >
           <div className="lm-timeline-header">
             <span className="home-kicker">Engagement Journey</span>
             <h2 className="home-heading" id="lm-timeline-heading">How Lee Monarc puts your numbers to work.</h2>
@@ -277,7 +328,7 @@ export function DarkSections() {
             ))}
           </div>
 
-          <div className="lm-timeline-card" id="lm-stage-panel" role="tabpanel" aria-labelledby={`lm-stage-tab-${activeStage}`}>
+          <div className="lm-timeline-card" id="lm-stage-panel" role="tabpanel" aria-labelledby={`lm-stage-tab-${activeStage}`} data-stage={activeStage}>
             <span className="review-placeholder">Client engagement quote &amp; metrics · Illustrative preview</span>
             <div className="lm-stage-badge">{engagementStages[activeStage].stageName}</div>
             <blockquote className="lm-stage-quote">
@@ -304,7 +355,15 @@ export function DarkSections() {
 
       </div>
 
-      <section className="lm-proof section-shell" aria-labelledby="lm-proof-heading" data-enhanced={enhanced}>
+      <section
+        ref={proofRef}
+        className="lm-proof section-shell"
+        aria-labelledby="lm-proof-heading"
+        data-enhanced={enhanced}
+        data-reveal="dark-rise"
+        data-reveal-delay="2"
+        data-in-view={proofInView}
+      >
         <p className="home-kicker">Services</p>
         <h2 className="home-heading" id="lm-proof-heading">Six ways to start. Proof comes later.</h2>
         <div className="lm-proof-layout">
@@ -345,7 +404,13 @@ export function DarkSections() {
 
       {/* PAGE 8: PANORAMIC CASTLE LANDSCAPE & CINEMATIC CLOSE HERO */}
       <section className="lm-closing" aria-labelledby="lm-closing-heading">
-        <div className="section-shell lm-closing-inner">
+        <div
+          ref={closingRef}
+          className="section-shell lm-closing-inner"
+          data-reveal="dark-rise"
+          data-reveal-delay="2"
+          data-in-view={closingInView}
+        >
           <span className="review-placeholder">Panoramic Banner · Strategic Horizon</span>
           <h2 className="home-heading" id="lm-closing-heading">What’s the decision on your mind?</h2>
           <p>Tell us what’s happening. You don’t need to know which service to ask for.</p>

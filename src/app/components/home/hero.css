@@ -1,7 +1,19 @@
-.lm-hero { position: relative; isolation: isolate; min-height: 655px; color: #fff; background: #182237; overflow: hidden; }
+﻿m-hero { position: relative; isolation: isolate; min-height: 655px; color: #fff; background: #182237; overflow: hidden; }
 .lm-hero-media { position: absolute; z-index: -2; inset: 0; background-image: var(--lm-hero-poster); background-position: var(--lm-hero-position); background-size: cover; }
-.lm-hero-media video { width: 100%; height: 100%; object-fit: cover; object-position: var(--lm-hero-position); opacity: 0; }
-.lm-hero-media video[data-visible='true'] { opacity: 1; }
+.lm-hero-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--lm-hero-position);
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1.2s ease, transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lm-hero-media video[data-visible='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
 .lm-hero::before { content: ''; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgba(9,19,29,.88) 0%, rgba(9,19,29,.74) 43%, rgba(9,19,29,.25) 100%); }
 
 .lm-hero-inner {
@@ -13,10 +25,23 @@
   padding-block: 135px 90px;
 }
 
-.lm-hero-copy { max-width: 600px; }
+.lm-hero-copy {
+  max-width: 600px;
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  animation: lmHeroReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .lm-hero-eyebrow { font: 500 11px/1.5 var(--font-body); letter-spacing: .03em; margin-bottom: 20px; color: #ffffff; text-transform: uppercase; }
 .lm-hero h1 { font: 400 clamp(42px, 3.6vw, 56px)/1.08 var(--font-display); letter-spacing: -.025em; text-wrap: balance; max-width: 570px; margin: 0 0 22px; color: #ffffff; }
 .lm-hero-description { max-width: 510px; font-size: 15px; line-height: 1.7; color: #e1e5e5; margin-bottom: 30px; }
+
+@keyframes lmHeroReveal {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
 
 /* ThreeUI RectangleButtons Halvorsen Integration */
 .lm-hero-cta-group {
@@ -27,9 +52,33 @@
 }
 
 .lm-hero-threeui-cta {
+  position: relative;
   display: inline-block;
   cursor: pointer;
   outline: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+}
+
+.lm-hero-threeui-cta::after {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(204, 168, 91, 0.14), rgba(255, 255, 255, 0.02), rgba(204, 168, 91, 0.18));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.lm-hero-threeui-cta:hover,
+.lm-hero-threeui-cta:focus-visible {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 12px 30px rgba(204, 168, 91, 0.18));
+}
+
+.lm-hero-threeui-cta:hover::after,
+.lm-hero-threeui-cta:focus-visible::after {
+  opacity: 1;
 }
 
 .lm-hero-threeui-cta .threeui-page-button-stage {
@@ -69,6 +118,7 @@
 
 /* Elevated Frosted Glass Advisory Preview Card */
 .lm-hero-notification {
+  position: relative;
   align-self: center;
   margin-bottom: 0;
   padding: 26px 28px;
@@ -85,15 +135,44 @@
   will-change: transform;
   transform: translate3d(0, var(--lm-hero-parallax-y, 0px), 0);
   transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: lmHeroCardFloat 6s ease-in-out infinite alternate;
+  animation: lmHeroCardReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both, lmHeroCardFloat 6s ease-in-out infinite alternate;
 }
 
-.lm-hero-notification:hover {
+.lm-hero-notification::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 30%, rgba(204, 168, 91, 0.18) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.lm-hero-notification:hover,
+.lm-hero-notification:focus-within {
   border-color: rgba(204, 168, 91, 0.42);
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55), 0 0 32px rgba(204, 168, 91, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
+.lm-hero-notification:hover::after,
+.lm-hero-notification:focus-within::after {
+  opacity: 1;
+}
+
+@keyframes lmHeroCardReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--lm-hero-parallax-y, 0px) + 18px), 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, var(--lm-hero-parallax-y, 0px), 0) scale(1);
+  }
+}
+
 @keyframes lmHeroCardFloat {
+
   0% {
     transform: translate3d(0, var(--lm-hero-parallax-y, 0px), 0) rotate(0deg);
   }
@@ -331,12 +410,34 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border: 1px solid #ffffff30;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  background: #12191ddb;
+  background: rgba(18, 25, 29, 0.86);
   color: #fff;
   font-size: 15px;
   cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.lm-hero-playback:hover,
+.lm-hero-playback:focus-visible {
+  transform: translateY(-1px) scale(1.04);
+  border-color: rgba(204, 168, 91, 0.7);
+  box-shadow: 0 0 0 4px rgba(204, 168, 91, 0.12), 0 12px 22px rgba(0, 0, 0, 0.28);
+  background: rgba(27, 35, 39, 0.9);
+}
+
+.lm-hero-playback.is-playing {
+  animation: lmHeroPlaybackPulse 2.3s ease-in-out infinite;
+}
+
+@keyframes lmHeroPlaybackPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(82, 196, 26, 0.22);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(82, 196, 26, 0.08), 0 0 18px rgba(82, 196, 26, 0.18);
+  }
 }
 
 .lm-hero-media-status { font-size: 11px; }
@@ -360,7 +461,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .lm-hero-copy,
+  .lm-hero-notification,
+  .lm-hero-threeui-cta,
+  .lm-hero-playback,
+  .lm-hero-badge-card,
+  .lm-brand-marquee-track {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
   .lm-hero-media video { visibility: hidden; }
   .lm-brand-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; }
   .lm-hero-notification { animation: none; transform: none; transition: none; }
 }
+
+
+
+
