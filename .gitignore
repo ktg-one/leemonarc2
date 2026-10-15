@@ -13,3 +13,4 @@ next-env.d.ts
 debug.log
 react-doctor-report*.json
 bun.lock
+.planning
