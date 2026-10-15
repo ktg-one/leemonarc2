@@ -280,7 +280,7 @@ export function Infinite3DCarousel() {
           s.targetDepthZ = Math.abs(clampedProgress) * -30;
 
           // Smooth interpolation over ~1.2s time constant
-          const lerpFactor = 1 - Math.exp(-dt * 2.2);
+          const lerpFactor = 1 - Math.exp(-dt / 1.2);
           s.tiltX += (s.targetTiltX - s.tiltX) * lerpFactor;
           s.depthZ += (s.targetDepthZ - s.depthZ) * lerpFactor;
 
