@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Manrope } from "next/font/google";
+import { Newsreader, Manrope, Playfair_Display, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components/chrome";
 import { Cursor } from "@/components/cursor";
@@ -17,6 +17,18 @@ const manrope = Manrope({
   variable: "--font-manrope",
 });
 
+const playfair = Playfair_Display({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
+const montserrat = Montserrat({
+  weight: "500",
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+});
+
 export const metadata: Metadata = {
   title: "Lee Monarc — Accounting & Advisory, Perth",
   description:
@@ -24,13 +36,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/** Wraps route content in the document shell with shared fonts, cursor, header, and footer. */
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en-AU"
-      className={`${newsreader.variable} ${manrope.variable}`}
+      className={`${newsreader.variable} ${manrope.variable} ${playfair.variable} ${montserrat.variable}`}
       suppressHydrationWarning
     >
       <body id="top">

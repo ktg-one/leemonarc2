@@ -44,6 +44,7 @@ const DOCK_ITEMS: readonly DockItem[] = [
   },
 ] as const;
 
+/** Renders the shared brand and navigation, adapting header styling to the current route and scroll position. */
 export function SiteHeader() {
   const home = usePathname() === "/";
   const [scrolled, setScrolled] = useState(false);
@@ -80,14 +81,12 @@ export function SiteHeader() {
             className="lm-nav-dock"
             brand={
               <Link className="atd-modern__brand lm-brand" href="/" aria-label="Lee Monarc home">
-                <Image
-                  src="/brand/wordmark.svg"
-                  width={812}
-                  height={149}
-                  alt="Lee Monarc Accounting & Advisory"
-                  preload
-                  className="lm-brand-img"
-                />
+                <Image src="/brand/logo-dark.png" width={292} height={311} alt="" preload className="lm-brand-mark lm-brand-mark--dark" />
+                <Image src="/brand/logo-light.png" width={292} height={311} alt="" preload className="lm-brand-mark lm-brand-mark--light" />
+                <span className="lm-brand-text">
+                  <span className="lm-brand-name">Lee Monarc</span>
+                  <span className="lm-brand-tag">Accounting &amp; Advisory</span>
+                </span>
               </Link>
             }
             items={DOCK_ITEMS}
