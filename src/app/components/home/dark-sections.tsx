@@ -11,6 +11,7 @@ const subscribeHydration = () => () => {};
 const getHydrated = () => true;
 const getServerHydrated = () => false;
 
+/** Tracks section visibility at a 20% threshold, defaulting to visible when observation is unavailable. */
 function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
   const [inView, setInView] = useState(
     () => typeof window !== "undefined" && typeof IntersectionObserver === "undefined",
@@ -115,6 +116,7 @@ const engagementStages = [
   },
 ];
 
+/** Renders the homepage's dark chapters and closing sections with interactive panels and motion preferences. */
 export function DarkSections() {
   const [activeStage, setActiveStage] = useState(0);
   const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);

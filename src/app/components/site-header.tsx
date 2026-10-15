@@ -44,6 +44,7 @@ const DOCK_ITEMS: readonly DockItem[] = [
   },
 ] as const;
 
+/** Renders the shared brand and navigation, adapting header styling to the current route and scroll position. */
 export function SiteHeader() {
   const home = usePathname() === "/";
   const [scrolled, setScrolled] = useState(false);

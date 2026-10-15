@@ -9,6 +9,7 @@ import "./light-sections.css";
 
 const CADENCE = 6000;
 
+/** Tracks section visibility at a 15% threshold, defaulting to visible when observation is unavailable. */
 function useSectionInView(ref: React.RefObject<HTMLElement | null>) {
   const [inView, setInView] = useState(
     () => typeof window !== "undefined" && typeof IntersectionObserver === "undefined",
@@ -518,6 +519,7 @@ const StoriesSection = memo(function StoriesSection({ enhanced, pageVisible }: {
   );
 });
 
+/** Renders the homepage's light chapters with enhancements gated by hydration and motion preferences. */
 export function LightSections() {
   const isHydrated = useSyncExternalStore(subscribeHydration, getHydrated, getServerHydrated);
   const [reducedMotion, setReducedMotion] = useState(false);

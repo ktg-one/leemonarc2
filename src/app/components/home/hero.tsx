@@ -19,6 +19,7 @@ const brandBadges = [
   { label: "Hospitality", href: "/who-we-help" },
 ];
 
+/** Renders the homepage hero, managing video playback and parallax according to visibility and motion preferences. */
 export function Hero() {
   const router = useRouter();
   const section = useRef<HTMLElement>(null);

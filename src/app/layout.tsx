@@ -36,6 +36,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/** Wraps route content in the document shell with shared fonts, cursor, header, and footer. */
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
