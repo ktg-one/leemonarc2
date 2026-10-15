@@ -17,3 +17,7 @@
 ## 2026-09-28 - Isolating Multiple Carousel Interval Timers into Memoized Sub-components
 **Learning:** Hoisting state for multiple automatic interval timers (e.g. 5s, 5.5s, 6s carousels) into a single parent component causes every timer tick and hover event to re-render the entire parent DOM tree and all neighboring static or animated sections.
 **Action:** Decompose monolithic section components into memoized sub-components (`React.memo`), placing timer and hover/focus state strictly within the sub-component that uses it.
+
+## 2026-09-29 - Localizing Section Observers and UI State to Prevent DOM Detachment
+**Learning:** Hoisting multiple `useSectionInView` observers and localized interactive state (e.g., bento card hover state, timeline tabs, illustration pause toggles) into a single monolithic component causes every scroll threshold intersection or hover event to re-render the entire parent DOM tree, detaching DOM elements during user interactions and forcing expensive Virtual DOM reconciliations across heavy canvas and 3D subcomponents.
+**Action:** Isolate each section's `useSectionInView` hook and interactive state into `React.memo` sub-components so state changes and scroll visibility threshold updates only re-render the specific section affected.

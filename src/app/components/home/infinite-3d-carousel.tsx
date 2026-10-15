@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useCallback, useSyncExternalStore } from "react";
+import { memo, useEffect, useRef, useState, useCallback, useSyncExternalStore } from "react";
 import "./infinite-3d-carousel.css";
 
 export interface TeamPillar {
@@ -81,7 +81,11 @@ const subscribe = () => () => {};
 const getClientHydrated = () => true;
 const getServerHydrated = () => false;
 
-export function Infinite3DCarousel() {
+/**
+ * Interactive 3D Team & Advisory Carousel wrapped in React.memo to prevent
+ * expensive re-renders and animation frame listener churn when parent dark sections re-render.
+ */
+export const Infinite3DCarousel = memo(function Infinite3DCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -539,4 +543,4 @@ export function Infinite3DCarousel() {
       </div>
     </div>
   );
-}
+});
