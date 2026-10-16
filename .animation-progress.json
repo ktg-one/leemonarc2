@@ -52,7 +52,8 @@
     "id": "custom-cursor-magnetic",
     "component": "src/app/components/cursor.tsx",
     "type": "micro-interaction/magnetic",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated magnetic pull towards hovered interactive elements (max 18px pull lerped smoothly over ~1.2s) and click scale micro-interactions (scale(0.75)) in src/app/components/cursor.tsx using requestAnimationFrame on-demand loop, with full prefers-reduced-motion and touch device compliance."
   },
   {
     "id": "services-card-hover",
