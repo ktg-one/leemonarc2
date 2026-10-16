@@ -56,6 +56,7 @@ export function createTopDockController(
   let pointerActive = false;
   let dirty = false;
   let frame = 0;
+  let scrollRaf = 0;
   let cachedRootRect: Pick<DOMRect, "left" | "top" | "width" | "height"> | null = null;
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
@@ -350,8 +351,18 @@ export function createTopDockController(
   root.addEventListener("focusout", onFocusOut);
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
+  const onScroll = () => {
+    // Throttle scroll-triggered rect refresh to at most once per animation frame to prevent forced sync reflows
+    if (!scrollRaf) {
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        refreshRootRect();
+      });
+    }
+  };
+
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
-  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  window.addEventListener("scroll", onScroll, { passive: true, capture: true });
   window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
@@ -362,6 +373,7 @@ export function createTopDockController(
     released = true;
     root.style.width = "";
     cancelAnimationFrame(frame);
+    if (scrollRaf) cancelAnimationFrame(scrollRaf);
     resizeObserver.disconnect();
     root.removeEventListener("pointermove", onPointerMove);
     root.removeEventListener("pointerleave", reset);
@@ -370,7 +382,7 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
-    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("scroll", onScroll, true);
     window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
