@@ -13,15 +13,15 @@ export function Cursor() {
     const dotElement = dot.current;
     if (!ringElement || !dotElement) return;
     const query = matchMedia(motion.cursorQuery);
-    let x = 0,
-      y = 0,
-      targetX = 0,
+    let targetX = 0,
       targetY = 0,
+      ringX = 0,
+      ringY = 0,
       frame = 0,
       seen = false;
-    // Cache last target element and interactive status to eliminate redundant DOM traversals
-    // and dataset property writes on high-frequency pointermove events.
+
     let lastTarget: Element | null = null;
+    let lastInteractiveEl: Element | null = null;
     let lastInteractive: boolean | null = null;
 
     const hide = () => {
@@ -29,42 +29,62 @@ export function Cursor() {
       dotElement.style.opacity = "0";
       seen = false;
       lastTarget = null;
+      lastInteractiveEl = null;
       lastInteractive = null;
       cancelAnimationFrame(frame);
       frame = 0;
     };
+
     const follow = () => {
-      x += (targetX - x) * motion.cursorFollow;
-      y += (targetY - y) * motion.cursorFollow;
-      ringElement.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      // Calculate magnetic offset target for ring
+      let destX = targetX;
+      let destY = targetY;
+
+      if (lastInteractiveEl) {
+        const rect = lastInteractiveEl.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        // Magnetic pull strength: 35% towards element center
+        destX = targetX + (centerX - targetX) * 0.35;
+        destY = targetY + (centerY - targetY) * 0.35;
+      }
+
+      ringX += (destX - ringX) * motion.cursorFollow;
+      ringY += (destY - ringY) * motion.cursorFollow;
+
+      ringElement.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
+      dotElement.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
+
       if (
-        Math.abs(targetX - x) + Math.abs(targetY - y) >
+        Math.abs(destX - ringX) + Math.abs(destY - ringY) >
         motion.cursorSettleDistance
-      )
+      ) {
         frame = requestAnimationFrame(follow);
-      else frame = 0;
+      } else {
+        frame = 0;
+      }
     };
+
     const move = (event: PointerEvent) => {
       if (!query.matches || event.pointerType === "touch") return;
       targetX = event.clientX;
       targetY = event.clientY;
       if (!seen) {
-        x = targetX;
-        y = targetY;
+        ringX = targetX;
+        ringY = targetY;
         seen = true;
       }
-      dotElement.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
       dotElement.style.opacity = "1";
       ringElement.style.opacity = "1";
 
-      // Only query closest interactive ancestor when the target element changes,
-      // and only update DOM dataset attribute when the interactive status toggles.
       const targetElement = event.target as Element | null;
       if (targetElement !== lastTarget) {
         lastTarget = targetElement;
-        const isInteractive = !!targetElement?.closest(
-          "a, button, summary, input, textarea, select",
+        const interactiveEl = targetElement?.closest(
+          "a, button, summary, input, textarea, select, [role='button'], .lm-magnetic"
         );
+        lastInteractiveEl = interactiveEl || null;
+        const isInteractive = !!interactiveEl;
         if (isInteractive !== lastInteractive) {
           lastInteractive = isInteractive;
           ringElement.dataset.interactive = String(isInteractive);
@@ -73,16 +93,20 @@ export function Cursor() {
 
       if (!frame) frame = requestAnimationFrame(follow);
     };
+
     const leave = (event: PointerEvent) => {
       if (!event.relatedTarget) hide();
     };
+
     const preferenceChange = () => {
       if (!query.matches) hide();
     };
+
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerout", leave);
     window.addEventListener("blur", hide);
     query.addEventListener("change", preferenceChange);
+
     return () => {
       hide();
       window.removeEventListener("pointermove", move);
