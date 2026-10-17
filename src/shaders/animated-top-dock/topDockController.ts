@@ -60,7 +60,7 @@ export function createTopDockController(
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
-  const getGeometry = (options: TopDockOptions) => {
+  const getGeometry = (options: TopDockOptions, overrideTrackWidth?: number) => {
     const vertical = options.axis === "y";
     const centers: number[] = [];
     let maxBottom = 0;
@@ -71,7 +71,7 @@ export function createTopDockController(
       const weights = items.map((state) => state.baseWidth + options.widthGrowth * clamp(state.value, 0, 1.08));
       const total = weights.reduce((sum, weight) => sum + weight, 0);
       const natural = items.reduce((sum, state) => sum + state.baseWidth, 0);
-      const trackWidth = cachedRootRect?.width ?? 0;
+      const trackWidth = overrideTrackWidth ?? cachedRootRect?.width ?? 0;
       const track = trackWidth >= natural ? trackWidth : 0;
       let currentLeft = 0;
 
@@ -126,7 +126,7 @@ export function createTopDockController(
   const refreshRootRect = () => {
     const rect = root.getBoundingClientRect();
     const options = getOptions();
-    const { horizontalGrowth, verticalGrowth } = getGeometry(options);
+    const { horizontalGrowth, verticalGrowth } = getGeometry(options, rect.width);
     const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
     const verticalGrowthOffset = options.axis === "y" ? verticalGrowth * 0.5 : 0;
     const horizontalGrowthOffset = centeredWidth ? horizontalGrowth * 0.5 : 0;
@@ -139,8 +139,9 @@ export function createTopDockController(
   };
 
   const getRootRect = (options: TopDockOptions) => {
+    if (!cachedRootRect) refreshRootRect();
     if (!cachedRootRect) return null;
-    const { horizontalGrowth, verticalGrowth } = getGeometry(options);
+    const { horizontalGrowth, verticalGrowth } = getGeometry(options, cachedRootRect.width);
     const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
     const left = cachedRootRect.left - (centeredWidth ? horizontalGrowth * 0.5 : 0);
     const top = cachedRootRect.top - (options.axis === "y" ? verticalGrowth * 0.5 : 0);
@@ -350,8 +351,18 @@ export function createTopDockController(
   root.addEventListener("focusout", onFocusOut);
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
+  // Lazy scroll listener: avoid calling getBoundingClientRect on every scroll event
+  // when pointer is inactive. Clearing cachedRootRect defers DOM queries until interaction occurs.
+  const onWindowScroll = () => {
+    if (pointerActive) {
+      refreshRootRect();
+    } else {
+      cachedRootRect = null;
+    }
+  };
+
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
-  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  window.addEventListener("scroll", onWindowScroll, { passive: true, capture: true });
   window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
@@ -370,7 +381,7 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
-    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("scroll", onWindowScroll, true);
     window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
