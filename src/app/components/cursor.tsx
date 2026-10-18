@@ -33,17 +33,40 @@ export function Cursor() {
       cancelAnimationFrame(frame);
       frame = 0;
     };
+    let ringTargetX = 0;
+    let ringTargetY = 0;
+    let interactiveElement: HTMLElement | null = null;
+    let cachedCenterX = 0;
+    let cachedCenterY = 0;
+
+    const updateRingTarget = () => {
+      if (interactiveElement) {
+        const dx = cachedCenterX - targetX;
+        const dy = cachedCenterY - targetY;
+        const pull = 0.38;
+        ringTargetX = targetX + dx * pull;
+        ringTargetY = targetY + dy * pull;
+      } else {
+        ringTargetX = targetX;
+        ringTargetY = targetY;
+      }
+    };
+
     const follow = () => {
-      x += (targetX - x) * motion.cursorFollow;
-      y += (targetY - y) * motion.cursorFollow;
+      updateRingTarget();
+      x += (ringTargetX - x) * motion.cursorFollow;
+      y += (ringTargetY - y) * motion.cursorFollow;
       ringElement.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       if (
-        Math.abs(targetX - x) + Math.abs(targetY - y) >
+        Math.abs(ringTargetX - x) + Math.abs(ringTargetY - y) >
         motion.cursorSettleDistance
-      )
+      ) {
         frame = requestAnimationFrame(follow);
-      else frame = 0;
+      } else {
+        frame = 0;
+      }
     };
+
     const move = (event: PointerEvent) => {
       if (!query.matches || event.pointerType === "touch") return;
       targetX = event.clientX;
@@ -57,35 +80,60 @@ export function Cursor() {
       dotElement.style.opacity = "1";
       ringElement.style.opacity = "1";
 
-      // Only query closest interactive ancestor when the target element changes,
-      // and only update DOM dataset attribute when the interactive status toggles.
       const targetElement = event.target as Element | null;
       if (targetElement !== lastTarget) {
         lastTarget = targetElement;
-        const isInteractive = !!targetElement?.closest(
-          "a, button, summary, input, textarea, select",
-        );
+        const matched = targetElement?.closest(
+          "a, button, summary, input, textarea, select, [data-magnetic]",
+        ) as HTMLElement | null;
+
+        interactiveElement = matched;
+        const isInteractive = !!matched;
         if (isInteractive !== lastInteractive) {
           lastInteractive = isInteractive;
           ringElement.dataset.interactive = String(isInteractive);
         }
       }
 
+      if (interactiveElement) {
+        const rect = interactiveElement.getBoundingClientRect();
+        cachedCenterX = rect.left + rect.width / 2;
+        cachedCenterY = rect.top + rect.height / 2;
+      }
+
       if (!frame) frame = requestAnimationFrame(follow);
     };
+
+    const down = () => {
+      ringElement.dataset.pressed = "true";
+    };
+
+    const up = () => {
+      ringElement.dataset.pressed = "false";
+    };
+
     const leave = (event: PointerEvent) => {
       if (!event.relatedTarget) hide();
     };
+
     const preferenceChange = () => {
       if (!query.matches) hide();
     };
+
     window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", down, { passive: true });
+    window.addEventListener("pointerup", up, { passive: true });
+    window.addEventListener("pointercancel", up, { passive: true });
     window.addEventListener("pointerout", leave);
     window.addEventListener("blur", hide);
     query.addEventListener("change", preferenceChange);
+
     return () => {
       hide();
       window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
       window.removeEventListener("pointerout", leave);
       window.removeEventListener("blur", hide);
       query.removeEventListener("change", preferenceChange);
