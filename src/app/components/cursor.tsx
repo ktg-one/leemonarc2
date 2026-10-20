@@ -23,6 +23,7 @@ export function Cursor() {
     // and dataset property writes on high-frequency pointermove events.
     let lastTarget: Element | null = null;
     let lastInteractive: boolean | null = null;
+    let interactiveElement: Element | null = null;
 
     const hide = () => {
       ringElement.style.opacity = "0";
@@ -30,20 +31,36 @@ export function Cursor() {
       seen = false;
       lastTarget = null;
       lastInteractive = null;
+      interactiveElement = null;
       cancelAnimationFrame(frame);
       frame = 0;
     };
+
     const follow = () => {
-      x += (targetX - x) * motion.cursorFollow;
-      y += (targetY - y) * motion.cursorFollow;
+      let finalTargetX = targetX;
+      let finalTargetY = targetY;
+
+      if (interactiveElement) {
+        const rect = interactiveElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        // Magnetic pull towards interactive element center (35% attraction factor)
+        const pull = 0.35;
+        finalTargetX = targetX + (centerX - targetX) * pull;
+        finalTargetY = targetY + (centerY - targetY) * pull;
+      }
+
+      x += (finalTargetX - x) * motion.cursorFollow;
+      y += (finalTargetY - y) * motion.cursorFollow;
       ringElement.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       if (
-        Math.abs(targetX - x) + Math.abs(targetY - y) >
+        Math.abs(finalTargetX - x) + Math.abs(finalTargetY - y) >
         motion.cursorSettleDistance
       )
         frame = requestAnimationFrame(follow);
       else frame = 0;
     };
+
     const move = (event: PointerEvent) => {
       if (!query.matches || event.pointerType === "touch") return;
       targetX = event.clientX;
@@ -57,22 +74,34 @@ export function Cursor() {
       dotElement.style.opacity = "1";
       ringElement.style.opacity = "1";
 
-      // Only query closest interactive ancestor when the target element changes,
-      // and only update DOM dataset attribute when the interactive status toggles.
       const targetElement = event.target as Element | null;
       if (targetElement !== lastTarget) {
         lastTarget = targetElement;
-        const isInteractive = !!targetElement?.closest(
-          "a, button, summary, input, textarea, select",
+        const candidate = targetElement?.closest(
+          "a, button, summary, input, textarea, select, [data-magnetic]",
         );
+        interactiveElement = candidate || null;
+        const isInteractive = !!interactiveElement;
         if (isInteractive !== lastInteractive) {
           lastInteractive = isInteractive;
           ringElement.dataset.interactive = String(isInteractive);
+          ringElement.dataset.magnetic = String(isInteractive);
         }
       }
 
       if (!frame) frame = requestAnimationFrame(follow);
     };
+
+    const down = () => {
+      if (!query.matches) return;
+      ringElement.dataset.active = "true";
+    };
+
+    const up = () => {
+      if (!query.matches) return;
+      ringElement.dataset.active = "false";
+    };
+
     const leave = (event: PointerEvent) => {
       if (!event.relatedTarget) hide();
     };
@@ -80,12 +109,16 @@ export function Cursor() {
       if (!query.matches) hide();
     };
     window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", down, { passive: true });
+    window.addEventListener("pointerup", up, { passive: true });
     window.addEventListener("pointerout", leave);
     window.addEventListener("blur", hide);
     query.addEventListener("change", preferenceChange);
     return () => {
       hide();
       window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointerup", up);
       window.removeEventListener("pointerout", leave);
       window.removeEventListener("blur", hide);
       query.removeEventListener("change", preferenceChange);
