@@ -15,18 +15,32 @@
   height: 32px;
   border: 1px solid currentColor;
   transition:
-    width var(--duration-fast),
-    height var(--duration-fast),
-    opacity var(--duration-fast);
+    width 1s cubic-bezier(0.16, 1, 0.3, 1),
+    height 1s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cursor-ring[data-interactive="true"] {
-  width: 49px;
-  height: 49px;
+  width: 52px;
+  height: 52px;
+  border-color: rgba(248, 247, 243, 0.85);
+  background-color: rgba(248, 247, 243, 0.08);
+}
+.cursor-ring[data-magnetic="true"] {
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+}
+.cursor-ring[data-active="true"] {
+  width: 24px;
+  height: 24px;
+  background-color: rgba(248, 247, 243, 0.3);
 }
 .cursor-dot {
   width: 4px;
   height: 4px;
   background: currentColor;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .cursor-ring,
