@@ -45,23 +45,34 @@ export function Hero() {
     // Cache last applied CSS variable value string to eliminate redundant DOM property updates
     let lastParallaxStr = "";
 
+    let secTop = sec.offsetTop;
+    const measureTop = () => {
+      secTop = sec.offsetTop;
+    };
+
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
-      if (inView && !ticking) {
-        ticking = true;
-        rafId = requestAnimationFrame(updateParallax);
+      if (inView) {
+        measureTop();
+        if (!ticking) {
+          ticking = true;
+          rafId = requestAnimationFrame(updateParallax);
+        }
       }
     }, { threshold: 0 });
 
     observer.observe(sec);
+    window.addEventListener("resize", measureTop, { passive: true });
 
+    // Calculate parallax progress directly from window.scrollY and cached sec.offsetTop
+    // to eliminate getBoundingClientRect calls during scroll animation frames.
     const updateParallax = () => {
       ticking = false;
       if (!inView) return;
-      const rect = sec.getBoundingClientRect();
+      const scrollY = window.scrollY;
       const viewportHeight = window.innerHeight;
-      if (rect.bottom > 0 && rect.top < viewportHeight) {
-        const scrollProgress = -rect.top;
+      const scrollProgress = Math.max(0, scrollY - secTop);
+      if (scrollProgress < viewportHeight * 1.5) {
         const parallaxY = Math.min(Math.max(scrollProgress * 0.14, -60), 120);
         const nextParallaxStr = `${parallaxY.toFixed(1)}px`;
         if (nextParallaxStr !== lastParallaxStr) {
@@ -72,7 +83,7 @@ export function Hero() {
     };
 
     const handleScroll = () => {
-      // Skip scheduling rAF and querying getBoundingClientRect if section is off-screen
+      // Skip scheduling rAF if section is off-screen
       if (!inView) return;
       if (!ticking) {
         ticking = true;
@@ -87,6 +98,7 @@ export function Hero() {
       observer.disconnect();
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", measureTop);
     };
   }, []);
 
