@@ -9,19 +9,24 @@
   z-index: 100;
   mix-blend-mode: difference;
   color: #f8f7f3;
+  will-change: transform, width, height, opacity;
 }
 .cursor-ring {
   width: 32px;
   height: 32px;
   border: 1px solid currentColor;
   transition:
-    width var(--duration-fast),
-    height var(--duration-fast),
+    width 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 1000ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity var(--duration-fast);
 }
 .cursor-ring[data-interactive="true"] {
-  width: 49px;
-  height: 49px;
+  width: 52px;
+  height: 52px;
+  color: #d4af37;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
 }
 .cursor-dot {
   width: 4px;
