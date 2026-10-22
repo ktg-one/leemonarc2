@@ -139,6 +139,9 @@ export function createTopDockController(
   };
 
   const getRootRect = (options: TopDockOptions) => {
+    if (!cachedRootRect) {
+      refreshRootRect();
+    }
     if (!cachedRootRect) return null;
     const { horizontalGrowth, verticalGrowth } = getGeometry(options);
     const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
@@ -350,8 +353,13 @@ export function createTopDockController(
   root.addEventListener("focusout", onFocusOut);
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
+  // Lazily invalidate cached root rect on scroll to avoid expensive getBoundingClientRect and geometry loops on every scroll frame when idle.
+  const onScroll = () => {
+    cachedRootRect = null;
+  };
+
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
-  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  window.addEventListener("scroll", onScroll, { passive: true, capture: true });
   window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
@@ -370,7 +378,7 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
-    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("scroll", onScroll, true);
     window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
