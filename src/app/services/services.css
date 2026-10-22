@@ -11,6 +11,18 @@
   border: 1px solid var(--rule);
   border-radius: 8px;
   padding: 32px 28px;
+  position: relative;
+  background-color: var(--surface, #ffffff);
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow, border-color;
+}
+
+.svc-card:hover {
+  transform: translate3d(0, -6px, 0);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 0 24px rgba(212, 175, 55, 0.12);
 }
 
 .svc-card h3 {
@@ -42,6 +54,23 @@
 
 .svc-card-link .arrow {
   color: var(--ink-soft);
+  transition: transform 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.svc-card:hover .svc-card-link .arrow,
+.svc-card-link:hover .arrow {
+  transform: translate3d(4px, 0, 0);
+  color: var(--gold, #d4af37);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-card,
+  .svc-card-link .arrow {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 .closing-layout {
