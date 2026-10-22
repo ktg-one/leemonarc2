@@ -21,3 +21,7 @@
 ## 2026-09-29 - Localizing Section Observers and UI State to Prevent DOM Detachment
 **Learning:** Hoisting multiple `useSectionInView` observers and localized interactive state (e.g., bento card hover state, timeline tabs, illustration pause toggles) into a single monolithic component causes every scroll threshold intersection or hover event to re-render the entire parent DOM tree, detaching DOM elements during user interactions and forcing expensive Virtual DOM reconciliations across heavy canvas and 3D subcomponents.
 **Action:** Isolate each section's `useSectionInView` hook and interactive state into `React.memo` sub-components so state changes and scroll visibility threshold updates only re-render the specific section affected.
+
+## 2026-09-29 - Throttling Scroll-Triggered Layout Recalculations in Global Controllers
+**Learning:** Attaching `getBoundingClientRect()` or layout measurement functions directly to global `window.addEventListener("scroll", ...)` listeners causes forced synchronous layout thrashing on every scroll event (60Hz–240Hz), blocking the main thread during smooth scrolling across all pages.
+**Action:** Throttle scroll-triggered geometry recalculations using `requestAnimationFrame` (`scrollRaf`) to limit layout reads to at most once per animation frame, and cancel any pending `scrollRaf` during component unmount.
