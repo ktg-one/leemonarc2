@@ -191,6 +191,10 @@ export function createTopDockController(
 
   const setTargets = (clientX: number, clientY: number) => {
     if (!enabled) return;
+    // Re-sync bounding client rect if pointer becomes active or if rect is uninitialized
+    if (!pointerActive || !cachedRootRect) {
+      refreshRootRect();
+    }
     const options = getOptions();
     const vertical = options.axis === "y";
     const pointer = vertical ? clientY : clientX;
@@ -214,6 +218,7 @@ export function createTopDockController(
 
   const focusItem = (item: HTMLElement) => {
     if (!enabled) return;
+    refreshRootRect();
     const index = items.findIndex((state) => state.element === item);
     if (index < 0) return;
     items.forEach((state, itemIndex) => {
@@ -351,7 +356,14 @@ export function createTopDockController(
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
-  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  // Optimization: Only measure DOM geometry during window scroll if pointer is actively interacting with the dock.
+  // When idle (`pointerActive === false`), querying `getBoundingClientRect()` on every scroll event causes forced reflow / layout thrashing.
+  const onScroll = () => {
+    if (pointerActive) {
+      refreshRootRect();
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true, capture: true });
   window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
@@ -370,7 +382,7 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
-    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("scroll", onScroll, true);
     window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
