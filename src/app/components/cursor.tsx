@@ -23,14 +23,24 @@ export function Cursor() {
       seen = false;
 
     let lastTarget: Element | null = null;
-    let lastInteractive: boolean | null = null;
+    let lastInteractiveEl: Element | null = null;
+    let cachedCenterX = 0;
+    let cachedCenterY = 0;
+
+    const updateCachedCenter = () => {
+      if (lastInteractiveEl) {
+        const rect = lastInteractiveEl.getBoundingClientRect();
+        cachedCenterX = rect.left + rect.width / 2;
+        cachedCenterY = rect.top + rect.height / 2;
+      }
+    };
 
     const hide = () => {
       ringElement.style.opacity = "0";
       dotElement.style.opacity = "0";
       seen = false;
       lastTarget = null;
-      lastInteractive = null;
+      lastInteractiveEl = null;
       if (frame) {
         cancelAnimationFrame(frame);
         frame = 0;
@@ -74,42 +84,26 @@ export function Cursor() {
         lastTarget = targetElement;
         const interactiveEl = targetElement?.closest(
           "a, button, summary, input, textarea, select, [data-magnetic]",
-        );
-        const isInteractive = !!interactiveEl;
+        ) || null;
 
-        if (isInteractive !== lastInteractive) {
-          lastInteractive = isInteractive;
+        if (interactiveEl !== lastInteractiveEl) {
+          lastInteractiveEl = interactiveEl;
+          const isInteractive = !!interactiveEl;
           ringElement.dataset.interactive = String(isInteractive);
         }
 
         if (interactiveEl) {
-          const rect = interactiveEl.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          // Apply magnetic pull strength toward center of hovered element
-          ringTargetX = targetX + (centerX - targetX) * 0.35;
-          ringTargetY = targetY + (centerY - targetY) * 0.35;
-        } else {
-          ringTargetX = targetX;
-          ringTargetY = targetY;
+          updateCachedCenter();
         }
-      } else if (!lastInteractive) {
+      }
+
+      // Apply magnetic pull strength toward cached center if over an interactive element
+      if (lastInteractiveEl) {
+        ringTargetX = targetX + (cachedCenterX - targetX) * 0.35;
+        ringTargetY = targetY + (cachedCenterY - targetY) * 0.35;
+      } else {
         ringTargetX = targetX;
         ringTargetY = targetY;
-      } else if (lastTarget) {
-        const interactiveEl = lastTarget.closest(
-          "a, button, summary, input, textarea, select, [data-magnetic]",
-        );
-        if (interactiveEl) {
-          const rect = interactiveEl.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          ringTargetX = targetX + (centerX - targetX) * 0.35;
-          ringTargetY = targetY + (centerY - targetY) * 0.35;
-        } else {
-          ringTargetX = targetX;
-          ringTargetY = targetY;
-        }
       }
 
       if (!frame) frame = requestAnimationFrame(follow);
@@ -123,9 +117,16 @@ export function Cursor() {
       if (!query.matches) hide();
     };
 
+    const handleScroll = () => {
+      if (lastInteractiveEl) {
+        updateCachedCenter();
+      }
+    };
+
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerout", leave);
     window.addEventListener("blur", hide);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     query.addEventListener("change", preferenceChange);
 
     return () => {
@@ -133,6 +134,7 @@ export function Cursor() {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerout", leave);
       window.removeEventListener("blur", hide);
+      window.removeEventListener("scroll", handleScroll);
       query.removeEventListener("change", preferenceChange);
     };
   }, []);

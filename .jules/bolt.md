@@ -21,3 +21,7 @@
 ## 2026-09-29 - Localizing Section Observers and UI State to Prevent DOM Detachment
 **Learning:** Hoisting multiple `useSectionInView` observers and localized interactive state (e.g., bento card hover state, timeline tabs, illustration pause toggles) into a single monolithic component causes every scroll threshold intersection or hover event to re-render the entire parent DOM tree, detaching DOM elements during user interactions and forcing expensive Virtual DOM reconciliations across heavy canvas and 3D subcomponents.
 **Action:** Isolate each section's `useSectionInView` hook and interactive state into `React.memo` sub-components so state changes and scroll visibility threshold updates only re-render the specific section affected.
+
+## 2026-09-29 - Caching Hover Target Closest Ancestors & Element Centers for High-Frequency Pointer Controllers
+**Learning:** Executing `.closest("a, button, summary...")` DOM tree traversals and `getBoundingClientRect()` layout-thrashing calls on every high-frequency `pointermove` event (up to 240 Hz on high refresh rate displays) causes main-thread frame drops.
+**Action:** Cache `lastInteractiveEl` and element center coordinates (`cachedCenterX`, `cachedCenterY`), only querying `.closest()` when `event.target !== lastTarget` and updating bounding rects on element change or window scroll.
