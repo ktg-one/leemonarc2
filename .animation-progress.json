@@ -59,7 +59,8 @@
     "id": "services-card-hover",
     "component": "src/app/services/page.tsx",
     "type": "hover/card-lift",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated 1.2s cubic-bezier card-lift (translate3d translateY -6px), gold border highlight (rgba(212,175,55,0.4)), soft shadow elevation, gold heading text color shift, and arrow icon translation (+4px X-offset) on .svc-card with prefers-reduced-motion support."
   },
   {
     "id": "who-we-help-section-reveal",
