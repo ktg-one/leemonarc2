@@ -25,3 +25,7 @@
 ## 2026-09-29 - Caching Hover Target Closest Ancestors & Element Centers for High-Frequency Pointer Controllers
 **Learning:** Executing `.closest("a, button, summary...")` DOM tree traversals and `getBoundingClientRect()` layout-thrashing calls on every high-frequency `pointermove` event (up to 240 Hz on high refresh rate displays) causes main-thread frame drops.
 **Action:** Cache `lastInteractiveEl` and element center coordinates (`cachedCenterX`, `cachedCenterY`), only querying `.closest()` when `event.target !== lastTarget` and updating bounding rects on element change or window scroll.
+
+## 2026-09-29 - Lazy Rect Invalidation in Scroll Handlers to Eliminate Layout Thrashing
+**Learning:** Calling synchronous `getBoundingClientRect()` in document `scroll` event listeners forces the browser engine to perform layout calculations on every scroll frame (60-120Hz), creating forced synchronous layout / layout thrashing.
+**Action:** Mark cached bounding rects as stale (`isRectStale = true`) inside scroll event handlers without reading DOM properties, lazily recalculating `getBoundingClientRect()` only when position metrics are actually needed (e.g., during active pointer target evaluation).
