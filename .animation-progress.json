@@ -59,7 +59,8 @@
     "id": "services-card-hover",
     "component": "src/app/services/page.tsx",
     "type": "hover/card-lift",
-    "status": "pending"
+    "status": "completed",
+    "note": "Implemented GPU-accelerated card-lift hover transitions (translate3d(0, -8px, 0), gold border-color glow, box-shadow, title color shift, and link arrow translate3d(6px, 0, 0)) over 1.2s cubic-bezier(0.16, 1, 0.3, 1) timing with full prefers-reduced-motion compliance."
   },
   {
     "id": "who-we-help-section-reveal",

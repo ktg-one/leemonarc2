@@ -11,12 +11,31 @@
   border: 1px solid var(--rule);
   border-radius: 8px;
   padding: 32px 28px;
+  background-color: transparent;
+  will-change: transform, box-shadow, border-color;
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.svc-card:hover {
+  transform: translate3d(0, -8px, 0);
+  border-color: rgba(204, 168, 91, 0.5);
+  box-shadow:
+    0 16px 36px -10px rgba(0, 0, 0, 0.08),
+    0 0 20px rgba(204, 168, 91, 0.15);
 }
 
 .svc-card h3 {
   font-size: clamp(18px, 2.2vw, 22px);
   margin-block-end: 16px;
   color: var(--ink);
+  transition: color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.svc-card:hover h3 {
+  color: var(--gold-dark);
 }
 
 .svc-card-desc {
@@ -34,6 +53,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 16px;
+  transition: color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .svc-card-link:hover {
@@ -42,6 +63,25 @@
 
 .svc-card-link .arrow {
   color: var(--ink-soft);
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.svc-card:hover .svc-card-link .arrow,
+.svc-card-link:hover .arrow {
+  transform: translate3d(6px, 0, 0);
+  color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svc-card,
+  .svc-card h3,
+  .svc-card-link,
+  .svc-card-link .arrow {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 .closing-layout {
