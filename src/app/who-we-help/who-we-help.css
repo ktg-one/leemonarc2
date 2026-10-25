@@ -2,6 +2,19 @@
   padding-block: 36px 20px;
 }
 
+/* GPU-accelerated scroll fade-slide animations (>= 1.0s duration) */
+.who-we-help-page[data-enhanced="true"] [data-reveal="rise"] {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] [data-reveal="rise"][data-in-view="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .who-hero {
   padding-block: 80px 70px;
   max-width: var(--content-width);
@@ -62,10 +75,23 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+  will-change: transform;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark);
+  transform: translate3d(4px, 0, 0);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.who-links a:hover .arrow {
+  color: var(--gold-dark);
+  transform: translate3d(2px, 0, 0);
 }
 
 .who-industry {
@@ -79,6 +105,13 @@
   max-width: var(--content-width);
   margin-inline: auto;
   text-align: center;
+  border-radius: 16px;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.who-fit:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
+  border-top-color: var(--gold-dark);
 }
 
 .who-fit h2 {
@@ -93,6 +126,28 @@
 
 .who-fit .button {
   margin-top: 30px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.who-fit .button:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Accessibility: prefers-reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  .who-we-help-page[data-enhanced="true"] [data-reveal="rise"] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .who-links a,
+  .who-links a .arrow,
+  .who-fit .button {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 /* Mobile adjustments */
