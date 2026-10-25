@@ -45,16 +45,6 @@ export function Hero() {
     // Cache last applied CSS variable value string to eliminate redundant DOM property updates
     let lastParallaxStr = "";
 
-    const observer = new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      if (inView && !ticking) {
-        ticking = true;
-        rafId = requestAnimationFrame(updateParallax);
-      }
-    }, { threshold: 0 });
-
-    observer.observe(sec);
-
     const updateParallax = () => {
       ticking = false;
       if (!inView) return;
@@ -72,7 +62,6 @@ export function Hero() {
     };
 
     const handleScroll = () => {
-      // Skip scheduling rAF and querying getBoundingClientRect if section is off-screen
       if (!inView) return;
       if (!ticking) {
         ticking = true;
@@ -80,8 +69,29 @@ export function Hero() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    updateParallax();
+    // On-demand scroll listener: attach when hero is in view, detach when off-screen to eliminate main-thread event listener overhead
+    const observer = new IntersectionObserver(([entry]) => {
+      const isIntersecting = entry.isIntersecting;
+      if (isIntersecting !== inView) {
+        inView = isIntersecting;
+        if (inView) {
+          window.addEventListener("scroll", handleScroll, { passive: true });
+          if (!ticking) {
+            ticking = true;
+            rafId = requestAnimationFrame(updateParallax);
+          }
+        } else {
+          window.removeEventListener("scroll", handleScroll);
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+            ticking = false;
+          }
+        }
+      }
+    }, { threshold: 0 });
+
+    observer.observe(sec);
 
     return () => {
       observer.disconnect();
