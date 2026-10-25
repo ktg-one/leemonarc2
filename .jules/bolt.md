@@ -25,3 +25,7 @@
 ## 2026-09-29 - Caching Hover Target Closest Ancestors & Element Centers for High-Frequency Pointer Controllers
 **Learning:** Executing `.closest("a, button, summary...")` DOM tree traversals and `getBoundingClientRect()` layout-thrashing calls on every high-frequency `pointermove` event (up to 240 Hz on high refresh rate displays) causes main-thread frame drops.
 **Action:** Cache `lastInteractiveEl` and element center coordinates (`cachedCenterX`, `cachedCenterY`), only querying `.closest()` when `event.target !== lastTarget` and updating bounding rects on element change or window scroll.
+
+## 2026-09-29 - On-demand Window Scroll Listener Attachment via IntersectionObserver
+**Learning:** Registering window `scroll` event listeners permanently on component mount forces event handler callbacks to run on every single main-thread scroll tick even when the associated target component is completely off-screen.
+**Action:** Attach window `scroll` event listeners inside `IntersectionObserver` callbacks only when `entry.isIntersecting` is true, and immediately detach them when the target section leaves the viewport.
