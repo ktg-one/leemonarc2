@@ -25,3 +25,7 @@
 ## 2026-09-29 - Caching Hover Target Closest Ancestors & Element Centers for High-Frequency Pointer Controllers
 **Learning:** Executing `.closest("a, button, summary...")` DOM tree traversals and `getBoundingClientRect()` layout-thrashing calls on every high-frequency `pointermove` event (up to 240 Hz on high refresh rate displays) causes main-thread frame drops.
 **Action:** Cache `lastInteractiveEl` and element center coordinates (`cachedCenterX`, `cachedCenterY`), only querying `.closest()` when `event.target !== lastTarget` and updating bounding rects on element change or window scroll.
+
+## 2026-09-29 - Caching DOM Inline Styles & Dataset Properties for Physics Spring Controllers
+**Learning:** Mutating `element.style` or `element.dataset` properties unconditionally on every rAF tick during physics spring updates triggers style recalculations and JS-to-DOM boundary overhead even when values haven't changed.
+**Action:** Store `lastWidth`, `lastHeight`, `lastTransform`, and `lastNear` strings directly on item state objects, and only update DOM properties when new values differ from cached strings.

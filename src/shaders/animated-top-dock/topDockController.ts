@@ -24,6 +24,7 @@ export type TopDockOptions = {
 
 type DockItemState = {
   element: HTMLElement;
+  isLogo: boolean;
   baseWidth: number;
   baseHeight: number;
   baseLeft: number;
@@ -31,6 +32,10 @@ type DockItemState = {
   value: number;
   velocity: number;
   target: number;
+  lastWidth: string;
+  lastHeight: string;
+  lastTransform: string;
+  lastNear: string;
 };
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -43,6 +48,7 @@ export function createTopDockController(
   const precisionQuery = window.matchMedia("(hover:hover) and (pointer:fine)");
   const items: DockItemState[] = Array.from(root.querySelectorAll<HTMLElement>("[data-dock-item]")).map((element) => ({
     element,
+    isLogo: element.classList.contains("animated-top-dock__logo"),
     baseWidth: 0,
     baseHeight: 0,
     baseLeft: 0,
@@ -50,6 +56,10 @@ export function createTopDockController(
     value: 0,
     velocity: 0,
     target: 0,
+    lastWidth: "",
+    lastHeight: "",
+    lastTransform: "",
+    lastNear: "",
   }));
 
   let enabled = false;
@@ -57,6 +67,44 @@ export function createTopDockController(
   let dirty = false;
   let frame = 0;
   let cachedRootRect: Pick<DOMRect, "left" | "top" | "width" | "height"> | null = null;
+  let lastRootState = "";
+  let lastRootMax = "";
+
+  const setDockItemStyles = (state: DockItemState, width: string, height: string, transform: string) => {
+    if (state.lastWidth !== width) {
+      state.element.style.width = width;
+      state.lastWidth = width;
+    }
+    if (state.lastHeight !== height) {
+      state.element.style.height = height;
+      state.lastHeight = height;
+    }
+    if (state.lastTransform !== transform) {
+      state.element.style.transform = transform;
+      state.lastTransform = transform;
+    }
+  };
+
+  const setDockItemNear = (state: DockItemState, near: string) => {
+    if (state.lastNear !== near) {
+      state.element.dataset.dockNear = near;
+      state.lastNear = near;
+    }
+  };
+
+  const setRootState = (stateStr: string) => {
+    if (lastRootState !== stateStr) {
+      root.dataset.dockState = stateStr;
+      lastRootState = stateStr;
+    }
+  };
+
+  const setRootMax = (maxStr: string) => {
+    if (lastRootMax !== maxStr) {
+      root.dataset.dockMax = maxStr;
+      lastRootMax = maxStr;
+    }
+  };
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
@@ -99,17 +147,15 @@ export function createTopDockController(
     } else {
       horizontalGrowth = items.reduce((growth, state) => {
         const value = clamp(state.value, 0, 1.08);
-        const isLogo = state.element.classList.contains("animated-top-dock__logo");
-        const extraWidth = isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
+        const extraWidth = state.isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
         return growth + extraWidth * value;
       }, 0);
       let currentShift = options.lockTrack ? -horizontalGrowth * 0.5 : 0;
       for (let i = 0; i < items.length; i++) {
         const state = items[i];
         const value = clamp(state.value, 0, 1.08);
-        const isLogo = state.element.classList.contains("animated-top-dock__logo");
-        const extraWidth = isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
-        const extraHeight = isLogo ? options.heightGrowth * (14 / 16) : options.heightGrowth;
+        const extraWidth = state.isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
+        const extraHeight = state.isLogo ? options.heightGrowth * (14 / 16) : options.heightGrowth;
         const w = state.baseWidth + extraWidth * value;
         const h = state.baseHeight + extraHeight * value;
         const left = state.baseLeft + currentShift;
@@ -155,10 +201,8 @@ export function createTopDockController(
        content rather than against the width the last measurement pinned */
     if (getOptions().lockTrack) root.style.width = "";
     for (const state of items) {
-      state.element.style.width = "";
-      state.element.style.height = "";
-      state.element.style.transform = "";
-      state.element.dataset.dockNear = "false";
+      setDockItemStyles(state, "", "", "");
+      setDockItemNear(state, "false");
     }
     const rootRect = root.getBoundingClientRect();
     for (const state of items) {
@@ -178,8 +222,8 @@ export function createTopDockController(
     if (getOptions().distribute) applyLayout();
     if (getOptions().lockTrack) root.style.width = `${root.getBoundingClientRect().width.toFixed(2)}px`;
     refreshRootRect();
-    root.dataset.dockState = enabled ? "idle" : "static";
-    root.dataset.dockMax = "0.00";
+    setRootState(enabled ? "idle" : "static");
+    setRootMax("0.00");
   };
 
   const scheduleDraw = () => {
@@ -205,11 +249,11 @@ export function createTopDockController(
       const proximity = clamp(1 - Math.abs(pointer - center) / Math.max(1, options.proximity), 0, 1);
       const influence = proximity * proximity * (3 - 2 * proximity);
       items[index].target = influence;
-      items[index].element.dataset.dockNear = influence > 0.08 ? "true" : "false";
+      setDockItemNear(items[index], influence > 0.08 ? "true" : "false");
     }
     pointerActive = true;
     scheduleDraw();
-    root.dataset.dockState = "active";
+    setRootState("active");
   };
 
   const focusItem = (item: HTMLElement) => {
@@ -218,18 +262,18 @@ export function createTopDockController(
     if (index < 0) return;
     items.forEach((state, itemIndex) => {
       state.target = itemIndex === index ? 1 : Math.abs(itemIndex - index) === 1 ? 0.24 : 0;
-      state.element.dataset.dockNear = state.target > 0.08 ? "true" : "false";
+      setDockItemNear(state, state.target > 0.08 ? "true" : "false");
     });
     pointerActive = false;
     scheduleDraw();
-    root.dataset.dockState = "focus";
+    setRootState("focus");
   };
 
   const reset = () => {
     pointerActive = false;
     items.forEach((state) => {
       state.target = 0;
-      state.element.dataset.dockNear = "false";
+      setDockItemNear(state, "false");
     });
     scheduleDraw();
   };
@@ -246,26 +290,25 @@ export function createTopDockController(
          so it stops filling the track rather than crushing the cells */
       const track = root.clientWidth >= natural ? root.clientWidth : 0;
       items.forEach((state, index) => {
-        state.element.style.width = track ? `${(track * weights[index] / total).toFixed(2)}px` : "";
-        state.element.style.height = "";
-        state.element.style.transform = "";
+        const w = track ? `${(track * weights[index] / total).toFixed(2)}px` : "";
+        setDockItemStyles(state, w, "", "");
       });
       return;
     }
     for (const state of items) {
       const value = clamp(state.value, 0, 1.08);
       if (options.axis === "y") {
-        state.element.style.width = "";
-        state.element.style.height = `${(state.baseHeight + options.heightGrowth * value).toFixed(2)}px`;
-        state.element.style.transform = `translateX(${(value * options.drop).toFixed(2)}px)`;
+        const h = `${(state.baseHeight + options.heightGrowth * value).toFixed(2)}px`;
+        const t = `translateX(${(value * options.drop).toFixed(2)}px)`;
+        setDockItemStyles(state, "", h, t);
         continue;
       }
-      const isLogo = state.element.classList.contains("animated-top-dock__logo");
-      const extraWidth = isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
-      const extraHeight = isLogo ? options.heightGrowth * (14 / 16) : options.heightGrowth;
-      state.element.style.width = `${(state.baseWidth + extraWidth * value).toFixed(2)}px`;
-      state.element.style.height = `${(state.baseHeight + extraHeight * value).toFixed(2)}px`;
-      state.element.style.transform = `translateY(${(value * options.drop).toFixed(2)}px)`;
+      const extraWidth = state.isLogo ? options.widthGrowth * (14 / 17) : Math.min(options.widthGrowth, state.baseWidth * 0.24);
+      const extraHeight = state.isLogo ? options.heightGrowth * (14 / 16) : options.heightGrowth;
+      const w = `${(state.baseWidth + extraWidth * value).toFixed(2)}px`;
+      const h = `${(state.baseHeight + extraHeight * value).toFixed(2)}px`;
+      const t = `translateY(${(value * options.drop).toFixed(2)}px)`;
+      setDockItemStyles(state, w, h, t);
     }
   };
 
@@ -289,10 +332,10 @@ export function createTopDockController(
       maxValue = Math.max(maxValue, clamp(state.value, 0, 1.08));
     }
     applyLayout();
-    root.dataset.dockMax = maxValue.toFixed(2);
+    setRootMax(maxValue.toFixed(2));
     if (!moving) {
       dirty = false;
-      if (items.every((state) => state.target === 0)) root.dataset.dockState = "idle";
+      if (items.every((state) => state.target === 0)) setRootState("idle");
       return;
     }
     frame = requestAnimationFrame(draw);
