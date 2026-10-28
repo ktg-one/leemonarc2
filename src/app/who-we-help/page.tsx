@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Arrow } from "@/components/chrome";
+import { WhoWeHelpClient, AnimatedSection } from "./who-we-help-client";
 import "./who-we-help.css";
 
 export const metadata: Metadata = {
@@ -19,9 +20,9 @@ const serviceSlugs = {
 
 export default function WhoWeHelp() {
   return (
-    <main id="main" className="who-we-help-page section-stack">
+    <WhoWeHelpClient>
       {/* HERO — deck verbatim */}
-      <section className="who-hero" aria-labelledby="hero-heading">
+      <AnimatedSection className="who-hero" ariaLabelledby="hero-heading">
         <h1 id="hero-heading">For owners who want more from their numbers.</h1>
         <p className="who-lead">
           You’re building something that matters to you. We help you assess what
@@ -31,10 +32,10 @@ export default function WhoWeHelp() {
         <Link href="/contact" className="button button-dark">
           Tell us about your business <Arrow diagonal />
         </Link>
-      </section>
+      </AnimatedSection>
 
       {/* STARTING AND ESTABLISHING — deck verbatim */}
-      <section className="who-section" aria-labelledby="starting-heading">
+      <AnimatedSection className="who-section" ariaLabelledby="starting-heading">
         <div className="section-heading">
           <h2 id="starting-heading">Starting and establishing</h2>
           <p className="section-subhead">Get the setup right before things get busy.</p>
@@ -56,10 +57,10 @@ export default function WhoWeHelp() {
             Accounting and Compliance <Arrow />
           </Link>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* GROWING BUSINESSES — deck verbatim */}
-      <section className="who-section" aria-labelledby="growing-heading">
+      <AnimatedSection className="who-section" ariaLabelledby="growing-heading">
         <div className="section-heading">
           <h2 id="growing-heading">Growing businesses</h2>
           <p className="section-subhead">More sales. More commitments. Enough cash?</p>
@@ -78,10 +79,10 @@ export default function WhoWeHelp() {
             Fractional CFO and Business Advisory <Arrow />
           </Link>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* BUYERS AND OWNERS PLANNING A TRANSITION — deck verbatim */}
-      <section className="who-section" aria-labelledby="transition-heading">
+      <AnimatedSection className="who-section" ariaLabelledby="transition-heading">
         <div className="section-heading">
           <h2 id="transition-heading">Buyers and owners planning a transition</h2>
           <p className="section-subhead">
@@ -105,10 +106,10 @@ export default function WhoWeHelp() {
             Succession and Exit Planning <Arrow />
           </Link>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* INDIVIDUALS AND FAMILY GROUPS — deck verbatim */}
-      <section className="who-section" aria-labelledby="family-heading">
+      <AnimatedSection className="who-section" ariaLabelledby="family-heading">
         <div className="section-heading">
           <h2 id="family-heading">Individuals and family groups</h2>
           <p className="section-subhead">Consider the connections across your financial affairs.</p>
@@ -129,10 +130,10 @@ export default function WhoWeHelp() {
             Business Structuring <Arrow />
           </Link>
         </div>
-      </section>
+      </AnimatedSection>
 
       {/* INDUSTRY EXPERIENCE — deck verbatim */}
-      <section className="who-section who-industry" aria-labelledby="industry-heading">
+      <AnimatedSection className="who-section who-industry" ariaLabelledby="industry-heading">
         <div className="section-heading">
           <h2 id="industry-heading">Industry experience</h2>
         </div>
@@ -146,10 +147,10 @@ export default function WhoWeHelp() {
           understanding how yours works, rather than assuming that an industry
           label tells the whole story.
         </p>
-      </section>
+      </AnimatedSection>
 
       {/* THE RIGHT FIT — deck verbatim */}
-      <section className="who-section who-fit" aria-labelledby="fit-heading">
+      <AnimatedSection className="who-section who-fit" ariaLabelledby="fit-heading">
         <div className="section-heading">
           <h2 id="fit-heading">The right fit</h2>
         </div>
@@ -166,7 +167,7 @@ export default function WhoWeHelp() {
         <Link href="/contact" className="button button-dark">
           Let’s talk about your business <Arrow diagonal />
         </Link>
-      </section>
-    </main>
+      </AnimatedSection>
+    </WhoWeHelpClient>
   );
 }
