@@ -2,6 +2,28 @@
   padding-block: 36px 20px;
 }
 
+/* Scroll reveal animations for Who We Help sections */
+.who-we-help-page[data-enhanced="true"] [data-reveal="rise"] {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] [data-reveal="rise"][data-in-view="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .who-we-help-page[data-enhanced="true"] [data-reveal="rise"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
 .who-hero {
   padding-block: 80px 70px;
   max-width: var(--content-width);
@@ -62,10 +84,21 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark, #a38138);
+  transform: translate3d(4px, 0, 0);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.who-links a:hover .arrow {
+  transform: translate3d(3px, 0, 0);
 }
 
 .who-industry {
