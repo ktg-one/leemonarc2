@@ -2,6 +2,23 @@
   padding-block: 36px 20px;
 }
 
+/* GPU-accelerated scroll reveal animation across sections */
+.who-hero,
+.who-section {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-hero[data-in-view="true"],
+.who-section[data-in-view="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .who-hero {
   padding-block: 80px 70px;
   max-width: var(--content-width);
@@ -55,6 +72,7 @@
   margin-block-start: 28px;
 }
 
+/* Micro-interaction & GPU-accelerated animated underline / arrow offset */
 .who-links a {
   color: var(--ink);
   text-decoration: none;
@@ -62,10 +80,43 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.who-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--gold-dark);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark);
+}
+
+.who-links a:hover::after {
+  transform: scaleX(1);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, color;
+}
+
+.who-links a:hover .arrow {
+  transform: translate3d(4px, -2px, 0);
+  color: var(--gold-dark);
 }
 
 .who-industry {
@@ -79,6 +130,11 @@
   max-width: var(--content-width);
   margin-inline: auto;
   text-align: center;
+  border-radius: 4px;
+}
+
+.who-fit[data-in-view="true"]:hover {
+  box-shadow: 0 16px 40px rgba(24, 34, 55, 0.06);
 }
 
 .who-fit h2 {
@@ -93,6 +149,23 @@
 
 .who-fit .button {
   margin-top: 30px;
+}
+
+/* Prefers Reduced Motion Accessibility Override */
+@media (prefers-reduced-motion: reduce) {
+  .who-hero,
+  .who-section {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .who-links a,
+  .who-links a::after,
+  .who-links a .arrow,
+  .who-fit {
+    transition: none !important;
+  }
 }
 
 /* Mobile adjustments */
