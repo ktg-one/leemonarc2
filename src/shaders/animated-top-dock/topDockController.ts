@@ -57,6 +57,7 @@ export function createTopDockController(
   let dirty = false;
   let frame = 0;
   let cachedRootRect: Pick<DOMRect, "left" | "top" | "width" | "height"> | null = null;
+  let cachedRootRectDirty = true;
 
   const canAnimate = () => !reducedQuery.matches && root.clientWidth > 0 && window.innerWidth > 600 && precisionQuery.matches;
 
@@ -136,9 +137,21 @@ export function createTopDockController(
       width: rect.width - (centeredWidth ? horizontalGrowth : 0),
       height: rect.height - (options.axis === "y" ? verticalGrowth : 0),
     };
+    cachedRootRectDirty = false;
+  };
+
+  const handleScroll = () => {
+    // Flag rect as dirty on scroll; only force immediate re-query if the pointer is actively over the dock
+    cachedRootRectDirty = true;
+    if (pointerActive) {
+      refreshRootRect();
+    }
   };
 
   const getRootRect = (options: TopDockOptions) => {
+    if (cachedRootRectDirty || !cachedRootRect) {
+      refreshRootRect();
+    }
     if (!cachedRootRect) return null;
     const { horizontalGrowth, verticalGrowth } = getGeometry(options);
     const centeredWidth = options.axis !== "y" && !options.distribute && !options.lockTrack;
@@ -351,7 +364,7 @@ export function createTopDockController(
   root.addEventListener("keydown", onKeyDown);
   root.addEventListener("click", onClick);
   window.addEventListener("pointermove", onWindowPointerMove, { passive: true });
-  window.addEventListener("scroll", refreshRootRect, { passive: true, capture: true });
+  window.addEventListener("scroll", handleScroll, { passive: true, capture: true });
   window.addEventListener("resize", onWindowResize);
   reducedQuery.addEventListener("change", measure);
   precisionQuery.addEventListener("change", measure);
@@ -370,7 +383,7 @@ export function createTopDockController(
     root.removeEventListener("keydown", onKeyDown);
     root.removeEventListener("click", onClick);
     window.removeEventListener("pointermove", onWindowPointerMove);
-    window.removeEventListener("scroll", refreshRootRect, true);
+    window.removeEventListener("scroll", handleScroll, true);
     window.removeEventListener("resize", onWindowResize);
     reducedQuery.removeEventListener("change", measure);
     precisionQuery.removeEventListener("change", measure);
