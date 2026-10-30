@@ -2,6 +2,49 @@
   padding-block: 36px 20px;
 }
 
+/* Scroll Fade & Slide Animations */
+.who-hero,
+.who-section {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-hero[data-in-view="true"],
+.who-section[data-in-view="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Staggered reveal for section child elements */
+.who-section .section-heading {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.who-section .who-body {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+.who-section .who-links,
+.who-section .button {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+.who-section[data-in-view="true"] .section-heading,
+.who-section[data-in-view="true"] .who-body,
+.who-section[data-in-view="true"] .who-links,
+.who-section[data-in-view="true"] .button {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .who-hero {
   padding-block: 80px 70px;
   max-width: var(--content-width);
@@ -62,10 +105,23 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition: color 0.3s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark);
+  transform: translate3d(4px, 0, 0);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.who-links a:hover .arrow {
+  color: var(--gold-dark);
+  transform: translate3d(3px, -2px, 0);
 }
 
 .who-industry {
@@ -93,6 +149,25 @@
 
 .who-fit .button {
   margin-top: 30px;
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .who-hero,
+  .who-section,
+  .who-section .section-heading,
+  .who-section .who-body,
+  .who-section .who-links,
+  .who-section .button {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .who-links a,
+  .who-links a .arrow {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 /* Mobile adjustments */
