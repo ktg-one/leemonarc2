@@ -25,3 +25,7 @@
 ## 2026-09-29 - Caching Hover Target Closest Ancestors & Element Centers for High-Frequency Pointer Controllers
 **Learning:** Executing `.closest("a, button, summary...")` DOM tree traversals and `getBoundingClientRect()` layout-thrashing calls on every high-frequency `pointermove` event (up to 240 Hz on high refresh rate displays) causes main-thread frame drops.
 **Action:** Cache `lastInteractiveEl` and element center coordinates (`cachedCenterX`, `cachedCenterY`), only querying `.closest()` when `event.target !== lastTarget` and updating bounding rects on element change or window scroll.
+
+## 2026-09-30 - Eliminating Redundant Shader Resize Invocation in Animation Ticks
+**Learning:** Unconditionally calling canvas or WebGL `field.resize(width, height)` inside high-frequency `requestAnimationFrame` loops (60-120 Hz) adds math division/rounding and function overhead on every frame, even when dimensions haven't changed.
+**Action:** Rely on `ResizeObserver` and initial setup calls to invoke `field.resize()`, keeping high-frequency animation tick loops strictly focused on frame rendering.

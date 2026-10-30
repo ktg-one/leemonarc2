@@ -154,7 +154,9 @@ function useShaderField(active: boolean, load: () => Promise<(canvas: HTMLCanvas
       field.resize(bounds.width, bounds.height);
     };
     const tick = (now: number) => {
-      field.resize(bounds.width, bounds.height);
+      // Performance optimization: field.resize is called on initialization and by
+      // ResizeObserver whenever host element bounds change. Removing field.resize from
+      // high-frequency animation tick saves math operations and function call overhead per frame.
       field.render(now);
       frame = visible && !document.hidden ? requestAnimationFrame(tick) : 0;
     };
