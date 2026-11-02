@@ -62,10 +62,22 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition: color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark);
+}
+
+.who-links a:hover .arrow {
+  transform: translate3d(6px, 0, 0);
+  color: var(--gold);
 }
 
 .who-industry {
@@ -93,6 +105,79 @@
 
 .who-fit .button {
   margin-top: 30px;
+}
+
+/* Progressive Scroll Fade-Slide Reveal Animations (>= 1.0s duration per directive) */
+.who-we-help-page[data-enhanced="true"] .who-reveal-section {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Staggered entry for section children */
+.who-we-help-page[data-enhanced="true"] .who-reveal-section .section-heading,
+.who-we-help-page[data-enhanced="true"] .who-hero h1 {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] .who-reveal-section .who-body,
+.who-we-help-page[data-enhanced="true"] .who-hero .who-lead {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.16s,
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.16s;
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] .who-reveal-section .who-links,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section .button {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.24s,
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.24s;
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] .section-heading,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] h1,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] .who-body,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] .who-lead,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] .who-links,
+.who-we-help-page[data-enhanced="true"] .who-reveal-section[data-in-view="true"] .button {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Accessibility: prefers-reduced-motion compliance */
+@media (prefers-reduced-motion: reduce) {
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section .section-heading,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section h1,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section .who-body,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section .who-lead,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section .who-links,
+  .who-we-help-page[data-enhanced="true"] .who-reveal-section .button,
+  .who-links a,
+  .who-links a .arrow {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Mobile adjustments */
