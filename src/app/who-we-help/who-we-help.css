@@ -28,6 +28,21 @@
   padding-block: 64px;
 }
 
+/* Scroll Fade & Slide Animations (1.2s cubic-bezier for smooth perception) */
+.who-we-help-page[data-enhanced='true'] .who-section[data-reveal='true'] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.who-we-help-page[data-enhanced='true'] .who-section[data-reveal='true'][data-in-view='true'] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .section-heading {
   max-width: 36ch;
   margin-block-end: 44px;
@@ -62,10 +77,27 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition:
+    color 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, color;
+}
+
+.who-links a:hover {
+  color: var(--gold-dark);
+  transform: translate3d(2px, 0, 0);
 }
 
 .who-links a .arrow {
   color: var(--ink-soft);
+  transition:
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    color 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.who-links a:hover .arrow {
+  transform: translate3d(6px, 0, 0);
+  color: var(--gold);
 }
 
 .who-industry {
@@ -93,6 +125,20 @@
 
 .who-fit .button {
   margin-top: 30px;
+}
+
+/* Reduced motion accessibility compliance */
+@media (prefers-reduced-motion: reduce) {
+  .who-we-help-page[data-enhanced='true'] .who-section[data-reveal='true'],
+  .who-we-help-page[data-enhanced='true'] .who-section[data-reveal='true'][data-in-view='true'],
+  .who-links a,
+  .who-links a:hover,
+  .who-links a .arrow,
+  .who-links a:hover .arrow {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Mobile adjustments */
